@@ -10,6 +10,9 @@ target/
 
 # IDEs
 
+## vscode
+.vscode/
+
 ## IntelliJ IDEA
 .idea/
 *.iws
