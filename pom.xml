@@ -47,6 +47,21 @@
             <version>5.9.3</version>
             <scope>test</scope>
         </dependency>
+        <!-- Dépendance pour Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>3.7.7</version>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Dépendance pour JUnit 5 avec Mockito -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+            <version>3.7.7</version>
+            <scope>test</scope>
+        </dependency>
 
         <!-- Lombok (Annotations) -->
         <dependency>
