@@ -2,7 +2,9 @@ package sn.uasz.m1.inscription.service;
 
 
 import sn.uasz.m1.inscription.dao.RoleDAO;
+import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.Role;
+import sn.uasz.m1.inscription.model.Utilisateur;
 
 import java.util.List;
 
@@ -75,5 +77,20 @@ public class RoleService {
         roleDAO.supprimer(id);
         log.info("Rôle supprimé : " + role.getLibelle());
         return true;
+    }
+
+    /**
+     * Assigner un role de maniere automatique
+    */
+    public Role assignRoleToUtilisateur(Utilisateur utilisateur) {
+        if (utilisateur instanceof ResponsablePedagogique) {
+            return roleDAO.trouverParLibelle("RESPONSABLE");
+        } 
+        // else if (utilisateur instanceof Etudiant) {
+        //     return roleDAO.trouverParLibelle("ETUDIANT");
+        // }
+         else {
+            throw new IllegalArgumentException("Rôle non défini pour cet utilisateur.");
+        }
     }
 }

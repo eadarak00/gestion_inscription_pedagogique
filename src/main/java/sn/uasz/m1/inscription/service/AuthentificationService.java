@@ -11,9 +11,12 @@ import sn.uasz.m1.inscription.utils.SessionManager;
 
 @Slf4j
 @AllArgsConstructor
-@NoArgsConstructor
 public class AuthentificationService {
       private UtilisateurDAO utilisateurDAO ;
+
+      public AuthentificationService(){
+        utilisateurDAO = new UtilisateurDAO();
+      }
    
     public boolean authentifier(String email, String motDePasse) {
         Utilisateur utilisateur = utilisateurDAO.trouverParEmail(email);
