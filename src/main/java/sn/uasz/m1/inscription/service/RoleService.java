@@ -2,6 +2,7 @@ package sn.uasz.m1.inscription.service;
 
 
 import sn.uasz.m1.inscription.dao.RoleDAO;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.Role;
 import sn.uasz.m1.inscription.model.Utilisateur;
@@ -86,9 +87,9 @@ public class RoleService {
         if (utilisateur instanceof ResponsablePedagogique) {
             return roleDAO.trouverParLibelle("RESPONSABLE");
         } 
-        // else if (utilisateur instanceof Etudiant) {
-        //     return roleDAO.trouverParLibelle("ETUDIANT");
-        // }
+        else if (utilisateur instanceof Etudiant) {
+            return roleDAO.trouverParLibelle("ETUDIANT");
+        }
          else {
             throw new IllegalArgumentException("Rôle non défini pour cet utilisateur.");
         }

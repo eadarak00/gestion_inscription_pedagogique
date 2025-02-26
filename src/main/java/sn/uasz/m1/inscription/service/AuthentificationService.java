@@ -1,7 +1,6 @@
 package sn.uasz.m1.inscription.service;
 
 import lombok.AllArgsConstructor;
-import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import sn.uasz.m1.inscription.dao.UtilisateurDAO;
 import sn.uasz.m1.inscription.model.Utilisateur;

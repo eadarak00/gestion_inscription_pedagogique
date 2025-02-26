@@ -17,29 +17,28 @@ public class ResponsablePedagogiqueService {
 
     /**
      * Enregistre un nouveau Responsable Pédagogique
-    */
+     */
     public ResponsablePedagogique createResponsable(ResponsablePedagogique responsable) {
-    if (responsable == null) {
-        throw new IllegalArgumentException("Le responsable ne peut pas être null");
-    }
-    
-    // Vérification de l'email
-    if (!SecurityUtil.verifierEmailResponsable(responsable.getEmail())) {
-        throw new IllegalArgumentException("L'email doit être valide et se terminer par @univ-zig.sn");
-    }
-    
-    // Hashage du mot de passe
-    String motDePasseHache = SecurityUtil.hasherMotDePasse(responsable.getMotDePasse());
-    responsable.setMotDePasse(motDePasseHache);
-    
-    // Vérification du rôle
-    Role role = roleService.trouverParLibelle("RESPONSABLE");
-    responsable.setRole(role);
-    
-    // Sauvegarder le responsable
+        if (responsable == null) {
+            throw new IllegalArgumentException("Le responsable ne peut pas être null");
+        }
+
+        // Vérification de l'email
+        if (!SecurityUtil.verifierEmailResponsable(responsable.getEmail())) {
+            throw new IllegalArgumentException("L'email doit être valide et se terminer par @univ-zig.sn");
+        }
+
+        // Hashage du mot de passe
+        String motDePasseHache = SecurityUtil.hasherMotDePasse(responsable.getMotDePasse());
+        responsable.setMotDePasse(motDePasseHache);
+
+        // Vérification du rôle
+        Role role = roleService.assignRoleToUtilisateur(responsable);
+        responsable.setRole(role);
+        
+        // Sauvegarder le responsable
         return responsablePedagogiqueDAO.save(responsable);
     }
-
 
     /**
      * Récupère un responsable par son ID
