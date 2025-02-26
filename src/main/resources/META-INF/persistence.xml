@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence" version="3.1">
     <persistence-unit name="inscriptionPU" transaction-type="RESOURCE_LOCAL">
-
+        <provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
+        <class>sn.uasz.m1.inscription.model.ResponsablePedagogique</class>
+        <class>sn.uasz.m1.inscription.model.Utilisateur</class>
+        <!-- <class>sn.uasz.m1.inscription.model.ResponsablePedagogique</class>  -->
+        <class>sn.uasz.m1.inscription.model.Role</class>
+        
         <properties>
             <!-- Configuration de la base de données -->
             <property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
@@ -21,3 +26,6 @@
         </properties>
     </persistence-unit>
 </persistence>
+
+
+
