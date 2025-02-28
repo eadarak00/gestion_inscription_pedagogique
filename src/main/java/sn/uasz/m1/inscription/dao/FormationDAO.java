@@ -1,5 +1,6 @@
 package sn.uasz.m1.inscription.dao;
 
+import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,9 +10,10 @@ import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
-public class EtudiantDAO implements IDAO<Etudiant> {
-     @Override
-    public Etudiant save(Etudiant o) {
+public class FormationDAO implements IDAO<Formation> {
+
+    @Override
+    public Formation save(Formation o) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
             entityManager.getTransaction().begin();
             entityManager.persist(o);
@@ -22,45 +24,50 @@ public class EtudiantDAO implements IDAO<Etudiant> {
         }
     }
 
-
     @Override
-    public Etudiant findById(Long id) {
+    public Formation findById(Long id) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
-            return entityManager.find(Etudiant.class, id);
+            return entityManager.find(Formation.class, id);
         }
     }
 
     @Override
-    public List<Etudiant> findAll() {
+    public List<Formation> findAll() {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
-            return entityManager.createQuery("SELECT r FROM Etudiant r", Etudiant.class)
+            return entityManager.createQuery("SELECT f FROM Formation f", Formation.class)
                     .getResultList();
         }
     }
 
+    public List<Formation> findByResponsable(ResponsablePedagogique responsable) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.createQuery(
+                    "SELECT f FROM Formation f WHERE f.responsable = :responsable", Formation.class)
+                    .setParameter("responsable", responsable)
+                    .getResultList();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+    }
+
     @Override
-    public Etudiant update(Long id, Etudiant o) {
+    public Formation update(Long id, Formation o) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
             entityManager.getTransaction().begin();
-            
+
             // Vérification de l'existence
-            Etudiant existing = entityManager.find(Etudiant.class, id);
+            Formation existing = entityManager.find(Formation.class, id);
             if (existing == null) {
                 entityManager.getTransaction().rollback();
-                throw new IllegalArgumentException("Aucun Etudiant trouvé avec l'ID : " + id);
+                throw new IllegalArgumentException("Aucune Formation trouvé avec l'ID : " + id);
             }
 
             // Mise à jour des champs
-            existing.setPrenom(o.getPrenom());
-            existing.setNom(o.getNom());
-            existing.setEmail(o.getEmail());
-            existing.setMotDePasse(o.getMotDePasse());
-            existing.setIne(o.getIne());
-            existing.setDateNaissance(o.getDateNaissance());
-            existing.setSexe(o.getSexe());
-            existing.setAdresse(o.getAdresse());
-            
-            Etudiant updated = entityManager.merge(existing);
+            existing.setLibelle(o.getLibelle());
+            existing.setNiveau(o.getNiveau());
+
+            Formation updated = entityManager.merge(existing);
             entityManager.getTransaction().commit();
             return updated;
         } catch (Exception e) {
@@ -72,15 +79,16 @@ public class EtudiantDAO implements IDAO<Etudiant> {
     public void delete(Long id) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
             entityManager.getTransaction().begin();
-            Etudiant responsable = entityManager.find(Etudiant.class, id);
-            if (responsable == null) {
+            Formation formation = entityManager.find(Formation.class, id);
+            if (formation == null) {
                 entityManager.getTransaction().rollback();
-                throw new IllegalArgumentException("Aucun Etudiant trouvé avec l'ID : " + id);
+                throw new IllegalArgumentException("Aucune Formation trouvé avec l'ID : " + id);
             }
-            entityManager.remove(responsable);
+            entityManager.remove(formation);
             entityManager.getTransaction().commit();
         } catch (Exception e) {
             throw new RuntimeException("Erreur lors de la suppression", e);
         }
     }
+
 }
