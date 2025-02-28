@@ -81,4 +81,9 @@ public class FormationController {
             return "Erreur lors de la suppression de la formation.";
         }
     }
+
+    public Formation trouverFormationParId(Long id) {
+        return formationService.getFormationById(id);
+    }
+
 }

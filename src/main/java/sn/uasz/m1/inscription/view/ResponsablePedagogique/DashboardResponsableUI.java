@@ -1,13 +1,17 @@
 package sn.uasz.m1.inscription.view.ResponsablePedagogique;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.utils.SessionManager;
+import sn.uasz.m1.inscription.view.HomeUI;
+import sn.uasz.m1.inscription.view.LoginUI;
 
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.time.LocalTime;
 
 public class DashboardResponsableUI extends JFrame {
     private JPanel sidebar, contentPanel;
@@ -16,8 +20,17 @@ public class DashboardResponsableUI extends JFrame {
     private Color vertColor2 = new Color(0x128E64);
     private Color fondColor = new Color(0xF5F5F0);
     private Color bColor = new Color(0x151d21);
+    private Color redColor = new Color(0xcc1a1a);
+    private Color grayColor = new Color(0xededed);
 
     public DashboardResponsableUI() {
+
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
         setTitle("Dashboard Responsable");
         setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -63,77 +76,45 @@ public class DashboardResponsableUI extends JFrame {
 
         // Ajout des sections manuellement avec icônes
         addNavItem("Accueil", "src/main/resources/static/img/png/home.png",
-                createContentPanel("Bienvenue sur le Dashboard"), navPanel, navGbc);
-        addNavItem("Formations", "src/main/resources/static/img/png/formation.png", createUserManagementPanel(),
-                navPanel, navGbc);
+                createMainPanel(null), navPanel, navGbc);
+        addNavItem("Formations", "src/main/resources/static/img/png/formation.png", 
+                createMainPanel( new FormationUI()),navPanel, navGbc);
         addNavItem("Groupes", "src/main/resources/static/img/png/group.png",
-                createContentPanel("Planning - Organisation des emplois du temps"), navPanel, navGbc);
+                createMainPanel(null), navPanel, navGbc);
         addNavItem("UEs", "src/main/resources/static/img/png/ue.png",
-                createContentPanel("Statistiques - Aperçu des performances et données"), navPanel, navGbc);
+                createMainPanel(null), navPanel, navGbc);
         addNavItem("Paramètres", "src/main/resources/static/img/png/seetings.png",
-                createContentPanel("Paramètres - Configuration des préférences"), navPanel, navGbc);
+                createMainPanel(null), navPanel, navGbc);
 
-        // recuperer l'utilisateur connecte
-        // Utilisateur utilisateur = SessionManager.getUtilisateur();
-        // String userName = (utilisateur != null) ? utilisateur.getNom() + " " +
-        // utilisateur.getPrenom() : "Utilisateur inconnu";
-
-        // Ajout de l'avatar et du nom de l'utilisateur en bas
-        // JPanel userPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        // userPanel.setBackground(vertColor1);
-
-        // ImageIcon avatIcon = new
-        // ImageIcon("src/main/resources/static/img/png/avatar.png");
-        // Image resizedImage = avatIcon.getImage().getScaledInstance(30, 30,
-        // Image.SCALE_SMOOTH);
-        // JLabel avatarLabel = new JLabel(new ImageIcon(resizedImage));
-
-        // JLabel userNameLabel = new JLabel(userName);
-        // userNameLabel.setForeground(Color.WHITE);
-        // userNameLabel.setFont(new Font("Poppins", Font.BOLD, 18));
-
-        // // userPanel.add(avatarLabel);
-        // userPanel.add(userNameLabel);
-
-        // // gbc.gridy = 2;
-        // // gbc.weighty = 3;
-        // // gbc.anchor = GridBagConstraints.SOUTH;
-        // // sidebar.add(userPanel, gbc);
-        // gbc.gridx = 0;
-        // gbc.gridy = 2;
-        // gbc.weighty = 1.0;
-        // gbc.anchor = GridBagConstraints.SOUTH;
-        // sidebar.add(userPanel, gbc);
-
-        //   Récupérer l'utilisateur connecté
+        // Récupérer l'utilisateur connecté
         Utilisateur utilisateur = SessionManager.getUtilisateur();
         String userName = (utilisateur != null) ? utilisateur.getNom() + " " + utilisateur.getPrenom()
                 : "Utilisateur inconnu";
 
-        //   Création du panel utilisateur
+        // Création du panel utilisateur
         JPanel userPanel = new JPanel();
-        userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS)); // 🔄 Dispose les éléments verticalement
+        userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS)); // Dispose les éléments verticalement
         userPanel.setBackground(vertColor1);
-        userPanel.setAlignmentX(Component.CENTER_ALIGNMENT); //   Centrage horizontal
+        userPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrage horizontal
 
-        //   Chargement et redimensionnement de l’avatar
+        // Chargement et redimensionnement de l’avatar
         ImageIcon avatIcon = new ImageIcon("src/main/resources/static/img/png/avatar.png");
         Image resizedImage = avatIcon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         JLabel avatarLabel = new JLabel(new ImageIcon(resizedImage));
-        avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT); //   Centrage
+        avatarLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrage
 
-        //   Ajout du nom de l’utilisateur sous l’avatar
+        // Ajout du nom de l’utilisateur sous l’avatar
         JLabel userNameLabel = new JLabel(userName);
         userNameLabel.setForeground(Color.WHITE);
         userNameLabel.setFont(new Font("Poppins", Font.BOLD, 14));
-        userNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT); //   Centrage
+        userNameLabel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrage
 
         // Ajout des composants au `userPanel`
         userPanel.add(avatarLabel);
-        userPanel.add(Box.createVerticalStrut(5)); 
+        userPanel.add(Box.createVerticalStrut(5));
         userPanel.add(userNameLabel);
 
-        //  Placement du `userPanel` dans `sidebar`
+        // Placement du `userPanel` dans `sidebar`
         GridBagConstraints gbcUser = new GridBagConstraints();
         gbcUser.gridx = 0;
         gbcUser.gridy = 2;
@@ -148,6 +129,9 @@ public class DashboardResponsableUI extends JFrame {
         // Ajout au frame
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
+
+        Timer timer = new Timer(10000, e -> refreshUI());
+        timer.start();
         // afficher();
 
     }
@@ -192,38 +176,95 @@ public class DashboardResponsableUI extends JFrame {
         parent.add(navItemPanel, gbc);
     }
 
-    private JPanel createContentPanel(String text) {
+    private JPanel createMainPanel(JPanel p) {
+        if (p == null) {
+            p = new JPanel(); // ou autre valeur par défaut
+        }
+    
         JPanel panel = new JPanel();
-        panel.add(new JLabel(text));
+        panel.setLayout(new BorderLayout());
+        panel.setBackground(fondColor);
+        panel.add(createPanelNorth(), BorderLayout.NORTH);
+        panel.add(p, BorderLayout.CENTER);
+    
         return panel;
     }
+    
 
-    private JPanel createUserManagementPanel() {
+    private JPanel createPanelNorth() {
         JPanel panel = new JPanel(new BorderLayout());
+        panel.setBackground(grayColor);
 
-        // Table des utilisateurs
-        String[] columnNames = { "ID", "Nom", "Email" };
-        Object[][] data = { { 1, "Jean Dupont", "jean.dupont@example.com" },
-                { 2, "Marie Curie", "marie.curie@example.com" } };
-        JTable userTable = new JTable(data, columnNames);
-        panel.add(new JScrollPane(userTable), BorderLayout.CENTER);
+        // Panel pour aligner "Logout" à gauche
+        JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+        ImageIcon logout_icon = new ImageIcon("src/main/resources/static/img/png/logout.png");
+        Image logoutImage = logout_icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon logoutIcon = new ImageIcon(logoutImage);
+        JButton logout = new JButton(logoutIcon);
+        logout.setBackground(redColor);
+        logout.setFont(new Font("Poppins", Font.BOLD, 14));
+        // logout.setBorder(null);
+        // logout.setPreferredSize(new Dimension(30, 30));
+        leftPanel.add(logout);
+        leftPanel.setOpaque(false);
 
-        // Panel des boutons CRUD
-        JPanel buttonPanel = new JPanel();
-        JButton addButton = new JButton("Ajouter");
-        JButton updateButton = new JButton("Modifier");
-        JButton deleteButton = new JButton("Supprimer");
+        logout.addActionListener(e -> navigateToLogin());
 
-        buttonPanel.add(addButton);
-        buttonPanel.add(updateButton);
-        buttonPanel.add(deleteButton);
-        panel.add(buttonPanel, BorderLayout.SOUTH);
+        // Panel pour aligner "Return" à droite
+        JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        ImageIcon return_icon = new ImageIcon("src/main/resources/static/img/png/return.png");
+        Image returnImage = return_icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        ImageIcon returnIcon = new ImageIcon(returnImage);
+        JButton returnButton = new JButton(returnIcon);
+        returnButton.setBackground(vertColor2);
+        returnButton.setFont(new Font("Poppins", Font.BOLD, 14));
+        // returnButton.setBorder(null);
+        // returnButton.setPreferredSize(new Dimension(30, 30));
+        rightPanel.add(returnButton);
+        rightPanel.setOpaque(false);
+
+        returnButton.addActionListener(e -> navigateToHome());
+
+        // Ajouter les panels à la barre du haut
+        panel.add(leftPanel, BorderLayout.EAST);
+        panel.add(rightPanel, BorderLayout.WEST);
 
         return panel;
     }
 
     public void afficher() {
         setVisible(true);
+    }
+
+    public void fermer() {
+
+    }
+
+    private void refreshUI() {
+        revalidate(); // Recalcule la mise en page si nécessaire
+        repaint(); // Redessine l'interface
+    }
+
+    private void navigateToHome() {
+        try {
+            HomeUI homePage = new HomeUI();
+            homePage.afficher();
+            fermer();
+        } catch (Exception exp) {
+            System.err.println(exp.getMessage());
+            exp.printStackTrace();
+        }
+    }
+
+    private void navigateToLogin() {
+        try {
+            LoginUI homePage = new LoginUI();
+            homePage.afficher();
+            fermer();
+        } catch (Exception exp) {
+            System.err.println(exp.getMessage());
+            exp.printStackTrace();
+        }
     }
 
     public static void main(String[] args) {
