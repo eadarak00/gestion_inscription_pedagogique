@@ -6,10 +6,12 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 public class HomeUI  extends JFrame{
     private Color vertColor1 = new Color(0x113F36);
-    private Color vertColor2 = new Color (0x0d996c);
+    private Color vertColor2 = new Color (0x128E64);
     private Color fondColor = new Color(0xF5F5F0);
     private Color bColor = new Color(0x151d21);
+    private SignInStudentUI signInStudentUI;
     public HomeUI(){
+        signInStudentUI = new SignInStudentUI();
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch (Exception e) {
@@ -67,7 +69,7 @@ public class HomeUI  extends JFrame{
         textPanel.add(sectionTitle);
     
         // Paragraphe avec des côtes
-        JLabel paragraph = new JLabel("<html><div style='border-left: 4px solid " + vertColor2 + "; padding-left: 10px; margin-left: 20px; font-size: 16px;'>"
+        JLabel paragraph = new JLabel("<html><div style='border-left: 4px solid " + vertColor2 + "; padding-left: 10px; margin-left: 20px; font-size: 14px;'>"
                 + "\" Là où vos inscriptions pédagogiques se font en toute simplicité !\"</div></html>");
         paragraph.setFont(new Font("Poppins", Font.PLAIN, 14)); 
         paragraph.setForeground(new Color(0x5e5e5e));
@@ -88,6 +90,7 @@ public class HomeUI  extends JFrame{
         button1.setFont(new Font("Poppins", Font.BOLD, 14));
         button1.setBackground(bColor);
         button1.setForeground(Color.WHITE);
+        button1.addActionListener( e -> navigateToLogin());
         button1.setPreferredSize(new Dimension(250, 40));
     
         JButton button2 = new JButton("Étudiant");
@@ -95,6 +98,10 @@ public class HomeUI  extends JFrame{
         button2.setBackground(vertColor1);
         button2.setForeground(Color.WHITE);
         button2.setPreferredSize(new Dimension(250, 40));
+        button2.addActionListener( e -> {
+            signInStudentUI.afficher();
+            fermer();
+        });
     
         // Ajouter les boutons au panel des boutons
         buttonPanel.add(button1);
@@ -109,12 +116,23 @@ public class HomeUI  extends JFrame{
     }
     
     
-    
+    public void fermer(){
+        this.dispose();
+    }    
 
     public void afficher(){
         this.setVisible(true);
     }
 
+    public void navigateToLogin(){
+        try {
+            LoginUI login = new LoginUI();
+            login.afficher();
+            fermer();
+        } catch (Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
      
 
 }
