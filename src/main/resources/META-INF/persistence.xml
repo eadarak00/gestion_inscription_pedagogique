@@ -11,8 +11,8 @@
             <!-- Configuration de la base de données -->
             <property name="jakarta.persistence.jdbc.driver" value="org.mariadb.jdbc.Driver"/>
             <property name="jakarta.persistence.jdbc.url" value="jdbc:mariadb://localhost:3306/inscription_pedagogique_db?createDatabaseIfNotExist=true"/>
-            <property name="jakarta.persistence.jdbc.user" value="eadarak"/>
-            <property name="jakarta.persistence.jdbc.password" value="eadarak"/>
+            <property name="jakarta.persistence.jdbc.user" value="safy"/>
+            <property name="jakarta.persistence.jdbc.password" value="1234"/>
 
             <!-- Hibernate (JPA) -->
             <property name="hibernate.dialect" value="org.hibernate.dialect.MariaDBDialect"/>
@@ -26,6 +26,3 @@
         </properties>
     </persistence-unit>
 </persistence>
-
-
-
