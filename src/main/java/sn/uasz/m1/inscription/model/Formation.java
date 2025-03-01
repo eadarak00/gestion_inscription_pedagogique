@@ -2,7 +2,7 @@ package sn.uasz.m1.inscription.model;
 
 
 import java.util.List;
-mport java.util.ArrayList;
+import java.util.ArrayList;
 
 import jakarta.persistence.CascadeType;
 
@@ -35,7 +35,6 @@ public class Formation {
     private ResponsablePedagogique responsable;
   
    @OneToMany(mappedBy = "formation")
-
     private List<Ue> uesList= new ArrayList<>();
   
    @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
