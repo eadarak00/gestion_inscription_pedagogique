@@ -1,7 +1,10 @@
 package sn.uasz.m1.inscription.model;
 
-import java.util.ArrayList;
+
 import java.util.List;
+mport java.util.ArrayList;
+
+import jakarta.persistence.CascadeType;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -30,8 +33,12 @@ public class Formation {
     @ManyToOne
     @JoinColumn(name = "responsable_id")
     private ResponsablePedagogique responsable;
-
-    @OneToMany(mappedBy = "formation")
+  
+   @OneToMany(mappedBy = "formation")
 
     private List<Ue> uesList= new ArrayList<>();
+  
+   @OneToMany(mappedBy = "formation", cascade = CascadeType.ALL)
+    private List<Groupe> groupes;
+
 }
