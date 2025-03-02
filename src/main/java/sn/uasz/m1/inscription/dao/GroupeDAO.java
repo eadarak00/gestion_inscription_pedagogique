@@ -8,9 +8,9 @@ import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
-public class GroupeDAO implements IDAO<Groupe>{
+public class GroupeDAO implements IDAO<Groupe> {
 
-     @Override
+    @Override
     public Groupe save(Groupe o) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
             entityManager.getTransaction().begin();
@@ -37,16 +37,39 @@ public class GroupeDAO implements IDAO<Groupe>{
         }
     }
 
+    // public List<Groupe> findByFormationResponsable(ResponsablePedagogique
+    // responsable) {
+    // try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+    // return entityManager.createQuery(
+    // "SELECT g FROM Groupe g WHERE g.formation.responsable = :responsable",
+    // Groupe.class)
+    // .setParameter("responsable", responsable)
+    // .getResultList();
+    // } catch (Exception e) {
+    // e.printStackTrace();
+    // return new ArrayList<>();
+    // }
+    // }
+
     public List<Groupe> findByFormationResponsable(ResponsablePedagogique responsable) {
-        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
-            return entityManager.createQuery(
-                    "SELECT g FROM Groupe g WHERE g.responsable = :responsable", Groupe.class)
-                    .setParameter("responsable", responsable)
+        EntityManager entityManager = DatabaseUtil.getEntityManager();
+        List<Groupe> groupes = new ArrayList<>();
+
+        try {
+            // Utilisation d'une jointure explicite pour plus de clarté
+            String jpql = "SELECT g FROM Groupe g JOIN g.formation f WHERE f.responsable.id = :responsableId";
+
+            // Exécution de la requête avec le paramètre du responsable
+            groupes = entityManager.createQuery(jpql, Groupe.class)
+                    .setParameter("responsableId", responsable.getId())
                     .getResultList();
         } catch (Exception e) {
-            e.printStackTrace();
-            return new ArrayList<>();
+            e.printStackTrace(); // Vous pourriez vouloir logger l'exception pour des raisons de suivi
+        } finally {
+            entityManager.close(); // Assurez-vous de toujours fermer l'EntityManager
         }
+
+        return groupes;
     }
 
     @Override

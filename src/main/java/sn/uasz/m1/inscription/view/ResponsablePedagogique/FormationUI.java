@@ -119,12 +119,6 @@ public class FormationUI extends JPanel {
 
         // Modèle de table
         tableModel = new DefaultTableModel(columnNames, 0);
-        // tableModel = new DefaultTableModel(columnNames, 0) {
-        // @Override
-        // public boolean isCellEditable(int row, int column) {
-        // return false; // Toutes les colonnes sont non éditables
-        // }
-        // };
 
         // Création de la table
         table = new JTable(tableModel);

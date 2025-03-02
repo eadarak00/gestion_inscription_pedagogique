@@ -80,7 +80,7 @@ public class DashboardResponsableUI extends JFrame {
         addNavItem("Formations", "src/main/resources/static/img/png/formation.png", 
                 createMainPanel( new FormationUI()),navPanel, navGbc);
         addNavItem("Groupes", "src/main/resources/static/img/png/group.png",
-                createMainPanel(null), navPanel, navGbc);
+                createMainPanel(new GroupeUI()), navPanel, navGbc);
         addNavItem("UEs", "src/main/resources/static/img/png/ue.png",
                 createMainPanel(null), navPanel, navGbc);
         addNavItem("Paramètres", "src/main/resources/static/img/png/seetings.png",
@@ -237,7 +237,7 @@ public class DashboardResponsableUI extends JFrame {
     }
 
     public void fermer() {
-
+        dispose();
     }
 
     private void refreshUI() {

@@ -3,6 +3,7 @@ package sn.uasz.m1.inscription.controller;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.service.FormationService;
 
+import java.text.Normalizer.Form;
 import java.util.List;
 
 public class FormationController {
@@ -84,6 +85,10 @@ public class FormationController {
 
     public Formation trouverFormationParId(Long id) {
         return formationService.getFormationById(id);
+    }
+
+    public Formation trouverFormationParLibelle(String libelle){
+        return formationService.getFormationByLibelle(libelle);
     }
 
 }

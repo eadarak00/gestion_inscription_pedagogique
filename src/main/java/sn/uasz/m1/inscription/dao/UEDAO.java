@@ -3,12 +3,13 @@ package sn.uasz.m1.inscription.dao;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
-import sn.uasz.m1.inscription.model.Enseignant;
+import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
-public class EnseignantDAO  {
+public class UEDAO {
+
     // @Override
-    // public Enseignant save(Enseignant o){
+    // public UE save(UE o){
     //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
     //         entityManager.getTransaction().begin();
     //         entityManager.persist(o);
@@ -20,35 +21,37 @@ public class EnseignantDAO  {
     // }
 
     // @Override
-    // public Enseignant findById(Long id){
+    // public UE findById(Long id){
     //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()){
-    //        return entityManager.find(Enseignant.class, id); 
+    //        return entityManager.find(UE.class, id); 
     //     }
     // }
 
     // @Override
-    // public List<Enseignant> findAll() {
+    // public List<UE> findAll() {
     //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
-    //         return entityManager.createQuery("SELECT r FROM Enseignant r", Enseignant.class)
+    //         return entityManager.createQuery("SELECT r FROM UE r",UE.class)
     //                 .getResultList();
     //     }
     // }
 
     // @Override
-    // public Enseignant update(Long id , Enseignant o){
+    // public UE update(Long id , UE o){
     //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()){
     //         entityManager.getTransaction().begin();
-    //             Enseignant existing = entityManager.find(Enseignant.class, id);
+    //             UE existing = entityManager.find(UE.class, id);
     //             if(existing==null){
     //                 entityManager.getTransaction().rollback();
-    //                 throw new IllegalArgumentException("Aucun Enseignant trouvé avec l'ID : " + id);
+    //             throw new IllegalArgumentException("Aucun Ue trouvé avec l'ID : " + id);
     //             }
+    //                 existing.setCode(o.getCode());
     //                 existing.setNom(o.getNom());
-    //                 existing.setPrenom(o.getPrenom());
-    //                 existing.setEmail(o.getEmail());
-    //                 existing.setSpecialite(o.getSpecialite());
+    //                 existing.setVolumeHoraire(o.getVolumeHoraire());
+    //                 existing.setCoefficient(o.getCoefficient());
+    //                 existing.setCredit(o.getCredit());
+    //                 existing.setObligatoire(o.isObligatoire());
 
-    //                 Enseignant updated = entityManager.merge(existing);
+    //                 UE updated = entityManager.merge(existing);
     //                 entityManager.getTransaction().commit();
     //                 return updated;
             
@@ -61,16 +64,24 @@ public class EnseignantDAO  {
     // public void delete(Long id) {
     //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
     //         entityManager.getTransaction().begin();
-    //         Enseignant enseignant = entityManager.find(Enseignant.class, id);
-    //         if (enseignant == null) {
+    //         UE ue = entityManager.find(UE.class, id);
+    //         if (ue == null) {
     //             entityManager.getTransaction().rollback();
-    //             throw new IllegalArgumentException("Aucun Enseigna trouvé avec l'ID : " + id);
+    //             throw new IllegalArgumentException("Aucun UE trouvé avec l'ID : " + id);
     //         }
-    //         entityManager.remove(enseignant);
+    //         entityManager.remove(ue);
     //         entityManager.getTransaction().commit();
     //     } catch (Exception e) {
     //         throw new RuntimeException("Erreur lors de la suppression", e);
     //     }
     // }
+    // public List<UE> trouverParEnseignant(Long id){
+    //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+    //         entityManager.getTransaction().begin();
+    //         return entityManager.createQuery("SELECT u FROM UE u WHERE u.enseignant.id = :id", UE.class)
+    //                             .setParameter("enseignantId",id )
+    //                             .getResultList();
 
+    //     }
+    // }
 }
