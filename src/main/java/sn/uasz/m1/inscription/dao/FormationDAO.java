@@ -1,11 +1,11 @@
 package sn.uasz.m1.inscription.dao;
 
-import java.text.Normalizer.Form;
 import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
-import sn.uasz.m1.inscription.model.Etudiant;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
@@ -50,6 +50,27 @@ public class FormationDAO implements IDAO<Formation> {
             return new ArrayList<>();
         }
     }
+
+    public Formation findByLibelle(String libelle) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            // Query to fetch Formation by libelle
+            String query = "SELECT f FROM Formation f WHERE f.libelle = :libelle";
+            TypedQuery<Formation> typedQuery = entityManager.createQuery(query, Formation.class);
+            typedQuery.setParameter("libelle", libelle);
+
+            // Get single result (will throw NoResultException if no result is found)
+            return typedQuery.getSingleResult();
+        } catch (NoResultException e) {
+            // Handle case when no result is found (e.g., return null or custom response)
+            return null;
+        } catch (Exception e) {
+            // Log the exception or rethrow it as a custom exception
+            e.printStackTrace(); // Consider logging this for better visibility
+            throw new RuntimeException("An error occurred while retrieving Formation by libelle", e);
+        }
+    }
+
+    
 
     @Override
     public Formation update(Long id, Formation o) {

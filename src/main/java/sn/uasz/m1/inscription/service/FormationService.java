@@ -1,5 +1,6 @@
 package sn.uasz.m1.inscription.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import sn.uasz.m1.inscription.dao.FormationDAO;
@@ -57,4 +58,13 @@ public class FormationService {
     public void deleteFormationById(Long id){
         formationDAO.delete(id);
     }
+
+    public Formation getFormationByLibelle(String libelle){
+        Formation formation = formationDAO.findByLibelle(libelle);
+        if (formation == null) {
+            throw new IllegalArgumentException("Aucune formation  trouvée avec le libelle : " + libelle);
+        }
+        return formation;
+    }
+
 }

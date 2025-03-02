@@ -80,7 +80,7 @@ public class DashboardResponsableUI extends JFrame {
         addNavItem("Formations", "src/main/resources/static/img/png/formation.png", 
                 createMainPanel( new FormationUI()),navPanel, navGbc);
         addNavItem("Groupes", "src/main/resources/static/img/png/group.png",
-                createMainPanel(null), navPanel, navGbc);
+                createMainPanel(new GroupeUI()), navPanel, navGbc);
         addNavItem("UEs", "src/main/resources/static/img/png/ue.png",
                 createMainPanel(null), navPanel, navGbc);
         addNavItem("Paramètres", "src/main/resources/static/img/png/seetings.png",
@@ -129,10 +129,6 @@ public class DashboardResponsableUI extends JFrame {
         // Ajout au frame
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
-
-        Timer timer = new Timer(10000, e -> refreshUI());
-        timer.start();
-        // afficher();
 
     }
 
@@ -237,13 +233,10 @@ public class DashboardResponsableUI extends JFrame {
     }
 
     public void fermer() {
-
+        dispose();
     }
 
-    private void refreshUI() {
-        revalidate(); // Recalcule la mise en page si nécessaire
-        repaint(); // Redessine l'interface
-    }
+   
 
     private void navigateToHome() {
         try {
