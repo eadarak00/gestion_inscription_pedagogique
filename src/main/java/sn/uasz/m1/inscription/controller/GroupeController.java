@@ -120,6 +120,22 @@ public class GroupeController {
                 .sorted(ordreCroissant
                         ? Comparator.comparing(Groupe::getType)
                         : Comparator.comparing(Groupe::getType).reversed())
-                .collect(Collectors.toList());
+        
+                        .collect(Collectors.toList());
+    }
+
+    public List<Groupe> getFormationGroupesTriesParType(boolean ordreCroissant, Formation formation) {
+        List<Groupe> groupes = groupeService.getGroupesByFormation(formation);
+
+        return groupes.stream()
+                .sorted(ordreCroissant
+                        ? Comparator.comparing(Groupe::getType)
+                        : Comparator.comparing(Groupe::getType).reversed())
+        
+                        .collect(Collectors.toList());
+    }
+
+    public List<Groupe> getGroupesByFormation(Formation formation){
+        return groupeService.getGroupesByFormation(formation);
     }
 }

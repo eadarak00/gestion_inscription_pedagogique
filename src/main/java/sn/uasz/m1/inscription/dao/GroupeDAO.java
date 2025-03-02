@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
+import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
@@ -37,20 +38,6 @@ public class GroupeDAO implements IDAO<Groupe> {
         }
     }
 
-    // public List<Groupe> findByFormationResponsable(ResponsablePedagogique
-    // responsable) {
-    // try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
-    // return entityManager.createQuery(
-    // "SELECT g FROM Groupe g WHERE g.formation.responsable = :responsable",
-    // Groupe.class)
-    // .setParameter("responsable", responsable)
-    // .getResultList();
-    // } catch (Exception e) {
-    // e.printStackTrace();
-    // return new ArrayList<>();
-    // }
-    // }
-
     public List<Groupe> findByFormationResponsable(ResponsablePedagogique responsable) {
         EntityManager entityManager = DatabaseUtil.getEntityManager();
         List<Groupe> groupes = new ArrayList<>();
@@ -72,6 +59,32 @@ public class GroupeDAO implements IDAO<Groupe> {
         return groupes;
     }
 
+    public List<Groupe> findByFormationID(Formation formation) {
+        if (formation == null || formation.getId() == null) {
+            throw new IllegalArgumentException("La formation ne peut pas être null et doit avoir un ID valide.");
+        }
+    
+        List<Groupe> groupes = new ArrayList<>();
+        
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            entityManager.getTransaction().begin();
+    
+            // Requête JPQL avec jointure explicite
+            String jpql = "SELECT g FROM Groupe g JOIN FETCH g.formation f WHERE f.id = :formationId";
+            groupes = entityManager.createQuery(jpql, Groupe.class)
+                    .setParameter("formationId", formation.getId())
+                    .getResultList();
+    
+            entityManager.getTransaction().commit(); 
+    
+            groupes.size();
+        } catch (Exception e) {
+            e.printStackTrace(); 
+        }
+    
+        return groupes;
+    }
+    
     @Override
     public Groupe update(Long id, Groupe o) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {

@@ -130,10 +130,6 @@ public class DashboardResponsableUI extends JFrame {
         add(sidebar, BorderLayout.WEST);
         add(contentPanel, BorderLayout.CENTER);
 
-        Timer timer = new Timer(10000, e -> refreshUI());
-        timer.start();
-        // afficher();
-
     }
 
     private void addNavItem(String label, String iconPath, JPanel panel, JPanel parent, GridBagConstraints gbc) {
@@ -240,10 +236,7 @@ public class DashboardResponsableUI extends JFrame {
         dispose();
     }
 
-    private void refreshUI() {
-        revalidate(); // Recalcule la mise en page si nécessaire
-        repaint(); // Redessine l'interface
-    }
+   
 
     private void navigateToHome() {
         try {

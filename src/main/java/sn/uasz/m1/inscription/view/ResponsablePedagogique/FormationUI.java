@@ -11,9 +11,6 @@ import javax.swing.table.TableRowSorter;
 import sn.uasz.m1.inscription.controller.FormationController;
 import sn.uasz.m1.inscription.model.Formation;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class FormationUI extends JPanel {
 
     private Color vertColor1 = new Color(0x113F36);
@@ -26,7 +23,10 @@ public class FormationUI extends JPanel {
     private JTable table;
     private DefaultTableModel tableModel;
     private FormationController formationController;
-    private int selectedRow = -1; // Pour suivre la ligne sélectionnée
+    private int selectedRow = -1;
+    private JButton listGroupsButton;
+    private JPanel bottomPanel;
+
 
     public FormationUI() {
         formationController = new FormationController();
@@ -51,6 +51,12 @@ public class FormationUI extends JPanel {
 
         // Charger les formations dans la table
         chargerFormations();
+
+        // Ajouter le panneau contenant le bouton "Voir Groupes"
+        gbc.gridy = 3;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        add(createBottomPanel(), gbc);
+
     }
 
     private JPanel createTopPanel() {
@@ -126,7 +132,8 @@ public class FormationUI extends JPanel {
 
         // Gestion de la sélection de ligne
         table.getSelectionModel().addListSelectionListener(e -> {
-            selectedRow = table.getSelectedRow(); // Mémorise la ligne sélectionnée
+            selectedRow = table.getSelectedRow();
+            bottomPanel.setVisible(selectedRow != -1);
         });
 
         JScrollPane scrollPane = new JScrollPane(table);
@@ -416,27 +423,72 @@ public class FormationUI extends JPanel {
     }
 
     private void trierTable() {
-    // Récupérer les données actuelles de la table
-    int rowCount = tableModel.getRowCount();
-    List<Object[]> data = new ArrayList<>();
+        // Récupérer les données actuelles de la table
+        int rowCount = tableModel.getRowCount();
+        List<Object[]> data = new ArrayList<>();
 
-    for (int i = 0; i < rowCount; i++) {
-        data.add(new Object[]{
-                tableModel.getValueAt(i, 0),  // ID
-                tableModel.getValueAt(i, 1),  // Libellé
-                tableModel.getValueAt(i, 2)   // Niveau
+        for (int i = 0; i < rowCount; i++) {
+            data.add(new Object[] {
+                    tableModel.getValueAt(i, 0), // ID
+                    tableModel.getValueAt(i, 1), // Libellé
+                    tableModel.getValueAt(i, 2) // Niveau
+            });
+        }
+
+        // Trier les données par nive
+        data.sort(Comparator.comparingInt(o -> Integer.parseInt(o[2].toString())));
+
+        // Réinsérer les données triées dans le modèle
+        tableModel.setRowCount(0);
+        for (Object[] row : data) {
+            tableModel.addRow(row);
+        }
+    }
+
+    private JPanel createBottomPanel() {
+        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        bottomPanel.setVisible(false); // Caché au départ
+    
+        listGroupsButton = new JButton("📋 Voir Groupes");
+        listGroupsButton.setFont(new Font("Poppins", Font.BOLD, 14));
+        listGroupsButton.setBackground(bColor);
+        listGroupsButton.setForeground(Color.WHITE);
+        
+        listGroupsButton.addActionListener(e -> {
+            if (selectedRow != -1) {
+                ouvrirPanelGroupes(selectedRow);
+            }
         });
+    
+        bottomPanel.add(listGroupsButton);
+        return bottomPanel;
     }
 
-    // Trier les données par nive
-    data.sort(Comparator.comparingInt(o -> Integer.parseInt(o[2].toString()))); 
-
-    // Réinsérer les données triées dans le modèle
-    tableModel.setRowCount(0);
-    for (Object[] row : data) {
-        tableModel.addRow(row);
+    private void ouvrirPanelGroupes(int row) {
+        Long formationId = (Long) table.getValueAt(row, 0); // Récupérer l'ID de la formation
+        Formation formation = formationController.trouverFormationParId(formationId);
+        
+        if (formation == null) {
+            JOptionPane.showMessageDialog(this, "Formation introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+        
+        try {
+            // Créer une nouvelle fenêtre JFrame avec la formation sélectionnée
+            FormationGroupeUI formationGroupeFrame = new FormationGroupeUI(formation);
+            
+            // Afficher la nouvelle fenêtre
+            formationGroupeFrame.afficher();
+            
+            // Optionnel : Fermer la fenêtre actuelle si vous voulez qu'elle disparaisse après ouverture de la nouvelle
+            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(this, "Une erreur est survenue lors de la mise à jour de l'interface.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+        }
     }
-}
-
+    
+    
+    
 
 }

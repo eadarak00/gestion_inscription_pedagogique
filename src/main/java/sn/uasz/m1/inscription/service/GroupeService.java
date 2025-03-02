@@ -3,6 +3,7 @@ package sn.uasz.m1.inscription.service;
 import java.util.List;
 
 import sn.uasz.m1.inscription.dao.GroupeDAO;
+import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.Utilisateur;
@@ -92,4 +93,12 @@ public class GroupeService {
             throw new RuntimeException("Erreur lors de la suppression du groupe avec ID : " + id, e);
         }
     }
+
+    public List<Groupe> getGroupesByFormation(Formation formation) {
+        if (formation == null || formation.getId() == null) {
+            throw new IllegalArgumentException("La formation ne peut pas être null et doit avoir un ID valide.");
+        }
+        return groupeDAO.findByFormationID(formation);
+    }
+    
 }
