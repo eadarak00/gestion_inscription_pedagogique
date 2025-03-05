@@ -129,7 +129,7 @@ public class UEController {
     }
 
 
-     public List<UE> getGroupesTriesParLibelle(boolean ordreCroissant) {
+     public List<UE> getUEsTriesParLibelle(boolean ordreCroissant) {
         List<UE> ues = ueService.getUEsByResponsable();
 
         return ues.stream()
@@ -140,15 +140,75 @@ public class UEController {
                         .collect(Collectors.toList());
     }
 
-    // public List<Groupe> getFormationGroupesTriesParType(boolean ordreCroissant, Formation formation) {
-    //     List<Groupe> groupes = groupeService.getGroupesByFormation(formation);
 
-    //     return groupes.stream()
-    //             .sorted(ordreCroissant
-    //                     ? Comparator.comparing(Groupe::getType)
-    //                     : Comparator.comparing(Groupe::getType).reversed())
+
+       /**
+     * Associe une UE à une formation.
+     * @return Message indiquant le succès ou l'échec de l'opération.
+     */
+    public String associerUEDansFormation(UE ue, Long formationId, boolean obligatoire) {
+        if (ue == null || formationId == null) {
+            return "L'ID de l'UE et l'ID de la formation sont obligatoires.";
+        }
+        try {
+            ueService.associerUEDansFormation(ue.getId(), formationId, obligatoire);
+            return "L'UE a été associée à la formation avec succès.";
+        } catch (Exception e) {
+            return "Erreur lors de l'association : " + e.getMessage();
+        }
+    }
+
+    /**
+     * Modifie le statut d'une UE (obligatoire ou optionnel).
+     * @return Message de confirmation ou d'erreur.
+     */
+    public String modifierEtatUE(Long ueId, boolean obligatoire) {
+        if (ueId == null) {
+            return "L'ID de l'UE est obligatoire.";
+        }
+        try {
+            ueService.modifierEtatUE(ueId, obligatoire);
+            return "Le statut de l'UE a été modifié avec succès.";
+        } catch (Exception e) {
+            return "Erreur lors de la modification : " + e.getMessage();
+        }
+    }
+
+    /**
+     * Retire une UE d'une formation si elle est optionnelle.
+     * @return Message confirmant le retrait ou expliquant pourquoi ce n'est pas possible.
+     */
+    public String retirerUEDeFormation(Long ueId) {
+        if (ueId == null) {
+            return "L'ID de l'UE est obligatoire.";
+        }
+        try {
+            ueService.retirerUEDeFormation(ueId);
+            return "L'UE a été retirée de la formation avec succès.";
+        } catch (IllegalStateException e) {
+            return "Impossible de retirer une UE obligatoire.";
+        } catch (Exception e) {
+            return "Erreur lors du retrait de l'UE : " + e.getMessage();
+        }
+    }
+
+    public List<UE> getUEsByFormation(Long formationID){
+        return ueService.listerUEsParFormation(formationID);
+    }
+
+    public List<UE> getFormationUEsTriesParLibelle(boolean ordreCroissant, Long formationId) {
+        List<UE> ues = ueService.listerUEsParFormation(formationId);
+
+        return ues.stream()
+                .sorted(ordreCroissant
+                        ? Comparator.comparing(UE::getLibelle)
+                        : Comparator.comparing(UE::getLibelle).reversed())
         
-    //                     .collect(Collectors.toList());
-    // }
+                        .collect(Collectors.toList());
+    }
+
+    public List<UE> listerUEsDisponbles(Long formationId){
+        return ueService.listerUesDisponiblePourFormation(formationId);
+    }
 
 }

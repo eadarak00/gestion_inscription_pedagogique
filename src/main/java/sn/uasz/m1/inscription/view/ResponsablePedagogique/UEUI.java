@@ -622,7 +622,7 @@ public class UEUI extends JPanel {
      private void loadUEs(boolean ordreCroissant) {
         tableModel.setRowCount(0); // Vider la table avant de recharger
 
-        List<UE> ues = ueController.getGroupesTriesParLibelle(ordreCroissant);
+        List<UE> ues = ueController.getUEsTriesParLibelle(ordreCroissant);
 
         for (UE ue : ues) {
             tableModel.addRow(new Object[] {

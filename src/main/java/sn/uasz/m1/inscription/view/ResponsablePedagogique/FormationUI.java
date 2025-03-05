@@ -233,7 +233,7 @@ public class FormationUI extends JPanel {
         panel.setBackground(BG_COLOR);
         panel.setVisible(false);
         JButton listGroupsButton = createButton("Voir Groupes", GRAY_COLOR, e -> ouvrirPanelGroupes(selectedRow));
-        JButton addUE = createButton("ajouter UE", GRAY_COLOR, e -> ouvrirPanelGroupes(selectedRow));
+        JButton addUE = createButton("Voir UEs", GRAY_COLOR, e -> ouvrirPanelUEs(selectedRow));
         listGroupsButton.setForeground(Color.BLACK);
         addUE.setForeground(Color.BLACK);
         panel.add(listGroupsButton);
@@ -249,6 +249,18 @@ public class FormationUI extends JPanel {
         Formation formation = formationController.trouverFormationParId(formationId);
         if (formation != null) {
             new FormationGroupeUI(formation).afficher();
+            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
+        }
+    }
+
+    /** ouvrir panel des Ues */
+    private void ouvrirPanelUEs(int row){
+        if(row == -1)
+            return;
+        Long formationId = (Long) table.getValueAt(row, 0);
+        Formation formation = formationController.trouverFormationParId(formationId);
+        if (formation != null) {
+            new FormationUEUI(formation).afficher();
             ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
         }
     }
