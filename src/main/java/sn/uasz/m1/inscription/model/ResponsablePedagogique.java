@@ -21,5 +21,8 @@ public class ResponsablePedagogique extends Utilisateur {
 
     @OneToMany(mappedBy = "responsable", cascade = CascadeType.ALL)
     private List<Formation> formations = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "responsable", cascade = CascadeType.ALL)
+    private List<UE> ues = new ArrayList<>();
 
 }

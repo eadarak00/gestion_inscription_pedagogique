@@ -11,17 +11,15 @@ import sn.uasz.m1.inscription.view.LoginUI;
 import java.awt.*;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.time.LocalTime;
 
 public class DashboardResponsableUI extends JFrame {
     private JPanel sidebar, contentPanel;
     private CardLayout cardLayout;
-    private Color vertColor1 = new Color(0x113F36);
-    private Color vertColor2 = new Color(0x128E64);
-    private Color fondColor = new Color(0xF5F5F0);
-    private Color bColor = new Color(0x151d21);
-    private Color redColor = new Color(0xcc1a1a);
-    private Color grayColor = new Color(0xededed);
+    private final Color VERT_COLOR_1 = new Color(0x113F36);
+    private final Color VERT_COLOR_2 = new Color(0x128E64);
+    private final Color BG_COLOR = new Color(0xF5F5F0);
+    private final Color RED_COLOR = new Color(0xcc1a1a);
+    private final Color GRAY_COLOR = new Color(0xededed);
 
     public DashboardResponsableUI() {
 
@@ -39,7 +37,7 @@ public class DashboardResponsableUI extends JFrame {
 
         // Sidebar
         sidebar = new JPanel(new GridBagLayout());
-        sidebar.setBackground(vertColor1);
+        sidebar.setBackground(VERT_COLOR_1);
         sidebar.setPreferredSize(new Dimension(200, 600));
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
@@ -58,11 +56,11 @@ public class DashboardResponsableUI extends JFrame {
 
         cardLayout = new CardLayout();
         contentPanel = new JPanel(cardLayout);
-        contentPanel.setBackground(fondColor);
+        contentPanel.setBackground(BG_COLOR);
 
         // Panel pour centrer les éléments de navigation
         JPanel navPanel = new JPanel(new GridBagLayout());
-        navPanel.setBackground(vertColor1);
+        navPanel.setBackground(VERT_COLOR_1);
         gbc.gridy = 1;
         gbc.weighty = 1.0;
         gbc.anchor = GridBagConstraints.CENTER;
@@ -82,7 +80,7 @@ public class DashboardResponsableUI extends JFrame {
         addNavItem("Groupes", "src/main/resources/static/img/png/group.png",
                 createMainPanel(new GroupeUI()), navPanel, navGbc);
         addNavItem("UEs", "src/main/resources/static/img/png/ue.png",
-                createMainPanel(null), navPanel, navGbc);
+                createMainPanel(new UEUI()), navPanel, navGbc);
         addNavItem("Paramètres", "src/main/resources/static/img/png/seetings.png",
                 createMainPanel(null), navPanel, navGbc);
 
@@ -94,7 +92,7 @@ public class DashboardResponsableUI extends JFrame {
         // Création du panel utilisateur
         JPanel userPanel = new JPanel();
         userPanel.setLayout(new BoxLayout(userPanel, BoxLayout.Y_AXIS)); // Dispose les éléments verticalement
-        userPanel.setBackground(vertColor1);
+        userPanel.setBackground(VERT_COLOR_1);
         userPanel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrage horizontal
 
         // Chargement et redimensionnement de l’avatar
@@ -143,11 +141,11 @@ public class DashboardResponsableUI extends JFrame {
         navLabel.setForeground(Color.WHITE);
         navLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
         navLabel.setOpaque(true);
-        navLabel.setBackground(vertColor1);
+        navLabel.setBackground(VERT_COLOR_1);
         navLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         JPanel navItemPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        navItemPanel.setBackground(vertColor1);
+        navItemPanel.setBackground(VERT_COLOR_1);
         navItemPanel.add(iconLabel);
         navItemPanel.add(navLabel);
 
@@ -179,7 +177,7 @@ public class DashboardResponsableUI extends JFrame {
     
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
-        panel.setBackground(fondColor);
+        panel.setBackground(BG_COLOR);
         panel.add(createPanelNorth(), BorderLayout.NORTH);
         panel.add(p, BorderLayout.CENTER);
     
@@ -189,7 +187,7 @@ public class DashboardResponsableUI extends JFrame {
 
     private JPanel createPanelNorth() {
         JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(grayColor);
+        panel.setBackground(GRAY_COLOR);
 
         // Panel pour aligner "Logout" à gauche
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
@@ -197,7 +195,7 @@ public class DashboardResponsableUI extends JFrame {
         Image logoutImage = logout_icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon logoutIcon = new ImageIcon(logoutImage);
         JButton logout = new JButton(logoutIcon);
-        logout.setBackground(redColor);
+        logout.setBackground(RED_COLOR);
         logout.setFont(new Font("Poppins", Font.BOLD, 14));
         // logout.setBorder(null);
         // logout.setPreferredSize(new Dimension(30, 30));
@@ -212,7 +210,7 @@ public class DashboardResponsableUI extends JFrame {
         Image returnImage = return_icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
         ImageIcon returnIcon = new ImageIcon(returnImage);
         JButton returnButton = new JButton(returnIcon);
-        returnButton.setBackground(vertColor2);
+        returnButton.setBackground(VERT_COLOR_2);
         returnButton.setFont(new Font("Poppins", Font.BOLD, 14));
         // returnButton.setBorder(null);
         // returnButton.setPreferredSize(new Dimension(30, 30));

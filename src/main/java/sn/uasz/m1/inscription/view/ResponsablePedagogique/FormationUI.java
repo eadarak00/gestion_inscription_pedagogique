@@ -1,297 +1,283 @@
 package sn.uasz.m1.inscription.view.ResponsablePedagogique;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.awt.*;
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-
+import java.awt.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Comparator;
 import sn.uasz.m1.inscription.controller.FormationController;
 import sn.uasz.m1.inscription.model.Formation;
 
 public class FormationUI extends JPanel {
 
-    private Color vertColor1 = new Color(0x113F36);
-    private Color vertColor2 = new Color(0x128E64);
-    private Color bColor = new Color(0x575757);
-    private Color redColor = new Color(0xcc1a1a);
+    // 🎨 Déclaration des couleurs
+    private static final Color VERT_COLOR_1 = new Color(0x113F36);
+    private static final Color VERT_COLOR_2 = new Color(0x128E64);
+    private static final Color BG_COLOR = new Color(0xF5F5F0);
+    private static final Color RED_COLOR = new Color(0xcc1a1a);
+    private static final Color GRAY_COLOR = new Color(0xededed);
 
-    // Déclaration du panneau de la table
-    private JPanel tablePanel;
+    // 🖋 Déclaration des polices
+    private static final Font REGULAR_FONT = new Font("Poppins", Font.PLAIN, 14);
+    private static final Font BOLD_FONT = new Font("Poppins", Font.BOLD, 14);
+
+    // 🏗 Composants principaux
     private JTable table;
     private DefaultTableModel tableModel;
-    private FormationController formationController;
+    private final FormationController formationController;
+    private final JPanel bottomPanel;
     private int selectedRow = -1;
-    private JButton listGroupsButton;
-    private JPanel bottomPanel;
-
 
     public FormationUI() {
+        try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (Exception e) {
+            System.out.println("Erreur Look and Feel: " + e.getMessage());
+        }
+
         formationController = new FormationController();
         setLayout(new GridBagLayout());
+        setBackground(BG_COLOR);
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.gridx = 0;
         gbc.weightx = 1.0;
         gbc.insets = new Insets(5, 10, 5, 10);
 
-        // Ajouter le panneau supérieur
+        // Ajouter les composants à l'interface
         add(createTopPanel(), gbc);
-
-        // Ajouter le panneau contenant la table
-        tablePanel = createTablePanel();
         gbc.gridy = 1;
-        add(tablePanel, gbc);
-
-        // Ajouter les boutons Modifier et Supprimer après la table
+        add(createTablePanel(), gbc);
         gbc.gridy = 2;
         add(createActionButtonsPanel(), gbc);
-
-        // Charger les formations dans la table
-        chargerFormations();
-
-        // Ajouter le panneau contenant le bouton "Voir Groupes"
         gbc.gridy = 3;
         gbc.fill = GridBagConstraints.HORIZONTAL;
-        add(createBottomPanel(), gbc);
+        bottomPanel = createBottomPanel();
+        add(bottomPanel, gbc);
 
+        // Charger les formations
+        chargerFormations();
     }
 
+    /** 🏗 Crée le panneau supérieur */
     private JPanel createTopPanel() {
         JPanel topPanel = new JPanel(new BorderLayout());
+        topPanel.setBackground(BG_COLOR);
 
-        // Panneau à droite pour les filtres et l'ajout d'utilisateur
+        // outon de tri A-Z
+        JButton sortAscButton = createButton("🔼 Trier (A-Z)", VERT_COLOR_2, e -> trierTable(true));
+
+        //Bouton de tri Z-A
+        JButton sortDescButton = createButton("🔽 Trier (Z-A)", GRAY_COLOR, e -> trierTable(false));
+        sortDescButton.setForeground(Color.BLACK);
+
+        // Bouton de filtre
+        JButton filterButton = createIconButton("src/main/resources/static/img/png/filter.png", GRAY_COLOR,
+                e -> JOptionPane.showMessageDialog(this, "Fonctionnalité de filtre à implémenter"));
+
+        // Bouton d'ajout
+        JButton addFormationButton = createButton("+ Ajouter Formation", VERT_COLOR_1,
+                e -> ouvrirModalAjoutFormation());
+
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-
-        ImageIcon filter_icon = new ImageIcon("src/main/resources/static/img/png/filter.png");
-        Image filterImage = filter_icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
-        ImageIcon filterIcon = new ImageIcon(filterImage);
-        JButton filterButton = new JButton(filterIcon);
-        filterButton.addActionListener(e -> trierTable());
-
-        filterButton.setFont(new Font("Poppins", Font.PLAIN, 14));
-
-        JButton addFormationButton = new JButton("+ Ajouter Formation");
-        addFormationButton.setFont(new Font("Poppins", Font.BOLD, 14));
-        addFormationButton.setBackground(vertColor1);
-        addFormationButton.setForeground(Color.WHITE);
-
-        addFormationButton.addActionListener(e -> ouvrirModalAjoutFormation());
-
+        rightPanel.add(sortAscButton);
+        rightPanel.add(sortDescButton);
         rightPanel.add(filterButton);
         rightPanel.add(addFormationButton);
 
-        // Panneau à gauche pour le champ de recherche
         JPanel leftPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        leftPanel.add(createSearchPanel());
 
+        topPanel.add(leftPanel, BorderLayout.EAST);
+        topPanel.add(rightPanel, BorderLayout.WEST);
+        return topPanel;
+    }
+
+    private ImageIcon createIcon(String path) {
+        ImageIcon icon = new ImageIcon(path);
+        Image img = icon.getImage().getScaledInstance(20, 20, Image.SCALE_SMOOTH);
+        return new ImageIcon(img);
+    }
+
+    /**Méthode pour trier la table */
+    private void trierTable(boolean asc) {
+        List<Object[]> data = new ArrayList<>();
+        int rowCount = tableModel.getRowCount();
+
+        for (int i = 0; i < rowCount; i++) {
+            data.add(new Object[] {
+                    tableModel.getValueAt(i, 0),
+                    tableModel.getValueAt(i, 1),
+                    Integer.parseInt(tableModel.getValueAt(i, 2).toString())
+            });
+        }
+
+        // 🔄 Trie les formations par niveau (colonne 2)
+        data.sort(Comparator.comparingInt(o -> (Integer) o[2]));
+        if (!asc) {
+            data.sort((o1, o2) -> Integer.compare((Integer) o2[2], (Integer) o1[2]));
+        }
+
+        // 🔄 Mise à jour du tableau
+        tableModel.setRowCount(0);
+        for (Object[] row : data) {
+            tableModel.addRow(row);
+        }
+    }
+
+    private JTextField createSearchField() {
         JTextField searchField = new JTextField(15);
-        searchField.setPreferredSize(new Dimension(150, 25));
-        searchField.putClientProperty("JTextField.placeholderText", "Search");
-
+        searchField.putClientProperty("JTextField.placeholderText", "Rechercher");
         searchField.getDocument().addDocumentListener(new javax.swing.event.DocumentListener() {
-            @Override
             public void insertUpdate(javax.swing.event.DocumentEvent e) {
                 filtrerFormations(searchField.getText());
             }
 
-            @Override
             public void removeUpdate(javax.swing.event.DocumentEvent e) {
                 filtrerFormations(searchField.getText());
             }
 
-            @Override
             public void changedUpdate(javax.swing.event.DocumentEvent e) {
                 filtrerFormations(searchField.getText());
             }
         });
 
-        leftPanel.add(searchField);
-
-        // Ajouter les panneaux à la zone respective dans le BorderLayout
-        topPanel.add(rightPanel, BorderLayout.WEST);
-        topPanel.add(leftPanel, BorderLayout.EAST);
-
-        return topPanel;
+        return searchField;
     }
 
-    // Panneau contenant la table
+    private JPanel createSearchPanel() {
+        JPanel panel = new JPanel();
+        panel.setBackground(BG_COLOR);
+
+        panel.add(createSearchField());
+
+        panel.add(new JLabel(createIcon("src/main/resources/static/img/png/search.png")));
+
+        return panel;
+    }
+
+    /**Crée le tableau */
     private JPanel createTablePanel() {
         JPanel tablePanel = new JPanel(new BorderLayout());
 
-        // Colonnes de la table
-        String[] columnNames = { "ID", "Libelle", "Niveau" };
-
-        // Modèle de table
-        tableModel = new DefaultTableModel(columnNames, 0);
-
-        // Création de la table
+        tableModel = new DefaultTableModel(new String[] { "ID", "Libelle", "Niveau" }, 0);
         table = new JTable(tableModel);
         table.setRowHeight(30);
+        table.setFont(REGULAR_FONT);
 
-        // Gestion de la sélection de ligne
         table.getSelectionModel().addListSelectionListener(e -> {
             selectedRow = table.getSelectedRow();
             bottomPanel.setVisible(selectedRow != -1);
         });
 
-        JScrollPane scrollPane = new JScrollPane(table);
-        tablePanel.add(scrollPane, BorderLayout.CENTER);
-
+        tablePanel.add(new JScrollPane(table), BorderLayout.CENTER);
         return tablePanel;
     }
 
-    // Panneau contenant les boutons Modifier et Supprimer après la table
+    /**Crée les boutons d'action (Modifier, Supprimer) */
     private JPanel createActionButtonsPanel() {
-        JPanel actionPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        ImageIcon modify_icon = new ImageIcon("src/main/resources/static/img/png/edit.png");
-        Image modifynImage = modify_icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        ImageIcon modifyIcon = new ImageIcon(modifynImage);
-        JButton modifyButton = new JButton(modifyIcon);
-        modifyButton.setBackground(vertColor1);
-        modifyButton.setForeground(Color.WHITE);
-        modifyButton.addActionListener(e -> {
-            if (selectedRow != -1) {
-                ouvrirModalModificationFormation(selectedRow);
-            } else {
-                JOptionPane.showMessageDialog(this, "Veuillez sélectionner une formation.", "Erreur",
-                        JOptionPane.WARNING_MESSAGE);
-            }
-        });
-
-        ImageIcon delete_icon = new ImageIcon("src/main/resources/static/img/png/delete.png");
-        Image deleteImage = delete_icon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-        ImageIcon deleteIcon = new ImageIcon(deleteImage);
-        JButton deleteButton = new JButton(deleteIcon);
-        deleteButton.setBackground(redColor);
-        deleteButton.setForeground(Color.WHITE);
-        deleteButton.addActionListener(e -> {
-            if (selectedRow != -1) {
-                confirmerSuppression(selectedRow);
-            } else {
-                JOptionPane.showMessageDialog(this, "Veuillez sélectionner une formation.", "Erreur",
-                        JOptionPane.WARNING_MESSAGE);
-            }
-        });
-
-        actionPanel.add(modifyButton);
-        actionPanel.add(deleteButton);
-
-        return actionPanel;
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setBackground(BG_COLOR);
+        JButton modifyButton = createIconButton("src/main/resources/static/img/png/edit.png", VERT_COLOR_1,
+                e -> ouvrirModalModificationFormation(selectedRow));
+        JButton deleteButton = createIconButton("src/main/resources/static/img/png/delete.png", RED_COLOR,
+                e -> confirmerSuppression(selectedRow));
+        panel.add(modifyButton);
+        panel.add(deleteButton);
+        return panel;
     }
 
+    /**Charge les formations */
     private void chargerFormations() {
-        tableModel.setRowCount(0); // Vider la table avant de recharger
+        tableModel.setRowCount(0);
         List<Formation> formations = formationController.listerFormationsResponsable();
-
         for (Formation formation : formations) {
-            tableModel.addRow(new Object[] {
-                    formation.getId(),
-                    formation.getLibelle(),
-                    formation.getNiveau()
-            });
+            tableModel.addRow(new Object[] { formation.getId(), formation.getLibelle(), formation.getNiveau() });
         }
     }
 
-    private void ouvrirModalAjoutFormation() {
-        // Création du `JDialog` pour l'ajout de formation
-        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Ajouter une Formation", true);
-        dialog.setSize(600, 300);
-        dialog.setLayout(new GridBagLayout());
-        dialog.setLocationRelativeTo(this);
-
-        // Définition du style
-        Font font = new Font("Poppins", Font.PLAIN, 14);
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.WEST;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-
-        // Champs du formulaire
-        JLabel libelleLabel = new JLabel("Libellé de la Formation :");
-        libelleLabel.setFont(font);
-        dialog.add(libelleLabel, gbc);
-        gbc.gridx = 1;
-        JTextField libelleField = new JTextField(20);
-        libelleField.setFont(font);
-        dialog.add(libelleField, gbc);
-
-        gbc.gridx = 0;
-        gbc.gridy++;
-        JLabel nivLabel = new JLabel("Niveau :");
-        nivLabel.setFont(font);
-        dialog.add(nivLabel, gbc);
-        gbc.gridx = 1;
-        JTextField niveauField = new JTextField(20); // Utilisation d'un `JTextField` pour stocker des nombres
-        niveauField.setFont(font);
-        dialog.add(niveauField, gbc);
-
-        // Boutons
-        gbc.gridx = 0;
-        gbc.gridy++;
-        gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        JButton enregistrerButton = new JButton("Enregistrer");
-        enregistrerButton.setBackground(vertColor1);
-        enregistrerButton.setForeground(Color.WHITE);
-        enregistrerButton.setFont(new Font("Poppins", Font.BOLD, 14));
-
-        JButton annulerButton = new JButton("Annuler");
-        annulerButton.setBackground(redColor);
-        annulerButton.setForeground(Color.WHITE);
-        annulerButton.setFont(new Font("Poppins", Font.BOLD, 14));
-
-        JPanel buttonPanel = new JPanel();
-        buttonPanel.add(enregistrerButton);
-        buttonPanel.add(annulerButton);
-
-        dialog.add(buttonPanel, gbc);
-
-        // Action sur le bouton "Enregistrer"
-        enregistrerButton.addActionListener(e -> {
-            String libelle = libelleField.getText();
-            String niveauText = niveauField.getText();
-
-            // Validation des champs
-            if (libelle.isEmpty() || niveauText.isEmpty()) {
-                JOptionPane.showMessageDialog(dialog, "Tous les champs sont obligatoires !", "Erreur",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            int niveau;
-            try {
-                niveau = Integer.parseInt(niveauText);
-                if (niveau <= 0) {
-                    throw new NumberFormatException();
-                }
-            } catch (NumberFormatException ex) {
-                JOptionPane.showMessageDialog(dialog, "Le niveau doit être un entier supérieur à 0.", "Erreur",
-                        JOptionPane.ERROR_MESSAGE);
-                return;
-            }
-
-            // Ajout de la formation via `FormationController`
-            String message = formationController.ajouterFormation(libelle, niveau);
-            JOptionPane.showMessageDialog(dialog, message, "Ajout Formation", JOptionPane.INFORMATION_MESSAGE);
-
-            // Rafraîchir la liste des formations
-            chargerFormations();
-
-            // Fermer le modal
-            dialog.dispose();
-        });
-
-        // Bouton "Annuler"
-        annulerButton.addActionListener(e -> dialog.dispose());
-
-        // Affichage du modal
-        dialog.setVisible(true);
+    /**Crée un bouton générique */
+    private JButton createButton(String text, Color bgColor, java.awt.event.ActionListener action) {
+        JButton button = new JButton(text);
+        button.setFont(BOLD_FONT);
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.addActionListener(action);
+        return button;
     }
 
+    /**rée un bouton avec icône */
+    private JButton createIconButton(String iconPath, Color bgColor, java.awt.event.ActionListener action) {
+        ImageIcon icon = new ImageIcon(
+                new ImageIcon(iconPath).getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH));
+        JButton button = new JButton(icon);
+        button.setBackground(bgColor);
+        button.setForeground(Color.WHITE);
+        button.addActionListener(action);
+        return button;
+    }
+
+    /**Filtrer les formations */
+    private void filtrerFormations(String recherche) {
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+        table.setRowSorter(sorter);
+        sorter.setRowFilter(recherche.trim().isEmpty() ? null : RowFilter.regexFilter("(?i)" + recherche, 1));
+    }
+
+    /**Crée le panneau bas */
+    private JPanel createBottomPanel() {
+        JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        panel.setBackground(BG_COLOR);
+        panel.setVisible(false);
+        JButton listGroupsButton = createButton("Voir Groupes", GRAY_COLOR, e -> ouvrirPanelGroupes(selectedRow));
+        JButton addUE = createButton("Voir UEs", GRAY_COLOR, e -> ouvrirPanelUEs(selectedRow));
+        listGroupsButton.setForeground(Color.BLACK);
+        addUE.setForeground(Color.BLACK);
+        panel.add(listGroupsButton);
+        panel.add(addUE);
+        return panel;
+    }
+
+    /** Ouvrir le panel des groupes */
+    private void ouvrirPanelGroupes(int row) {
+        if (row == -1)
+            return;
+        Long formationId = (Long) table.getValueAt(row, 0);
+        Formation formation = formationController.trouverFormationParId(formationId);
+        if (formation != null) {
+            new FormationGroupeUI(formation).afficher();
+            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
+        }
+    }
+
+    /** ouvrir panel des Ues */
+    private void ouvrirPanelUEs(int row){
+        if(row == -1)
+            return;
+        Long formationId = (Long) table.getValueAt(row, 0);
+        Formation formation = formationController.trouverFormationParId(formationId);
+        if (formation != null) {
+            new FormationUEUI(formation).afficher();
+            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
+        }
+    }
+
+    /** 🗑 Confirmer la suppression */
+    private void confirmerSuppression(int row) {
+        if (row == -1)
+            return;
+        Long formationId = (Long) table.getValueAt(row, 0);
+        if (JOptionPane.showConfirmDialog(this, "Confirmer suppression ?", "Confirmation",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            formationController.supprimerFormation(formationId);
+            chargerFormations();
+        }
+    }
+
+    /** Modal de modification */
     private void ouvrirModalModificationFormation(int row) {
         // Récupérer l'ID de la formation à partir de la ligne sélectionnée
         Long formationId = (Long) table.getValueAt(row, 0); // La première colonne contient l'ID de la formation
@@ -303,10 +289,11 @@ public class FormationUI extends JPanel {
         JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Modifier une Formation", true);
         dialog.setSize(600, 300);
         dialog.setLayout(new GridBagLayout());
+        dialog.setUndecorated(true);
         dialog.setLocationRelativeTo(this);
 
         // Définir le style et les contraintes du layout
-        Font font = new Font("Poppins", Font.PLAIN, 14);
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.WEST;
@@ -315,22 +302,22 @@ public class FormationUI extends JPanel {
 
         // Champs du formulaire
         JLabel libelleLabel = new JLabel("Libellé de la Formation :");
-        libelleLabel.setFont(font);
+        libelleLabel.setFont(REGULAR_FONT);
         dialog.add(libelleLabel, gbc);
         gbc.gridx = 1;
         JTextField libelleField = new JTextField(20);
-        libelleField.setFont(font);
+        libelleField.setFont(REGULAR_FONT);
         libelleField.setText(formation.getLibelle());
         dialog.add(libelleField, gbc);
 
         gbc.gridx = 0;
         gbc.gridy++;
         JLabel nivLabel = new JLabel("Niveau :");
-        nivLabel.setFont(font);
+        nivLabel.setFont(REGULAR_FONT);
         dialog.add(nivLabel, gbc);
         gbc.gridx = 1;
         JTextField niveauField = new JTextField(20);
-        niveauField.setFont(font);
+        niveauField.setFont(REGULAR_FONT);
         niveauField.setText(String.valueOf(formation.getNiveau()));
         dialog.add(niveauField, gbc);
 
@@ -341,14 +328,14 @@ public class FormationUI extends JPanel {
         gbc.anchor = GridBagConstraints.CENTER;
 
         JButton enregistrerButton = new JButton("Enregistrer");
-        enregistrerButton.setBackground(vertColor1);
+        enregistrerButton.setBackground(VERT_COLOR_1);
         enregistrerButton.setForeground(Color.WHITE);
-        enregistrerButton.setFont(new Font("Poppins", Font.BOLD, 14));
+        enregistrerButton.setFont(REGULAR_FONT);
 
         JButton annulerButton = new JButton("Annuler");
-        annulerButton.setBackground(redColor);
+        annulerButton.setBackground(RED_COLOR);
         annulerButton.setForeground(Color.WHITE);
-        annulerButton.setFont(new Font("Poppins", Font.BOLD, 14));
+        annulerButton.setFont(REGULAR_FONT);
 
         JPanel buttonPanel = new JPanel();
         buttonPanel.add(enregistrerButton);
@@ -397,98 +384,104 @@ public class FormationUI extends JPanel {
         dialog.setVisible(true);
     }
 
-    private void confirmerSuppression(int row) {
-        Long formationId = (Long) table.getValueAt(row, 0);
-        int confirm = JOptionPane.showConfirmDialog(this, "Êtes-vous sûr de vouloir supprimer cette formation ?",
-                "Confirmation Suppression", JOptionPane.YES_NO_OPTION);
+    /** Modal pour ajouter une formation */
+    private void ouvrirModalAjoutFormation() {
+        // Création du `JDialog` pour l'ajout de formation
+        JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Ajouter une Formation", true);
+        dialog.setSize(600, 300);
+        dialog.setLayout(new GridBagLayout());
+        dialog.setUndecorated(true);
 
-        if (confirm == JOptionPane.YES_OPTION) {
-            String message = formationController.supprimerFormation(formationId);
-            JOptionPane.showMessageDialog(this, message, "Suppression Formation", JOptionPane.INFORMATION_MESSAGE);
+        dialog.setLocationRelativeTo(this);
+
+        // Définition du style
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        // Champs du formulaire
+        JLabel libelleLabel = new JLabel("Libellé de la Formation :");
+        libelleLabel.setFont(REGULAR_FONT);
+        dialog.add(libelleLabel, gbc);
+        gbc.gridx = 1;
+        JTextField libelleField = new JTextField(20);
+        libelleField.setFont(REGULAR_FONT);
+        dialog.add(libelleField, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy++;
+        JLabel nivLabel = new JLabel("Niveau :");
+        nivLabel.setFont(REGULAR_FONT);
+        dialog.add(nivLabel, gbc);
+        gbc.gridx = 1;
+        JTextField niveauField = new JTextField(20); // Utilisation d'un `JTextField` pour stocker des nombres
+        niveauField.setFont(REGULAR_FONT);
+        dialog.add(niveauField, gbc);
+
+        // Boutons
+        gbc.gridx = 0;
+        gbc.gridy++;
+        gbc.gridwidth = 2;
+        gbc.anchor = GridBagConstraints.CENTER;
+
+        JButton enregistrerButton = new JButton("Enregistrer");
+        enregistrerButton.setBackground(VERT_COLOR_1);
+        enregistrerButton.setForeground(Color.WHITE);
+        enregistrerButton.setFont(REGULAR_FONT);
+
+        JButton annulerButton = new JButton("Annuler");
+        annulerButton.setBackground(RED_COLOR);
+        annulerButton.setForeground(Color.WHITE);
+        annulerButton.setFont(REGULAR_FONT);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.add(enregistrerButton);
+        buttonPanel.add(annulerButton);
+
+        dialog.add(buttonPanel, gbc);
+
+        // Action sur le bouton "Enregistrer"
+        enregistrerButton.addActionListener(e -> {
+            String libelle = libelleField.getText();
+            String niveauText = niveauField.getText();
+
+            // Validation des champs
+            if (libelle.isEmpty() || niveauText.isEmpty()) {
+                JOptionPane.showMessageDialog(dialog, "Tous les champs sont obligatoires !", "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            int niveau;
+            try {
+                niveau = Integer.parseInt(niveauText);
+                if (niveau <= 0) {
+                    throw new NumberFormatException();
+                }
+            } catch (NumberFormatException ex) {
+                JOptionPane.showMessageDialog(dialog, "Le niveau doit être un entier supérieur à 0.", "Erreur",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+
+            // Ajout de la formation via `FormationController`
+            String message = formationController.ajouterFormation(libelle, niveau);
+            JOptionPane.showMessageDialog(dialog, message, "Ajout Formation", JOptionPane.INFORMATION_MESSAGE);
 
             // Rafraîchir la liste des formations
             chargerFormations();
-        }
-    }
 
-    private void filtrerFormations(String recherche) {
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
-        table.setRowSorter(sorter);
-
-        if (recherche.trim().length() == 0) {
-            sorter.setRowFilter(null); // Afficher toutes les formations si la recherche est vide
-        } else {
-            sorter.setRowFilter(RowFilter.regexFilter("(?i)" + recherche, 1)); // Filtrer par colonne "Libelle"
-        }
-    }
-
-    private void trierTable() {
-        // Récupérer les données actuelles de la table
-        int rowCount = tableModel.getRowCount();
-        List<Object[]> data = new ArrayList<>();
-
-        for (int i = 0; i < rowCount; i++) {
-            data.add(new Object[] {
-                    tableModel.getValueAt(i, 0), // ID
-                    tableModel.getValueAt(i, 1), // Libellé
-                    tableModel.getValueAt(i, 2) // Niveau
-            });
-        }
-
-        // Trier les données par nive
-        data.sort(Comparator.comparingInt(o -> Integer.parseInt(o[2].toString())));
-
-        // Réinsérer les données triées dans le modèle
-        tableModel.setRowCount(0);
-        for (Object[] row : data) {
-            tableModel.addRow(row);
-        }
-    }
-
-    private JPanel createBottomPanel() {
-        bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        bottomPanel.setVisible(false); // Caché au départ
-    
-        listGroupsButton = new JButton("📋 Voir Groupes");
-        listGroupsButton.setFont(new Font("Poppins", Font.BOLD, 14));
-        listGroupsButton.setBackground(bColor);
-        listGroupsButton.setForeground(Color.WHITE);
-        
-        listGroupsButton.addActionListener(e -> {
-            if (selectedRow != -1) {
-                ouvrirPanelGroupes(selectedRow);
-            }
+            // Fermer le modal
+            dialog.dispose();
         });
-    
-        bottomPanel.add(listGroupsButton);
-        return bottomPanel;
-    }
 
-    private void ouvrirPanelGroupes(int row) {
-        Long formationId = (Long) table.getValueAt(row, 0); // Récupérer l'ID de la formation
-        Formation formation = formationController.trouverFormationParId(formationId);
-        
-        if (formation == null) {
-            JOptionPane.showMessageDialog(this, "Formation introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
-            return;
-        }
-        
-        try {
-            // Créer une nouvelle fenêtre JFrame avec la formation sélectionnée
-            FormationGroupeUI formationGroupeFrame = new FormationGroupeUI(formation);
-            
-            // Afficher la nouvelle fenêtre
-            formationGroupeFrame.afficher();
-            
-            // Optionnel : Fermer la fenêtre actuelle si vous voulez qu'elle disparaisse après ouverture de la nouvelle
-            ((JFrame) SwingUtilities.getWindowAncestor(this)).dispose();
-        } catch (Exception e) {
-            JOptionPane.showMessageDialog(this, "Une erreur est survenue lors de la mise à jour de l'interface.", "Erreur", JOptionPane.ERROR_MESSAGE);
-            e.printStackTrace();
-        }
-    }
-    
-    
-    
+        // Bouton "Annuler"
+        annulerButton.addActionListener(e -> dialog.dispose());
 
+        // Affichage du modal
+        dialog.setVisible(true);
+    }
 }
