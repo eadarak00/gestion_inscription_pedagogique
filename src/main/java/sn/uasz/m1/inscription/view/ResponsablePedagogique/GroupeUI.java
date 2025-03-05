@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -31,6 +32,11 @@ public class GroupeUI extends JPanel {
     private int selectedRow = -1;
 
     public GroupeUI() {
+          try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         groupeController = new GroupeController();
         formationController = new FormationController();
         setLayout(new GridBagLayout());

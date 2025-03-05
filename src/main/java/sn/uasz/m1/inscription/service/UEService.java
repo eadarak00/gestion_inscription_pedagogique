@@ -3,48 +3,124 @@ package sn.uasz.m1.inscription.service;
 import java.util.List;
 
 import sn.uasz.m1.inscription.dao.UEDAO;
+import sn.uasz.m1.inscription.model.Formation;
+import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.UE;
+import sn.uasz.m1.inscription.model.Utilisateur;
+import sn.uasz.m1.inscription.utils.SessionManager;
 
 public class UEService {
-    // private UEDAO ueDAO;
+    private final UEDAO ueDAO;
+    private final ResponsablePedagogiqueService rService;
 
-    // //Ajouter un Ue
-    // public void ajouterUe(UE ue){
-    //     ueDAO.save(ue);
-    // }
+    public UEService() {
+        this.ueDAO = new UEDAO();
+        this.rService = new ResponsablePedagogiqueService();
 
-    // //Supprimer un Ue
-    // public void supprimerUe(Long id){
-    //     UE ueExisting=ueDAO.findById(id);
-    //     if (ueExisting==null) {
-    //         throw new IllegalArgumentException("L'ue n'existe pas");
+    }
+
+    /**
+     * Enregistre un nouvel UE.
+     */
+    public UE createUE(UE ue) {
+        if (ue == null) {
+            throw new IllegalArgumentException("L'UE ne peut pas être null.");
+        }
+
+        Utilisateur user = SessionManager.getUtilisateur();
+        ResponsablePedagogique  responsable =  rService.getResponsableById(user.getId());
+        ue.setResponsable(responsable);
+        ue.setFormation(null);
+        ue.setObligatoire(true); 
+
+        try {
+            return ueDAO.save(ue);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de l'enregistrement de l'UE : " + e.getMessage());
+            throw new RuntimeException("Échec de l'enregistrement de l'UE.");
+        }
+    }
+
+    /**
+     * Récupère un UE par son ID.
+     */
+    public UE getUEById(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("L'ID de l'UE est invalide.");
+        }
+
+        UE ue = ueDAO.findById(id);
+        if (ue == null) {
+            throw new IllegalArgumentException("Aucun UE trouvé avec l'ID : " + id);
+        }
+        return ue;
+    }
+
+    /**
+     * Récupère tous les UEs.
+     */
+    public List<UE> getAllUEs() {
+        return ueDAO.findAll();
+    }
+
+    /**
+     * Récupère les UEs d'une formation donnée.
+     */
+    // public List<UE> getUEsByFormation(Formation formation) {
+    //     if (formation == null || formation.getId() == null) {
+    //         throw new IllegalArgumentException("La formation est invalide.");
     //     }
-    //     ueDAO.delete(id);
+    //     return ueDAO.findByFormation(formation);
     // }
 
-    // //Modifier un Ue
-    // public UE modifierUe(Long id,UE ue){
-    //     UE ueExisting=ueDAO.findById(id);
+    /**
+     * Met à jour un UE.
+     */
+    public UE updateUE(Long id, UE ue) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("L'ID de l'UE est invalide.");
+        }
+        if (ue == null) {
+            throw new IllegalArgumentException("Les nouvelles données de l'UE ne peuvent pas être null.");
+        }
 
-    //     if(ueExisting==null){
-    //         throw new IllegalArgumentException("L'ue n'existe pas");
-    //     }
-    //     return ueDAO.update(id, ue);
-    // }
+        UE existingUE = ueDAO.findById(id);
+        if (existingUE == null) {
+            throw new IllegalArgumentException("L'UE avec l'ID " + id + " n'existe pas.");
+        }
 
-    // //Afficher la liste des ues
-    // public List<UE> afficherLesUes(){
-    //     return ueDAO.findAll();
-    // }
+        try {
+            return ueDAO.update(id, ue);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la mise à jour de l'UE : " + e.getMessage());
+            throw new RuntimeException("Échec de la mise à jour de l'UE.");
+        }
+    }
 
-    // //Verifier si un Ue existe
-    // public UE trouverUe(Long id){
-    //     return ueDAO.findById(id);
-    // }
+    /**
+     * Supprime un UE par son ID.
+     */
+    public void deleteUE(Long id) {
+        if (id == null || id <= 0) {
+            throw new IllegalArgumentException("L'ID de l'UE est invalide.");
+        }
 
-    // //Liste des ues gerer par un enseignant
-    // public List<UE> listeUeEnseignant(Long id){
-    //     return ueDAO.trouverParEnseignant(id);
-    // }
+        UE existingUE = ueDAO.findById(id);
+        if (existingUE == null) {
+            throw new IllegalArgumentException("Impossible de supprimer : aucun UE trouvé avec l'ID " + id);
+        }
 
+        try {
+            ueDAO.delete(id);
+        } catch (Exception e) {
+            System.err.println("Erreur lors de la suppression de l'UE : " + e.getMessage());
+            throw new RuntimeException("Échec de la suppression de l'UE.");
+        }
+    }
+
+     public List<UE> getUEsByResponsable(){
+        Utilisateur user = SessionManager.getUtilisateur();
+        ResponsablePedagogique responsable = rService.getResponsableById(user.getId());
+        return ueDAO.findByResponsable(responsable);
+    }
 }

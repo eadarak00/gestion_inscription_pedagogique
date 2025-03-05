@@ -1,6 +1,7 @@
 package sn.uasz.m1.inscription.view.ResponsablePedagogique;
 
 import javax.swing.*;
+import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
@@ -29,6 +30,11 @@ public class FormationGroupeUI extends JFrame {
     private Formation formation;
 
     public FormationGroupeUI(Formation formation) {
+          try {
+            UIManager.setLookAndFeel(new NimbusLookAndFeel());
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
         this.groupeController = new GroupeController();
         this.formation = formation;
 

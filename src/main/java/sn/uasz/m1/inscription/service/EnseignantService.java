@@ -91,4 +91,11 @@ public class EnseignantService {
             throw new RuntimeException("Échec de la suppression de l'enseignant.");
         }
     }
+
+    public Enseignant getByEmail(String email){
+        if (email == null || email.isEmpty()){
+            new IllegalArgumentException("Email invalide !!");
+        }
+        return enseignantDAO.findByEmail(email);
+    }
 }

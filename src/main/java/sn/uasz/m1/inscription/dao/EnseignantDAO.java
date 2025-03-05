@@ -2,7 +2,11 @@ package sn.uasz.m1.inscription.dao;
 
 import java.util.List;
 
+import org.hibernate.Session;
+
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
+import jakarta.persistence.TypedQuery;
 import sn.uasz.m1.inscription.model.Enseignant;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
@@ -76,4 +80,19 @@ public class EnseignantDAO implements IDAO<Enseignant> {
             throw new RuntimeException("Erreur lors de la suppression", e);
         }
     }
+
+    public Enseignant findByEmail(String email) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            TypedQuery<Enseignant> query = entityManager.createQuery(
+                "SELECT e FROM Enseignant e WHERE e.email = :email", Enseignant.class);
+            query.setParameter("email", email);
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+    
 }
