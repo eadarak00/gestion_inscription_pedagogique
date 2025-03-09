@@ -12,10 +12,9 @@ import sn.uasz.m1.inscription.view.ResponsablePedagogique.DashboardResponsableUI
 public class LoginUI extends JFrame {
 
     // Définition des couleurs
-    private Color vertColor1 = new Color(0x113F36);
-    private Color vertColor2 = new Color(0x128E64);
-    private Color fondColor = new Color(0xF5F5F0);
-    private Color bColor = new Color(0x151d21);
+    private  final Color VERT_COLOR_1 = new Color(0x113F36);
+    private final Color VERT_COLOR_2 = new Color(0x128E64);
+    private final Color BG_COLOR = new Color(0xF5F5F0);
 
     //
     private JTextField emailField;
@@ -35,11 +34,12 @@ public class LoginUI extends JFrame {
         setTitle("Espace Reponsable Pedagogique ~ Gestion des Inscriptions Pédagogiques");
         setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setLocationRelativeTo(null);
 
         // Panel principal
         JPanel mainPanel = (JPanel) getContentPane();
-        mainPanel.setBackground(fondColor);
+        mainPanel.setBackground(BG_COLOR);
         mainPanel.setLayout(new BorderLayout());
 
         // Ajouter les panels gauche et centre
@@ -73,7 +73,7 @@ public class LoginUI extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setPreferredSize(new Dimension(600, 0));
-        panel.setBackground(fondColor);
+        panel.setBackground(BG_COLOR);
 
         // Charger et redimensionner l'icône
         ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/login.png");
@@ -89,7 +89,7 @@ public class LoginUI extends JFrame {
     private JPanel createCenterPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setBackground(fondColor);
+        panel.setBackground(BG_COLOR);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(15, 20, 15, 20);
@@ -99,7 +99,7 @@ public class LoginUI extends JFrame {
         // Création du panel pour le titre et le paragraphe
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Arrange les composants verticalement
-        textPanel.setBackground(fondColor);
+        textPanel.setBackground(BG_COLOR);
 
         // Titre
         JLabel sectionTitle = new JLabel(
@@ -132,191 +132,6 @@ public class LoginUI extends JFrame {
         return panel;
     }
 
-
-    // private JPanel createInputPanel() {
-    //     JPanel inputPanel = new JPanel();
-    //     inputPanel.setLayout(new GridBagLayout());
-    //     inputPanel.setBackground(fondColor);
-    
-    //     GridBagConstraints constraints = new GridBagConstraints();
-    //     constraints.insets = new Insets(10, 5, 10, 5);
-    //     constraints.anchor = GridBagConstraints.WEST;
-    //     constraints.gridx = 0;
-    //     constraints.gridy = 0;
-    
-    //     // Icône Email
-    //     ImageIcon original = new ImageIcon("src/main/resources/static/img/png/email-icon.png");
-    //     Image resizedImg= original.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-    //     ImageIcon resizedIc = new ImageIcon(resizedImg);
-    //     JLabel emailIconLabel = new JLabel(resizedIc);
-    //     inputPanel.add(emailIconLabel, constraints);
-    
-    //     // Champ Email
-    //     constraints.gridx = 1;
-    //     emailField = new JTextField(20);
-    //     emailField.setFont(new Font("Poppins", Font.PLAIN, 14));
-    //     inputPanel.add(emailField, constraints);
-    
-    //     // Icône Mot de passe
-    //     constraints.gridx = 0;
-    //     constraints.gridy = 1;
-    //     ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/password-icon.png");
-    //     Image resizedImage = originalIcon.getImage().getScaledInstance(25, 25, Image.SCALE_SMOOTH);
-    //     ImageIcon resizedIcon = new ImageIcon(resizedImage);
-    //     JLabel passwordIconLabel = new JLabel(resizedIcon);
-    //     inputPanel.add(passwordIconLabel, constraints);
-    
-    //     // Champ Mot de passe
-    //     constraints.gridx = 1;
-    //     passwordField = new JPasswordField(20);
-    //     passwordField.setFont(new Font("Poppins", Font.PLAIN, 14));
-    //     inputPanel.add(passwordField, constraints);
-    
-    //     // Checkbox pour voir le mot de passe
-    //     constraints.gridx = 2;
-    //     constraints.gridy = 1;
-    //     JCheckBox showPasswordCheckBox = new JCheckBox("Afficher");
-    //     showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
-    //     showPasswordCheckBox.setBackground(fondColor);
-    //     showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
-    
-    //     showPasswordCheckBox.addActionListener(e -> {
-    //         passwordField.setEchoChar(showPasswordCheckBox.isSelected() ? (char) 0 : '*');
-    //     });
-    
-    //     inputPanel.add(showPasswordCheckBox, constraints);
-    
-    //     // Bouton de connexion
-    //     constraints.gridx = 1;
-    //     constraints.gridy = 2;
-    //     JButton loginButton = new JButton("Se connecter");
-    //     loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
-    //     loginButton.setBackground(vertColor2);
-    //     loginButton.setForeground(Color.WHITE);
-    //     loginButton.setPreferredSize(new Dimension(250, 40));
-    
-    //     loginButton.addActionListener(e -> {
-    //         String email = emailField.getText();
-    //         String motDePasse = new String(passwordField.getPassword());
-    
-    //         if (authService.authentifier(email, motDePasse)) {
-    //             JOptionPane.showMessageDialog(this, "Connexion réussie !", "Succès", JOptionPane.INFORMATION_MESSAGE);
-    //             navigateToDashBoard();
-    //         } else {
-    //             JOptionPane.showMessageDialog(this, "Identifiants incorrects.", "Erreur", JOptionPane.ERROR_MESSAGE);
-    //         }
-    //     });
-    
-    //     inputPanel.add(loginButton, constraints);
-    
-    //     return inputPanel;
-    // }
-    
-    // private JPanel createInputPanel() {
-    //     JPanel inputPanel = new JPanel(new GridBagLayout());
-    //     inputPanel.setBackground(fondColor);
-    
-    //     GridBagConstraints constraints = new GridBagConstraints();
-    //     constraints.insets = new Insets(10, 5, 10, 5);
-    //     constraints.anchor = GridBagConstraints.WEST;
-    //     constraints.gridx = 0;
-    //     constraints.gridy = 0;
-    
-    //     // Icône Email
-    //     JLabel emailIconLabel = new JLabel(resizeIcon("src/main/resources/static/img/png/email-icon.png", 25, 25));
-    //     inputPanel.add(emailIconLabel, constraints);
-    
-    //     // Champ Email
-    //     constraints.gridx = 1;
-    //     emailField = new JTextField(20);
-    //     emailField.setFont(new Font("Poppins", Font.PLAIN, 14));
-    //     inputPanel.add(emailField, constraints);
-    
-    //     // Icône Mot de passe
-    //     constraints.gridx = 0;
-    //     constraints.gridy = 1;
-    //     JLabel passwordIconLabel = new JLabel(resizeIcon("src/main/resources/static/img/png/password-icon.png", 25, 25));
-    //     inputPanel.add(passwordIconLabel, constraints);
-    
-    //     // Champ Mot de passe
-    //     constraints.gridx = 1;
-    //     passwordField = new JPasswordField(20);
-    //     passwordField.setFont(new Font("Poppins", Font.PLAIN, 14));
-    //     inputPanel.add(passwordField, constraints);
-    
-    //     // Checkbox pour afficher le mot de passe
-    //     constraints.gridx = 2;
-    //     constraints.gridy = 1;
-    //     JCheckBox showPasswordCheckBox = new JCheckBox("Afficher");
-    //     showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
-    //     showPasswordCheckBox.setBackground(fondColor);
-    //     showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
-    
-    //     showPasswordCheckBox.addActionListener(e -> {
-    //         passwordField.setEchoChar(showPasswordCheckBox.isSelected() ? (char) 0 : '*');
-    //     });
-    
-    //     inputPanel.add(showPasswordCheckBox, constraints);
-    
-    //     // Label pour le loader
-    //     constraints.gridx = 1;
-    //     constraints.gridy = 2;
-    //     JLabel loadingLabel = new JLabel();
-    //     loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
-    //     loadingLabel.setForeground(new Color(0x5e5e5e));
-    //     loadingLabel.setVisible(false); // Caché au début
-    //     inputPanel.add(loadingLabel, constraints);
-    
-    //     // Bouton de connexion
-    //     constraints.gridx = 1;
-    //     constraints.gridy = 3;
-    //     JButton loginButton = new JButton("Se connecter");
-    //     loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
-    //     loginButton.setBackground(vertColor2);
-    //     loginButton.setForeground(Color.WHITE);
-    //     loginButton.setPreferredSize(new Dimension(250, 40));
-    
-    //     loginButton.addActionListener(e -> {
-    //         String email = emailField.getText();
-    //         String motDePasse = new String(passwordField.getPassword());
-    
-    //         // Désactiver le bouton et afficher le loader
-    //         loginButton.setEnabled(false);
-    //         loadingLabel.setText("Connexion en cours...");
-    //         loadingLabel.setIcon(resizeIcon("src/main/resources/static/img/gif/infinite.gif", 100, 100)); // Remplace par ton GIF de chargement
-    //         loadingLabel.setVisible(true);
-    
-    //         // Exécuter l'authentification en arrière-plan
-    //         new SwingWorker<Boolean, Void>() {
-    //             @Override
-    //             protected Boolean doInBackground() {
-    //                 return authService.authentifier(email, motDePasse);
-    //             }
-    
-    //             @Override
-    //             protected void done() {
-    //                 try {
-    //                     boolean success = get();
-    //                     if (success) {
-    //                         JOptionPane.showMessageDialog(inputPanel, "Connexion réussie !", "Succès", JOptionPane.INFORMATION_MESSAGE);
-    //                         navigateToDashBoard();
-    //                     } else {
-    //                         JOptionPane.showMessageDialog(inputPanel, "Identifiants incorrects.", "Erreur", JOptionPane.ERROR_MESSAGE);
-    //                     }
-    //                 } catch (Exception ex) {
-    //                     JOptionPane.showMessageDialog(inputPanel, "Une erreur est survenue.", "Erreur", JOptionPane.ERROR_MESSAGE);
-    //                 } finally {
-    //                     loginButton.setEnabled(true);
-    //                     loadingLabel.setVisible(false);
-    //                 }
-    //             }
-    //         }.execute();
-    //     });
-    
-    //     inputPanel.add(loginButton, constraints);
-    //     return inputPanel;
-    // }
-
     private void ouvrirModalConnexion() {
         // Création de la boîte de dialogue modale
         JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...", true);
@@ -328,7 +143,7 @@ public class LoginUI extends JFrame {
     
         // Définir une couleur de fond
         JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(fondColor);
+        contentPanel.setBackground(BG_COLOR);
     
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
@@ -385,7 +200,7 @@ public class LoginUI extends JFrame {
     /** 🔥 Associez cette méthode au bouton "Se connecter" */
     private JPanel createInputPanel() {
         JPanel inputPanel = new JPanel(new GridBagLayout());
-        inputPanel.setBackground(fondColor);
+        inputPanel.setBackground(BG_COLOR);
     
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10, 5, 10, 5);
@@ -420,7 +235,7 @@ public class LoginUI extends JFrame {
         constraints.gridy = 1;
         JCheckBox showPasswordCheckBox = new JCheckBox("Afficher");
         showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
-        showPasswordCheckBox.setBackground(fondColor);
+        showPasswordCheckBox.setBackground(BG_COLOR);
         showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
     
         showPasswordCheckBox.addActionListener(e -> {
@@ -445,7 +260,7 @@ public class LoginUI extends JFrame {
         // Bouton de connexion
         JButton loginButton = new JButton("Se connecter");
         loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
-        loginButton.setBackground(vertColor2);
+        loginButton.setBackground(VERT_COLOR_2);
         loginButton.setForeground(Color.WHITE);
         loginButton.setPreferredSize(new Dimension(250, 40));
     
