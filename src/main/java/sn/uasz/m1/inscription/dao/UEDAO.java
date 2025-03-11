@@ -186,4 +186,25 @@ public class UEDAO implements IDAO<UE> {
                     .getResultList();
         }
     }
+
+    public List<UE> findOptionalUEsByFormation(Long formationId) {
+        try (EntityManager em = DatabaseUtil.getEntityManager()) {
+            return em.createQuery("SELECT ue FROM UE ue WHERE ue.formation.id = :formationId AND ue.obligatoire = false", UE.class)
+                     .setParameter("formationId", formationId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des UEs optionnelles.", e);
+        }
+    }
+
+    public List<UE> findRequiredUEsByFormation(Long formationId) {
+        try (EntityManager em = DatabaseUtil.getEntityManager()) {
+            return em.createQuery("SELECT ue FROM UE ue WHERE ue.formation.id = :formationId AND ue.obligatoire = true", UE.class)
+                     .setParameter("formationId", formationId)
+                     .getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des UEs optionnelles.", e);
+        }
+    }
+    
 }

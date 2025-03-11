@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sn.uasz.m1.inscription.model.Enseignant;
-import sn.uasz.m1.inscription.model.Formation;
-import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.service.UEService;
 

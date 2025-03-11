@@ -109,7 +109,7 @@ public class HomeStudentUI extends JFrame {
         String username = "INCONNU";
         
         if(user!=null){
-           username = user.getPrenom();
+           username = user.getPrenom() + " " + user.getNom();
         }
 
         // Créer et configurer le label de bienvenue
@@ -140,6 +140,8 @@ public class HomeStudentUI extends JFrame {
         JButton buttonTD = createButton("Mon Groupe TD");
         JButton buttonTP = createButton("Mon Groupe TP");
 
+        inscriptionButton.addActionListener(e -> NavigateToInscription());
+
         // Ajouter les boutons au panneau avec un espacement vertical
         panel.add(inscriptionButton);
         panel.add(Box.createVerticalStrut(10)); // Espacement entre les boutons
@@ -159,6 +161,21 @@ public class HomeStudentUI extends JFrame {
         return new ImageIcon(img);
     }
 
+    public void fermer(){
+        this.dispose();
+    }
+
+
+    private void NavigateToInscription() {
+        try {
+            InscriptionUI home = new InscriptionUI();
+            home.afficher();
+            fermer();
+        } catch (Exception exp) {
+            System.err.println(exp.getMessage());
+            exp.printStackTrace();
+        }
+    }
     public static void main(String[] args) {
         // Lancer l'interface utilisateur avec le nom de l'utilisateur
         SwingUtilities.invokeLater(() -> new HomeStudentUI().setVisible(true));
