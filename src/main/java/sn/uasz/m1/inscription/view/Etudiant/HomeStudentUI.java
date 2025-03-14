@@ -6,6 +6,7 @@ import javax.swing.text.AbstractDocument.Content;
 
 import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.utils.SessionManager;
+import sn.uasz.m1.inscription.view.components.NavbarPanel;
 
 import java.awt.*;
 

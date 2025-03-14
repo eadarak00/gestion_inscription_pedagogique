@@ -12,6 +12,8 @@ import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.service.EtudiantService;
 import sn.uasz.m1.inscription.service.FormationService;
 import sn.uasz.m1.inscription.utils.SessionManager;
+import sn.uasz.m1.inscription.view.components.NavbarPanel;
+import sn.uasz.m1.inscription.view.components.StepIndicator;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -803,29 +805,6 @@ public class InscriptionUI extends JFrame {
         this.setVisible(true);
     }
 
-    // private void validerInscription(Formation formation) {
-    //     if (formation == null) {
-    //         JOptionPane.showMessageDialog(this, "⚠ Aucune formation sélectionnée.", "Erreur", JOptionPane.ERROR_MESSAGE);
-    //         return;
-    //     }
-    
-    //     if (selectedUes == null) {
-    //         JOptionPane.showMessageDialog(this, "⚠ Aucune UE sélectionnée.", "Erreur", JOptionPane.ERROR_MESSAGE);
-    //         return;
-    //     }
-    
-    //     List<Long> ueIdsChoisies = selectedUes.stream().map(UE::getId).toList();
-    //     InscriptionController inscriptionController = new InscriptionController();
-    //     String message = inscriptionController.inscrireEtudiant(formation.getId(), ueIdsChoisies);
-    
-    //     JOptionPane.showMessageDialog(this, message, "Inscription", JOptionPane.INFORMATION_MESSAGE);
-    
-    //     // Fermer ou rediriger après validation
-    //     // if (message.contains("réussie")) {
-    //     //     this.dispose();
-    //     // }
-    // }
-    
 
     private void validerInscription(Formation selectedFormation) {
         if (selectedFormation == null) {
@@ -838,12 +817,6 @@ public class InscriptionUI extends JFrame {
             return;
         }
     
-        // List<Long> ueIdsChoisies = selectedUes.stream().map(UE::getId).toList();
-    
-        // 🔹 Logguer les UEs sélectionnées
-        // System.out.println("UEs sélectionnées pour l'inscription : " + ueIdsChoisies);
-    
-        // 🔹 Afficher les UEs en détail dans la console
         selectedUes.forEach(ue -> System.out.println("UE : " + ue.getCode() + " - " + ue.getLibelle()));
     
         InscriptionController inscriptionController = new InscriptionController();
@@ -853,8 +826,14 @@ public class InscriptionUI extends JFrame {
     
         // Fermer ou rediriger après validation
         if (message.contains("réussie")) {
-            this.dispose();
+            navigateToHome();
         }
+    }
+
+    private void navigateToHome(){
+        HomeStudentUI home = new HomeStudentUI();
+        home.afficher();
+        this.dispose();
     }
     
 

@@ -2,6 +2,7 @@ package sn.uasz.m1.inscription.controller;
 
 import java.util.List;
 
+import sn.uasz.m1.inscription.model.Inscription;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.service.InscriptionService;
 
@@ -21,5 +22,9 @@ public class InscriptionController {
         } catch (RuntimeException e) {
             return "Échec de l'inscription : " + e.getMessage();
         }
+    }
+
+    public List<Inscription> listeInscriptionsResponsable(){
+        return inscriptionService.getInscriptionsByResponsable();
     }
 }

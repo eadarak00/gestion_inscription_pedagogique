@@ -80,7 +80,7 @@
 // }
 
 
-package sn.uasz.m1.inscription.view.Etudiant;
+package sn.uasz.m1.inscription.view.components;
 
 import javax.swing.*;
 import java.awt.*;

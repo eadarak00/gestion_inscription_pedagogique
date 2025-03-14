@@ -1,4 +1,4 @@
-package sn.uasz.m1.inscription.view.Etudiant;
+package sn.uasz.m1.inscription.view.components;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,7 +18,7 @@ public class NavbarPanel extends JPanel {
         setPreferredSize(new Dimension(parentFrame.getWidth(), 75));
 
         // === Label Menu Hamburger ===
-        JLabel menuLabel = new JLabel(createIcon("src/main/resources/static/img/png/hamburger.png", 30, 30));
+        JLabel menuLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/hamburger.png", 30, 30));
         menuLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         menuLabel.setOpaque(false);
         menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -58,18 +58,14 @@ public class NavbarPanel extends JPanel {
         item.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
     }
 
-    private ImageIcon createIcon(String path, int width, int height) {
-        ImageIcon icon = new ImageIcon(path);
-        Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
-    }
+    
 
     private JPanel createLogoPanel() {
         JPanel logoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
         logoPanel.setOpaque(false); // Fond transparent
 
         // Logo
-        JLabel logoLabel = new JLabel(createIcon("src/main/resources/static/img/png/logo_uasz.png", 70, 70));
+        JLabel logoLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logo_uasz.png", 70, 70));
 
         // Nom de l’université
         JLabel universityNameLabel = new JLabel("Université Assane Seck de Ziguinchor");

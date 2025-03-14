@@ -72,6 +72,11 @@ public class FormationService {
         return formation;
     }
 
+    public ResponsablePedagogique getResponsablePedagogique(Long formationId){
+        Formation formation = getFormationById(formationId);
+        return formation.getResponsable();
+    }
+
     public int getNombreUEsOptionnelles(Long formationId) {
         if (formationId == null || formationId <= 0) {
             throw new IllegalArgumentException("ID de formation invalide.");
