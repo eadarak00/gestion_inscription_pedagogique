@@ -5,11 +5,13 @@ import javax.swing.*;
 
 import sn.uasz.m1.inscription.utils.SessionManager;
 import sn.uasz.m1.inscription.view.HomeUI;
+import sn.uasz.m1.inscription.view.Etudiant.NotificationCardStudentFrame;
+import sn.uasz.m1.inscription.view.ResponsablePedagogique.NotificationCardFrame;
 
 import java.awt.*;
 import java.awt.event.*;
 
-public class Navbar extends JPanel {
+public class NavbarStudent extends JPanel {
 
     private final Color VERT_COLOR_1 = new Color(0x113F36);
     private final Color TEXT_COLOR = Color.WHITE; // Couleur du texte du menu
@@ -19,7 +21,7 @@ public class Navbar extends JPanel {
     private static final Font REGULAR_FONT = new Font("Poppins", Font.PLAIN, 14);
 
    
-    public Navbar(JFrame parentFrame) {
+    public NavbarStudent(JFrame parentFrame) {
         setLayout(new BorderLayout());
         setBackground(VERT_COLOR_1);
         setPreferredSize(new Dimension(parentFrame.getWidth(), 75));
@@ -73,6 +75,15 @@ public class Navbar extends JPanel {
         // Ajouter l'icône et le badge dans le panneau
         notificationPanel.add(notificationIcon);
         notificationPanel.add(badgeNotif);
+
+         // Action pour afficher le panneau de notifications
+         notificationIcon.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                navigateToNotif();
+                parentFrame.dispose();
+            }
+        });
     
         // === Conteneur à droite (Notifications + Menu) ===
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 15));
@@ -115,7 +126,16 @@ public class Navbar extends JPanel {
         return logoPanel;
     }
 
-    
+      private void navigateToNotif() {
+        try {
+            NotificationCardStudentFrame notifPage = new NotificationCardStudentFrame();
+            notifPage.afficher();
+        } catch (Exception exp) {
+            System.err.println(exp.getMessage());
+            exp.printStackTrace();
+        }
+    }
+
 
     private void logout(JFrame parentFrame) {
         HomeUI homeUI = new HomeUI();

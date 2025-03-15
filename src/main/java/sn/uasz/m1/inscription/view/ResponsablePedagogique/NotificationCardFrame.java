@@ -395,7 +395,6 @@ import sn.uasz.m1.inscription.view.components.NavbarPanel;
 
 public class NotificationCardFrame extends JFrame {
 
-    private static final long serialVersionUID = 1L;
     private JPanel mainContainer;
     private JPanel cardsContainer;
     private JDialog messageDialog;

@@ -4,6 +4,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import lombok.extern.slf4j.Slf4j;
 import sn.uasz.m1.inscription.model.Inscription;
+import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.enumeration.StatutInscription;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
@@ -45,13 +46,29 @@ public class InscriptionDAO {
         }
     }
 
-    public boolean isInscriptionExistante(Long etudiantId, Long formationId) {
+    public boolean isInscriptionExistanteByFormation(Long etudiantId, Long formationId) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
             // Vérifier si une inscription validée existe pour cet étudiant et cette formation
             Long count = entityManager.createQuery(
-                    "SELECT count(i) FROM Inscription i WHERE i.etudiant.id = :etudiantId AND i.formation.id = :formationId AND i.statut = :statut", Long.class)
+                    "SELECT count(i) FROM Inscription i WHERE i.etudiant.id = :etudiantId AND i.formation.id = :formationId", Long.class)
                     .setParameter("etudiantId", etudiantId)
                     .setParameter("formationId", formationId)
+                    .getSingleResult();
+            
+            return count > 0; 
+        } catch (Exception e) {
+            // Gérer l'exception de manière appropriée
+            e.printStackTrace();
+            return false;  // Par défaut, retourner false si une erreur survient
+        }
+    }
+
+    public boolean isInscriptionExistante(Long etudiantId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            // Vérifier si une inscription validée existe pour cet étudiant et cette formation
+            Long count = entityManager.createQuery(
+                    "SELECT count(i) FROM Inscription i WHERE i.etudiant.id = :etudiantId AND i.statut = :statut", Long.class)
+                    .setParameter("etudiantId", etudiantId)
                     .setParameter("statut", StatutInscription.ACCEPTEE)
                     .getSingleResult();
             
@@ -75,7 +92,80 @@ public class InscriptionDAO {
     }
     
     
+    public void refuserInscription(Long inscriptionId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            
+            try {
+                Inscription inscription = entityManager.find(Inscription.class, inscriptionId);
+                if (inscription == null) {
+                    throw new IllegalArgumentException("⚠ L'inscription avec ID " + inscriptionId + " n'existe pas.");
+                }
+    
+                inscription.setStatut(StatutInscription.REFUSEE); 
+                entityManager.merge(inscription); 
+    
+                transaction.commit();
+                System.out.println("Inscription ID " + inscriptionId + " refusée avec succès.");
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw new RuntimeException("Erreur lors du refus de l'inscription : " + e.getMessage(), e);
+            }
+        }
+    }
 
+    public void accepterInscription(Long inscriptionId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            
+            try {
+                Inscription inscription = entityManager.find(Inscription.class, inscriptionId);
+                if (inscription == null) {
+                    throw new IllegalArgumentException("L'inscription avec ID " + inscriptionId + " n'existe pas.");
+                }
+    
+                inscription.setStatut(StatutInscription.ACCEPTEE); 
+                entityManager.merge(inscription); 
+    
+                transaction.commit();
+                System.out.println("Inscription ID " + inscriptionId + " acceptee avec succès.");
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw new RuntimeException("Erreur lors du refus de l'inscription : " + e.getMessage(), e);
+            }
+        }
+    }
+
+
+    public Inscription findById(Long id) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.find(Inscription.class, id);
+        }
+    }
+    
+
+    public void update(Inscription inscription) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            try {
+                entityManager.merge(inscription);
+                transaction.commit();
+            } catch (Exception e) {
+                if (transaction.isActive()) {
+                    transaction.rollback();
+                }
+                throw new RuntimeException("Erreur lors de la mise à jour de l'inscription.", e);
+            }
+        }
+    }
+    
     
 }
 

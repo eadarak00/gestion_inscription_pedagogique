@@ -2,6 +2,7 @@ package sn.uasz.m1.inscription.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.swing.JOptionPane;
 
@@ -14,6 +15,8 @@ import sn.uasz.m1.inscription.model.Inscription;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.model.Utilisateur;
+import sn.uasz.m1.inscription.model.enumeration.StatutInscription;
+import sn.uasz.m1.inscription.utils.MailUtils;
 import sn.uasz.m1.inscription.utils.SessionManager;
 
 public class InscriptionService {
@@ -48,9 +51,14 @@ public class InscriptionService {
             }
     
             // Vérifier si l'étudiant est déjà inscrit à cette formation
-            boolean inscriptionExistante = inscriptionDAO.isInscriptionExistante(etudiant.getId(), formationId);
+            boolean inscriptionExistante = inscriptionDAO.isInscriptionExistanteByFormation(etudiant.getId(), formationId);
             if (inscriptionExistante) {
-                throw new RuntimeException("L'étudiant est déjà inscrit à cette formation.");
+                throw new RuntimeException("L'étudiant a déjà une inscription à cette formation.");
+            }
+
+            boolean isInscription = inscriptionDAO.isInscriptionExistante(etudiant.getId());
+            if (isInscription) {
+                throw new RuntimeException("L'étudiant est déjà inscrit à une formation.");
             }
                 
             // Récupérer le responsable pédagogique de la formation
@@ -112,6 +120,96 @@ public class InscriptionService {
         } else {
             throw new IllegalStateException("L'utilisateur connecté n'est pas un responsable pédagogique.");
         }
+    }
+
+    public Inscription getInscriptionById(Long id) {
+        Inscription inscription = inscriptionDAO.findById(id);
+        if (inscription == null) {
+            throw new IllegalArgumentException("Aucune inscription trouvée avec l'ID : " + id);
+        }
+        return inscription;
+    }
+
+
+    public void refuserInscription(Long id){
+        Inscription inscription = getInscriptionById(id);
+        
+        // 🔹 Récupérer l'étudiant et la formation associée
+        Etudiant etudiant = inscription.getEtudiant();
+        Formation formation = inscription.getFormation();
+
+        //inscritption refuser
+        inscriptionDAO.refuserInscription(id);
+
+        //envoyer une notification 
+        notificationService.notifierEtudiantInscriptionRefuser(etudiant.getEmail(), formation.getLibelle());
+        envoyerEmailRefus(etudiant, inscription.getFormation());
+        
+    }
+
+    public void accepterInscription(Long inscriptionId) {
+        Inscription inscription = getInscriptionById(inscriptionId);
+        if (inscription == null) {
+            throw new IllegalArgumentException("L'inscription demandée est introuvable.");
+        }
+
+        if (inscription.getStatut() != StatutInscription.EN_ATTENTE) {
+            throw new IllegalArgumentException("L'inscription ne peut pas être modifiée.");
+        }
+
+        // Inscrire l'étudiant aux UEs obligatoires
+        Formation formation = inscription.getFormation();
+        List<UE> uesObligatoires = formationService.getRequiredUEs(formation.getId());
+        List<UE> uesOptionnelles = inscription.getUesOptionnelles();
+        inscription.getUesOptionnelles().addAll(uesObligatoires);
+        // inscription.setStatut(StatutInscription.ACCEPTEE);
+
+        inscriptionDAO.update(inscription);
+
+        // accepter l'inscription
+        inscriptionDAO.accepterInscription(inscriptionId);
+
+        // Envoyer un email de confirmation
+        Etudiant etudiant = inscription.getEtudiant();
+        notificationService.notifierEtudiantInscription(etudiant.getEmail(), formation.getLibelle() );
+        envoyerEmailValidation(etudiant, formation, uesObligatoires, uesOptionnelles);
+    }
+
+
+       private void envoyerEmailValidation(Etudiant etudiant, Formation formation, List<UE> uesObligatoires, List<UE> uesOptionnelles) {
+        String subject = "Confirmation d'inscription pédagogique";
+        StringBuilder body = new StringBuilder();
+        body.append("Bonjour ").append(etudiant.getPrenom()).append(",<br><br>")
+            .append("Votre inscription à la formation <b>").append(formation.getLibelle()).append("</b> a été validée !<br><br>")
+            .append("<b>UEs obligatoires :</b> ").append(formatUEs(uesObligatoires)).append("<br>")
+            .append("<b>UEs optionnelles :</b> ").append(formatUEs(uesOptionnelles)).append("<br><br>")
+            .append("Bonne chance pour votre année académique ! 😊");
+
+        MailUtils.envoyerEmail(etudiant.getEmail(), subject, body.toString());
+        System.out.println("Mail d'acceptation envoye avec success");
+
+    }
+
+    private void envoyerEmailRefus(Etudiant etudiant, Formation formation) {
+        String subject = "Refus de votre inscription pédagogique";
+        String body = "Bonjour " + etudiant.getPrenom() + ",<br><br>"
+                + "Nous sommes désolés de vous informer que votre inscription à la formation <b>"
+                + formation.getLibelle() + "</b> a été refusée.<br>"
+                + "Pour plus d'informations, veuillez contacter votre responsable pédagogique.<br><br>"
+                + "Cordialement,<br>L'administration.";
+
+        MailUtils.envoyerEmail(etudiant.getEmail(), subject, body);
+
+        System.out.println("Mail de refus avec success");
+    }
+
+     private String formatUEs(List<UE> ues) {
+        if (ues.isEmpty()) {
+            return "Aucune";
+        }
+        return ues.stream()
+                  .map(ue -> ue.getCode() + " - " + ue.getLibelle())
+                  .collect(Collectors.joining(", "));
     }
     
 }

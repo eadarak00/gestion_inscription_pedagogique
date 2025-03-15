@@ -27,4 +27,26 @@ public class InscriptionController {
     public List<Inscription> listeInscriptionsResponsable(){
         return inscriptionService.getInscriptionsByResponsable();
     }
+
+    public String refuserInscription(Long inscriptionId) {
+        try {
+            inscriptionService.refuserInscription(inscriptionId);
+            return "Inscription refusée avec succès.";
+        } catch (IllegalArgumentException e) {
+            return "Erreur : " + e.getMessage();
+        } catch (RuntimeException e) {
+            return "Une erreur est survenue lors du refus de l'inscription.";
+        }
+    }
+
+    public String accepterInscription(Long inscriptionId) {
+        try {
+            inscriptionService.accepterInscription(inscriptionId);
+            return "Inscription acceptée avec succès.";
+        } catch (IllegalArgumentException e) {
+            return "Erreur : " + e.getMessage();
+        } catch (RuntimeException e) {
+            return "Une erreur est survenue lors de l'acceptation de l'inscription.";
+        }
+    }
 }

@@ -221,10 +221,12 @@ public class InscriptionsPanel extends JPanel {
         panel.setOpaque(false);
 
         // Bouton de tri A-Z
-        JButton sortAscButton = createIconTextButton("🔼 Trier (A-Z)", null, VERT_COLOR_2, Color.WHITE, e -> trierTable(true));
+        JButton sortAscButton = createIconTextButton("🔼 Trier (A-Z)", null, VERT_COLOR_2, Color.WHITE,
+                e -> trierTable(true));
 
         // Bouton de tri Z-A
-        JButton sortDescButton = createIconTextButton("🔽 Trier (Z-A)", null, GRAY_COLOR, TEXT_COLOR,  e -> trierTable(false));
+        JButton sortDescButton = createIconTextButton("🔽 Trier (Z-A)", null, GRAY_COLOR, TEXT_COLOR,
+                e -> trierTable(false));
 
         // Bouton de filtre
         JButton filterButton = createIconTextButton("Filtrer",
@@ -238,17 +240,17 @@ public class InscriptionsPanel extends JPanel {
 
         return panel;
     }
-    private void  filtrerParStatut() {
+
+    private void filtrerParStatut() {
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
-    
+
         // Trier par colonne 0 (nom ou ID) en ordre alphabétique
         sorter.setSortKeys(List.of(new RowSorter.SortKey(3, SortOrder.ASCENDING)));
-    
+
         statusLabel.setText("Inscriptions triées par ordre alphabétique.");
     }
-    
-    
+
     // private JPanel createFiltersPanel() {
     // JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
     // panel.setOpaque(false);
@@ -281,8 +283,8 @@ public class InscriptionsPanel extends JPanel {
     private JPanel createTablePanel() {
         JPanel tableContainer = new JPanel(new BorderLayout());
         tableContainer.setBorder(BorderFactory.createCompoundBorder(
-        new LineBorder(BORDER_COLOR, 1, true),
-        new EmptyBorder(15, 15, 15, 15)));
+                new LineBorder(BORDER_COLOR, 1, true),
+                new EmptyBorder(15, 15, 15, 15)));
 
         tableModel = new DefaultTableModel(
                 new String[] { "ID", "Étudiant", "Formation", "Statut", "UEs optionnelles" }, 0) {
@@ -427,11 +429,11 @@ public class InscriptionsPanel extends JPanel {
 
         JButton validerButton = createIconTextButton("Valider",
                 IconUI.createIcon("src/main/resources/static/img/png/check.png", 20, 20),
-                BLA_COLOR, Color.WHITE, null);
+                BLA_COLOR, Color.WHITE, e -> accepter());
 
         JButton refuserButton = createIconTextButton("Refuser",
                 IconUI.createIcon("src/main/resources/static/img/png/remove.png", 20, 20),
-                RED_COLOR, Color.WHITE, null);
+                RED_COLOR, Color.WHITE, e -> refuser());
 
         buttonPanel.add(validerButton);
         buttonPanel.add(refuserButton);
@@ -494,7 +496,6 @@ public class InscriptionsPanel extends JPanel {
         return button;
     }
 
-
     private void trierTable(boolean asc) {
         List<Object[]> data = new ArrayList<>();
         int rowCount = tableModel.getRowCount();
@@ -544,25 +545,27 @@ public class InscriptionsPanel extends JPanel {
     // }
 
     // private void filtrerInscriptions(String searchText) {
-    //     if (searchText == null || searchText.trim().isEmpty()) {
-    //         chargerInscriptions();
-    //         return;
-    //     }
+    // if (searchText == null || searchText.trim().isEmpty()) {
+    // chargerInscriptions();
+    // return;
+    // }
 
-    //     searchText = searchText.toLowerCase().trim();
+    // searchText = searchText.toLowerCase().trim();
 
-    //     // Création du sorter pour gérer le filtrage des données
-    //     TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
-    //     table.setRowSorter(sorter);
+    // // Création du sorter pour gérer le filtrage des données
+    // TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
+    // table.setRowSorter(sorter);
 
-    //     try {
-    //         // 🔍 Utilisation de Pattern.quote pour éviter les erreurs avec les caractères
-    //         // spéciaux
-    //         sorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(searchText)));
-    //         statusLabel.setText(sorter.getViewRowCount() + " Inscription(s) trouvée(s)");
-    //     } catch (PatternSyntaxException e) {
-    //         statusLabel.setText("Erreur de filtre : expression invalide");
-    //     }
+    // try {
+    // // 🔍 Utilisation de Pattern.quote pour éviter les erreurs avec les
+    // caractères
+    // // spéciaux
+    // sorter.setRowFilter(RowFilter.regexFilter("(?i)" +
+    // Pattern.quote(searchText)));
+    // statusLabel.setText(sorter.getViewRowCount() + " Inscription(s) trouvée(s)");
+    // } catch (PatternSyntaxException e) {
+    // statusLabel.setText("Erreur de filtre : expression invalide");
+    // }
     // }
 
     private void filtrerInscriptions(String searchText) {
@@ -570,13 +573,13 @@ public class InscriptionsPanel extends JPanel {
             chargerInscriptions();
             return;
         }
-    
+
         searchText = searchText.toLowerCase().trim();
-    
+
         // Création du sorter pour gérer le filtrage des données
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
-    
+
         try {
             // 🔍 Filtrer uniquement sur la colonne 2
             sorter.setRowFilter(RowFilter.regexFilter("(?i)" + Pattern.quote(searchText), 2));
@@ -585,7 +588,6 @@ public class InscriptionsPanel extends JPanel {
             statusLabel.setText("Erreur de filtre : expression invalide");
         }
     }
-    
 
     /** Charge les formations depuis le contrôleur */
     private void chargerInscriptions() {
@@ -627,17 +629,30 @@ public class InscriptionsPanel extends JPanel {
         table.setRowSorter(null);
     }
 
-    // private void supprimerFormation() {
-    // if (selectedRow == -1)
-    // return;
-    // Long formationId = (Long) table.getValueAt(selectedRow, 0);
-    // if (JOptionPane.showConfirmDialog(this, "Confirmer suppression ?",
-    // "Confirmation",
-    // JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-    // formationController.supprimerFormation(formationId);
-    // chargerFormations();
-    // }
-    // }
+    private void refuser() {
+        if (selectedRow == -1)
+            return;
+        Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
+        if (JOptionPane.showConfirmDialog(this, "Voulez vous confimer le refus ?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            inscriptionController.refuserInscription(inscriptionId);
+            chargerInscriptions();
+        }
+    }
+
+    private void accepter() {
+        if (selectedRow == -1)
+            return;
+        Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
+        if (JOptionPane.showConfirmDialog(this, "Voulez-vous confimer l'acceptation de l'inscription?",
+                "Confirmation",
+                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+            inscriptionController.accepterInscription(inscriptionId);
+            chargerInscriptions();
+        }
+    }
+
 
     // /** Modal de modification */
     // private void modifierFormation() {

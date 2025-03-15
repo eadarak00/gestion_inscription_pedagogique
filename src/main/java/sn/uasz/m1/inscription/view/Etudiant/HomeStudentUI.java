@@ -7,6 +7,7 @@ import javax.swing.text.AbstractDocument.Content;
 import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.utils.SessionManager;
 import sn.uasz.m1.inscription.view.components.NavbarPanel;
+import sn.uasz.m1.inscription.view.components.NavbarStudent;
 
 import java.awt.*;
 
@@ -41,7 +42,7 @@ public class HomeStudentUI extends JFrame {
         mainPanel.setLayout(new BorderLayout());
         mainPanel.setBackground(BG_COLOR);
 
-        NavbarPanel navbar = new NavbarPanel(this);
+        NavbarStudent navbar = new NavbarStudent(this);
 
         mainPanel.add(navbar, BorderLayout.NORTH);
         mainPanel.add(createRightPanel(), BorderLayout.EAST);
