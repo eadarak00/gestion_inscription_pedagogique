@@ -20,6 +20,7 @@ public class HomeUI  extends JFrame{
         setTitle("Gestion des Inscriptions Pedagogique");
         setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setLocationRelativeTo(null);
 
         JPanel mainPanel = (JPanel) getContentPane();

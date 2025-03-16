@@ -2,7 +2,6 @@ package sn.uasz.m1.inscription.dao;
 
 import java.util.List;
 
-import org.hibernate.Session;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.NoResultException;

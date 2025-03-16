@@ -6,14 +6,18 @@ import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 import java.awt.*;
 import java.awt.event.*;
 
+import sn.uasz.m1.inscription.model.Etudiant;
+import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.service.AuthentificationService;
+import sn.uasz.m1.inscription.utils.SecurityUtil;
+import sn.uasz.m1.inscription.utils.SessionManager;
+import sn.uasz.m1.inscription.view.Etudiant.HomeStudentUI;
 
 public class SignInStudentUI extends JFrame {
-    // Définition des couleurs
-    private Color vertColor1 = new Color(0x113F36);
-    private Color vertColor2 = new Color(0x128E64);
-    private Color fondColor = new Color(0xF5F5F0);
-    private Color bColor = new Color(0x151d21);
+    // Declaration des couleurs
+    private final Color VERT_COLOR_1 = new Color(0x113F36);
+    private final Color VERT_COLOR_2 = new Color(0x128E64);
+    private final Color BG_COLOR = new Color(0xF5F5F5);
 
     //
     private JTextField emailField;
@@ -33,11 +37,12 @@ public class SignInStudentUI extends JFrame {
         setTitle("Espace Etudiant ~ Gestion des Inscriptions Pédagogiques");
         setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        setUndecorated(true);
         setLocationRelativeTo(null);
 
         // Panel principal
         JPanel mainPanel = (JPanel) getContentPane();
-        mainPanel.setBackground(fondColor);
+        mainPanel.setBackground(BG_COLOR);
         mainPanel.setLayout(new BorderLayout());
 
         // Ajouter les panels gauche et centre
@@ -71,7 +76,7 @@ public class SignInStudentUI extends JFrame {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
         panel.setPreferredSize(new Dimension(600, 0));
-        panel.setBackground(fondColor);
+        panel.setBackground(BG_COLOR);
 
         // Charger et redimensionner l'icône
         ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/sign-in.png");
@@ -87,17 +92,17 @@ public class SignInStudentUI extends JFrame {
     private JPanel createCenterPanel() {
         JPanel panel = new JPanel();
         panel.setLayout(new GridBagLayout());
-        panel.setBackground(fondColor);
+        panel.setBackground(BG_COLOR);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(15, 20, 15, 20);
-        constraints.anchor = GridBagConstraints.CENTER; // Centrer les composants dans le GridBagLayout
+        constraints.anchor = GridBagConstraints.CENTER;
         constraints.gridwidth = 1;
 
         // Création du panel pour le titre et le paragraphe
         JPanel textPanel = new JPanel();
         textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Arrange les composants verticalement
-        textPanel.setBackground(fondColor);
+        textPanel.setBackground(BG_COLOR);
 
         // Titre
         JLabel sectionTitle = new JLabel(
@@ -130,11 +135,158 @@ public class SignInStudentUI extends JFrame {
         return panel;
     }
 
+    // private void ouvrirModalConnexion() {
+    //     // Création de la boîte de dialogue modale
+    //     JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...",
+    //             true);
+    //     loadingDialog.setSize(400, 250);
+    //     loadingDialog.setLayout(new GridBagLayout());
+    //     loadingDialog.setLocationRelativeTo(this);
+    //     loadingDialog.setUndecorated(true);
+    //     loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+    //     // Définir une couleur de fond
+    //     JPanel contentPanel = new JPanel(new GridBagLayout());
+    //     contentPanel.setBackground(BG_COLOR);
+
+    //     GridBagConstraints gbc = new GridBagConstraints();
+    //     gbc.insets = new Insets(10, 10, 10, 10);
+    //     gbc.anchor = GridBagConstraints.CENTER;
+    //     gbc.gridx = 0;
+    //     gbc.gridy = 0;
+
+    //     // Ajout d'un texte "Connexion en cours..."
+    //     JLabel loadingLabel = new JLabel("Connexion en cours...");
+    //     loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
+    //     loadingLabel.setForeground(Color.BLACK); // Changer la couleur du texte
+    //     contentPanel.add(loadingLabel, gbc);
+
+    //     // Ajout d'un GIF de chargement
+    //     gbc.gridy++;
+    //     ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
+    //     JLabel gifLabel = new JLabel(gifIcon);
+    //     contentPanel.add(gifLabel, gbc);
+
+    //     // Définir le contentPane avec notre panel personnalisé
+    //     loadingDialog.setContentPane(contentPanel);
+
+    //     // Exécuter l'authentification en arrière-plan
+    //     new SwingWorker<Boolean, Void>() {
+    //         @Override
+    //         protected Boolean doInBackground() {
+    //             // Simulation d'un délai réseau (2 sec)
+    //             try {
+    //                 Thread.sleep(1000);
+    //             } catch (InterruptedException e) {
+    //                 e.printStackTrace();
+    //             }
+    //             return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
+    //         }
+
+    //         @Override
+    //         protected void done() {
+    //             try {
+    //                 boolean success = get();
+    //                 loadingDialog.dispose(); // Fermer le modal après la connexion
+
+    //                 if (success) {
+    //                     navigateToHomeStudent();
+    //                 } else {
+    //                     JOptionPane.showMessageDialog(null, "Identifiants incorrects.", "Erreur",
+    //                             JOptionPane.ERROR_MESSAGE);
+    //                 }
+    //             } catch (Exception e) {
+    //                 JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur",
+    //                         JOptionPane.ERROR_MESSAGE);
+    //             }
+    //         }
+    //     }.execute();
+
+    //     // Afficher le modal
+    //     loadingDialog.setVisible(true);
+    // }
+
+    private void ouvrirModalConnexion() {
+        // Création de la boîte de dialogue modale
+        JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...", true);
+        loadingDialog.setSize(400, 250);
+        loadingDialog.setLayout(new GridBagLayout());
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setUndecorated(true);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    
+        // Définir une couleur de fond
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(BG_COLOR);
+    
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+    
+        // Ajout d'un texte "Connexion en cours..."
+        JLabel loadingLabel = new JLabel("Connexion en cours...");
+        loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
+        loadingLabel.setForeground(Color.BLACK);
+        contentPanel.add(loadingLabel, gbc);
+    
+        // Ajout d'un GIF de chargement
+        gbc.gridy++;
+        ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
+        JLabel gifLabel = new JLabel(gifIcon);
+        contentPanel.add(gifLabel, gbc);
+    
+        // Définir le contentPane avec notre panel personnalisé
+        loadingDialog.setContentPane(contentPanel);
+    
+        // Exécuter l'authentification en arrière-plan
+        new SwingWorker<Boolean, Void>() {
+            @Override
+            protected Boolean doInBackground() {
+                try {
+                    Thread.sleep(1000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+    
+                // Vérification si l'utilisateur est un responsable
+                if (SecurityUtil.verifierEmailResponsable(emailField.getText())) {
+                    return false; // Retourner false pour bloquer la connexion
+                }
+    
+                return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
+            }
+    
+            @Override
+            protected void done() {
+                try {
+                    boolean success = get();
+                    loadingDialog.dispose();
+    
+                    if (!success) {
+                        JOptionPane.showMessageDialog(null, "Seuls les étudiants peuvent se connecter ici.", "Accès refusé", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+    
+                    navigateToHomeStudent(); // Rediriger si la connexion est réussie
+    
+                } catch (Exception e) {
+                    JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }.execute();
+    
+        // Afficher le modal
+        loadingDialog.setVisible(true);
+    }
+    
+
     // Panel des champs de saisie (Email et Mot de passe)
     private JPanel createInputPanel() {
         JPanel inputPanel = new JPanel();
         inputPanel.setLayout(new GridBagLayout());
-        inputPanel.setBackground(fondColor);
+        inputPanel.setBackground(BG_COLOR);
 
         GridBagConstraints constraints = new GridBagConstraints();
         constraints.insets = new Insets(10, 20, 10, 20); // Espacement entre les composants
@@ -171,7 +323,7 @@ public class SignInStudentUI extends JFrame {
         constraints.gridy = 1;
         JCheckBox showPasswordCheckBox = new JCheckBox("Afficher le mot de passe");
         showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
-        showPasswordCheckBox.setBackground(fondColor);
+        showPasswordCheckBox.setBackground(BG_COLOR);
         showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
 
         showPasswordCheckBox.addActionListener(e -> {
@@ -189,25 +341,12 @@ public class SignInStudentUI extends JFrame {
         constraints.gridy = 2;
         JButton loginButton = new JButton("Se connecter");
         loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
-        loginButton.setBackground(vertColor2);
+        loginButton.setBackground(VERT_COLOR_2);
         loginButton.setForeground(Color.WHITE);
         loginButton.setPreferredSize(new Dimension(250, 40));
-        // Lors de l'ajout du bouton de connexion
-        loginButton.addActionListener(e -> {
-            String email = emailField.getText();
-            String motDePasse = new String(passwordField.getPassword()); // Récupérer le mot de passe
 
-            // Appeler la méthode d'authentification
-            if (authService.authentifier(email, motDePasse)) {
-                // Si l'authentification réussie, rediriger ou effectuer une action
-                // supplémentaire
-                JOptionPane.showMessageDialog(this, "Connexion reussi !", "Success", JOptionPane.INFORMATION_MESSAGE);
-            } else {
-                // Si l'authentification échoue, rester sur la même page
-                JOptionPane.showMessageDialog(this, "Les informations d'authentification sont incorrectes.",
-                        "Erreur de connexion", JOptionPane.ERROR_MESSAGE);
-            }
-        });
+
+        loginButton.addActionListener(e -> ouvrirModalConnexion());
 
         inputPanel.add(loginButton, constraints);
 
@@ -263,6 +402,17 @@ public class SignInStudentUI extends JFrame {
     private void navigateToHome() {
         try {
             HomeUI homePage = new HomeUI();
+            homePage.afficher();
+            fermer();
+        } catch (Exception exp) {
+            System.err.println(exp.getMessage());
+            exp.printStackTrace();
+        }
+    }
+
+    private void navigateToHomeStudent() {
+        try {
+            HomeStudentUI homePage = new HomeStudentUI();
             homePage.afficher();
             fermer();
         } catch (Exception exp) {
