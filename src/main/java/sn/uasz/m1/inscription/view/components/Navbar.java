@@ -2,7 +2,8 @@ package sn.uasz.m1.inscription.view.components;
 
 import javax.swing.*;
 
-
+import sn.uasz.m1.inscription.email.service.NotificationService;
+import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.utils.SessionManager;
 import sn.uasz.m1.inscription.view.HomeUI;
 
@@ -18,8 +19,16 @@ public class Navbar extends JPanel {
     private static final Font BOLD_FONT = new Font("Poppins", Font.BOLD, 14);
     private static final Font REGULAR_FONT = new Font("Poppins", Font.PLAIN, 14);
 
+    private final NotificationService notificationService;
+    int nonLus = 0 ;
+
    
     public Navbar(JFrame parentFrame) {
+
+        Utilisateur utilisateur  = SessionManager.getUtilisateur();
+        this.notificationService = new NotificationService();
+        nonLus = notificationService.recupererNotificationsNonLues(utilisateur.getEmail());
+
         setLayout(new BorderLayout());
         setBackground(VERT_COLOR_1);
         setPreferredSize(new Dimension(parentFrame.getWidth(), 75));
@@ -68,7 +77,7 @@ public class Navbar extends JPanel {
         notificationIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
     
         // Badge arrondi avec le nombre de notifications
-        BadgePanel badgeNotif = new BadgePanel("3");
+        BadgePanel badgeNotif = new BadgePanel(""+nonLus);
     
         // Ajouter l'icône et le badge dans le panneau
         notificationPanel.add(notificationIcon);

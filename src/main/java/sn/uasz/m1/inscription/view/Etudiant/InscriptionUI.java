@@ -754,8 +754,8 @@ public class InscriptionUI extends JFrame {
             buttonPanel.add(validerButton);
             
             // Assemblage final
-            // scrollPane.setViewportView(contentPanel);
-            mainPanel.add(contentPanel, BorderLayout.CENTER);
+            scrollPane.setViewportView(contentPanel);
+            mainPanel.add(scrollPane, BorderLayout.CENTER);
             
             step3Panel.add(mainPanel, BorderLayout.CENTER);
             step3Panel.add(buttonPanel, BorderLayout.SOUTH);

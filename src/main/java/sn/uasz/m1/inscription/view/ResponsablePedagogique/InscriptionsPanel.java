@@ -629,247 +629,116 @@ public class InscriptionsPanel extends JPanel {
         table.setRowSorter(null);
     }
 
+    // private void refuser() {
+    // if (selectedRow == -1)
+    // return;
+    // Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
+    // if (JOptionPane.showConfirmDialog(this, "Voulez vous confimer le refus ?",
+    // "Confirmation",
+    // JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+    // inscriptionController.refuserInscription(inscriptionId);
+    // chargerInscriptions();
+    // }
+    // }
+
+    // private void accepter() {
+    // if (selectedRow == -1)
+    // return;
+    // Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
+    // if (JOptionPane.showConfirmDialog(this, "Voulez-vous confimer l'acceptation
+    // de l'inscription?",
+    // "Confirmation",
+    // JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+    // inscriptionController.accepterInscription(inscriptionId);
+    // chargerInscriptions();
+    // }
+    // }
+
     private void refuser() {
         if (selectedRow == -1)
             return;
+
         Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
-        if (JOptionPane.showConfirmDialog(this, "Voulez vous confimer le refus ?",
-                "Confirmation",
-                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            inscriptionController.refuserInscription(inscriptionId);
-            chargerInscriptions();
+        int confirmation = JOptionPane.showConfirmDialog(this, "Voulez-vous confirmer le refus ?", "Confirmation",
+                JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            executerAvecLoader("Refus de l'inscription en cours...",
+                    () -> inscriptionController.refuserInscription(inscriptionId));
         }
     }
 
     private void accepter() {
         if (selectedRow == -1)
             return;
+
         Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
-        if (JOptionPane.showConfirmDialog(this, "Voulez-vous confimer l'acceptation de l'inscription?",
-                "Confirmation",
-                JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-            inscriptionController.accepterInscription(inscriptionId);
-            chargerInscriptions();
+        int confirmation = JOptionPane.showConfirmDialog(this, "Voulez-vous confirmer l'acceptation de l'inscription ?",
+                "Confirmation", JOptionPane.YES_NO_OPTION);
+
+        if (confirmation == JOptionPane.YES_OPTION) {
+            executerAvecLoader("Validation de l'inscription en cours...",
+                    () -> inscriptionController.accepterInscription(inscriptionId));
         }
     }
 
+    /**
+     * Exécute une action en affichant un loader.
+     *
+     * @param message Message affiché dans le loader.
+     * @param action  Action à exécuter en arrière-plan.
+     */
+    private void executerAvecLoader(String message, Runnable action) {
+        JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Traitement en cours...",
+                true);
+        loadingDialog.setSize(400, 200);
+        loadingDialog.setLayout(new GridBagLayout());
+        loadingDialog.setUndecorated(true);
+        loadingDialog.setLocationRelativeTo(this);
+        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
-    // /** Modal de modification */
-    // private void modifierFormation() {
-    // // Récupérer l'ID de la formation à partir de la ligne sélectionnée
-    // Long formationId = (Long) table.getValueAt(selectedRow, 0); // La première
-    // colonne contient l'ID de la formation
+        // Définir un panneau de contenu
+        JPanel contentPanel = new JPanel(new GridBagLayout());
+        contentPanel.setBackground(Color.WHITE);
 
-    // // Récupérer la formation à partir de son ID
-    // Formation formation = formationController.trouverFormationParId(formationId);
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.anchor = GridBagConstraints.CENTER;
 
-    // // Créer le modal pour modifier la formation
-    // JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-    // "Modifier une Formation", true);
-    // dialog.setSize(600, 300);
-    // dialog.setLayout(new GridBagLayout());
-    // dialog.setUndecorated(true);
-    // dialog.setLocationRelativeTo(this);
+        // Texte du chargement
+        JLabel loadingLabel = new JLabel(message, JLabel.CENTER);
+        loadingLabel.setFont(new Font("Poppins", Font.BOLD, 14));
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+        contentPanel.add(loadingLabel, gbc);
 
-    // // Définir le style et les contraintes du layout
+        // Ajout du spinner GIF redimensionné
+        gbc.gridy++;
+       
+        JLabel gifLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/gif/spinner.gif", 100, 100));
+        contentPanel.add(gifLabel, gbc);
 
-    // GridBagConstraints gbc = new GridBagConstraints();
-    // gbc.insets = new Insets(10, 10, 10, 10);
-    // gbc.anchor = GridBagConstraints.WEST;
-    // gbc.gridx = 0;
-    // gbc.gridy = 0;
+        loadingDialog.setContentPane(contentPanel);
+        loadingDialog.pack();
 
-    // // Champs du formulaire
-    // JLabel libelleLabel = new JLabel("Libellé de la Formation :");
-    // libelleLabel.setFont(REGULAR_FONT);
-    // dialog.add(libelleLabel, gbc);
-    // gbc.gridx = 1;
-    // JTextField libelleField = new JTextField(20);
-    // libelleField.setFont(REGULAR_FONT);
-    // libelleField.setText(formation.getLibelle());
-    // dialog.add(libelleField, gbc);
+        // Exécuter l'action en arrière-plan
+        SwingWorker<Void, Void> worker = new SwingWorker<>() {
+            @Override
+            protected Void doInBackground() {
+                action.run(); // Exécute l'action (ex: accepter ou refuser une inscription)
+                return null;
+            }
 
-    // gbc.gridx = 0;
-    // gbc.gridy++;
-    // JLabel nivLabel = new JLabel("Niveau :");
-    // nivLabel.setFont(REGULAR_FONT);
-    // dialog.add(nivLabel, gbc);
-    // gbc.gridx = 1;
-    // JTextField niveauField = new JTextField(20);
-    // niveauField.setFont(REGULAR_FONT);
-    // niveauField.setText(String.valueOf(formation.getNiveau()));
-    // dialog.add(niveauField, gbc);
+            @Override
+            protected void done() {
+                SwingUtilities.invokeLater(() -> {
+                    loadingDialog.dispose();
+                    chargerInscriptions(); // Rafraîchir après l'action
+                });
+            }
+        };
 
-    // // Boutons
-    // gbc.gridx = 0;
-    // gbc.gridy++;
-    // gbc.gridwidth = 2;
-    // gbc.anchor = GridBagConstraints.CENTER;
-
-    // JButton enregistrerButton = new JButton("Enregistrer");
-    // enregistrerButton.setBackground(VERT_COLOR_1);
-    // enregistrerButton.setForeground(Color.WHITE);
-    // enregistrerButton.setFont(REGULAR_FONT);
-
-    // JButton annulerButton = new JButton("Annuler");
-    // annulerButton.setBackground(RED_COLOR);
-    // annulerButton.setForeground(Color.WHITE);
-    // annulerButton.setFont(REGULAR_FONT);
-
-    // JPanel buttonPanel = new JPanel();
-    // buttonPanel.add(enregistrerButton);
-    // buttonPanel.add(annulerButton);
-
-    // dialog.add(buttonPanel, gbc);
-
-    // // Action sur le bouton "Enregistrer"
-    // enregistrerButton.addActionListener(e -> {
-    // String libelle = libelleField.getText();
-    // String niveauText = niveauField.getText();
-
-    // // Validation des champs
-    // if (libelle.isEmpty() || niveauText.isEmpty()) {
-    // JOptionPane.showMessageDialog(dialog, "Tous les champs sont obligatoires !",
-    // "Erreur",
-    // JOptionPane.ERROR_MESSAGE);
-    // return;
-    // }
-
-    // int niveau;
-    // try {
-    // niveau = Integer.parseInt(niveauText);
-    // if (niveau <= 0) {
-    // throw new NumberFormatException();
-    // }
-    // } catch (NumberFormatException ex) {
-    // JOptionPane.showMessageDialog(dialog, "Le niveau doit être un entier
-    // supérieur à 0.", "Erreur",
-    // JOptionPane.ERROR_MESSAGE);
-    // return;
-    // }
-
-    // String message = formationController.modifierFormation(formationId, libelle,
-    // niveau);
-    // JOptionPane.showMessageDialog(dialog, message, "Modification Formation",
-    // JOptionPane.INFORMATION_MESSAGE);
-
-    // // Rafraîchir la liste des formations
-    // chargerFormations();
-
-    // // Fermer le modal
-    // dialog.dispose();
-    // });
-
-    // // Bouton "Annuler"
-    // annulerButton.addActionListener(e -> dialog.dispose());
-
-    // // Affichage du modal
-    // dialog.setVisible(true);
-    // }
-
-    // /** Modal pour ajouter une formation */
-    // private void ouvrirModalAjoutFormation() {
-    // // Création du `JDialog` pour l'ajout de formation
-    // JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this),
-    // "Ajouter une Formation", true);
-    // dialog.setSize(600, 300);
-    // dialog.setLayout(new GridBagLayout());
-    // dialog.setUndecorated(true);
-
-    // dialog.setLocationRelativeTo(this);
-
-    // // Définition du style
-
-    // GridBagConstraints gbc = new GridBagConstraints();
-    // gbc.insets = new Insets(10, 10, 10, 10);
-    // gbc.anchor = GridBagConstraints.WEST;
-    // gbc.gridx = 0;
-    // gbc.gridy = 0;
-
-    // // Champs du formulaire
-    // JLabel libelleLabel = new JLabel("Libellé de la Formation :");
-    // libelleLabel.setFont(REGULAR_FONT);
-    // dialog.add(libelleLabel, gbc);
-    // gbc.gridx = 1;
-    // JTextField libelleField = new JTextField(20);
-    // libelleField.setFont(REGULAR_FONT);
-    // dialog.add(libelleField, gbc);
-
-    // gbc.gridx = 0;
-    // gbc.gridy++;
-    // JLabel nivLabel = new JLabel("Niveau :");
-    // nivLabel.setFont(REGULAR_FONT);
-    // dialog.add(nivLabel, gbc);
-    // gbc.gridx = 1;
-    // JTextField niveauField = new JTextField(20); // Utilisation d'un `JTextField`
-    // pour stocker des nombres
-    // niveauField.setFont(REGULAR_FONT);
-    // dialog.add(niveauField, gbc);
-
-    // // Boutons
-    // gbc.gridx = 0;
-    // gbc.gridy++;
-    // gbc.gridwidth = 2;
-    // gbc.anchor = GridBagConstraints.CENTER;
-
-    // JButton enregistrerButton = new JButton("Enregistrer");
-    // enregistrerButton.setBackground(VERT_COLOR_1);
-    // enregistrerButton.setForeground(Color.WHITE);
-    // enregistrerButton.setFont(REGULAR_FONT);
-
-    // JButton annulerButton = new JButton("Annuler");
-    // annulerButton.setBackground(RED_COLOR);
-    // annulerButton.setForeground(Color.WHITE);
-    // annulerButton.setFont(REGULAR_FONT);
-
-    // JPanel buttonPanel = new JPanel();
-    // buttonPanel.add(enregistrerButton);
-    // buttonPanel.add(annulerButton);
-
-    // dialog.add(buttonPanel, gbc);
-
-    // // Action sur le bouton "Enregistrer"
-    // enregistrerButton.addActionListener(e -> {
-    // String libelle = libelleField.getText();
-    // String niveauText = niveauField.getText();
-
-    // // Validation des champs
-    // if (libelle.isEmpty() || niveauText.isEmpty()) {
-    // JOptionPane.showMessageDialog(dialog, "Tous les champs sont obligatoires !",
-    // "Erreur",
-    // JOptionPane.ERROR_MESSAGE);
-    // return;
-    // }
-
-    // int niveau;
-    // try {
-    // niveau = Integer.parseInt(niveauText);
-    // if (niveau <= 0) {
-    // throw new NumberFormatException();
-    // }
-    // } catch (NumberFormatException ex) {
-    // JOptionPane.showMessageDialog(dialog, "Le niveau doit être un entier
-    // supérieur à 0.", "Erreur",
-    // JOptionPane.ERROR_MESSAGE);
-    // return;
-    // }
-
-    // // Ajout de la formation via `FormationController`
-    // String message = formationController.ajouterFormation(libelle, niveau);
-    // JOptionPane.showMessageDialog(dialog, message, "Ajout Formation",
-    // JOptionPane.INFORMATION_MESSAGE);
-
-    // // Rafraîchir la liste des formations
-    // chargerFormations();
-
-    // // Fermer le modal
-    // dialog.dispose();
-    // });
-
-    // // Bouton "Annuler"
-    // annulerButton.addActionListener(e -> dialog.dispose());
-
-    // // Affichage du modal
-    // dialog.setVisible(true);
-    // }
+        SwingUtilities.invokeLater(() -> loadingDialog.setVisible(true)); // Afficher le loader
+        worker.execute(); // Exécuter la tâche
+    }
 }

@@ -31,6 +31,10 @@ public class NotificationService {
         return notificationDAO.findByDestinataire(destinataire);
     }
 
+    public int recupererNotificationsNonLues(String destinataire) {
+        return notificationDAO.unRead(destinataire);
+    }
+
     // Marquer une notification comme lue
     public void marquerNotificationCommeLue(Long notificationId) {
         notificationDAO.markAsRead(notificationId);

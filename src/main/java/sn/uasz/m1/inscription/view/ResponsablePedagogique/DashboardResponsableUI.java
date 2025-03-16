@@ -3,6 +3,7 @@ package sn.uasz.m1.inscription.view.ResponsablePedagogique;
 import javax.swing.*;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
+import sn.uasz.m1.inscription.email.service.NotificationService;
 import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.utils.SessionManager;
 import sn.uasz.m1.inscription.view.HomeUI;
@@ -37,7 +38,14 @@ public class DashboardResponsableUI extends JFrame {
     private List<JPanel> navItems = new ArrayList<>();
     private String activeSection = "Accueil"; // Section active par défaut
 
+    private final NotificationService notificationService;
+    int nonLus ;
+
     public DashboardResponsableUI() {
+         Utilisateur utilisateur  = SessionManager.getUtilisateur();
+        this.notificationService = new NotificationService();
+        nonLus = notificationService.recupererNotificationsNonLues(utilisateur.getEmail());
+        
         try {
             UIManager.setLookAndFeel(new NimbusLookAndFeel());
         } catch (Exception e) {
@@ -104,7 +112,6 @@ public class DashboardResponsableUI extends JFrame {
         sidebar.add(navContainer, BorderLayout.CENTER);
        
         // Récupérer l'utilisateur connecté
-        Utilisateur utilisateur = SessionManager.getUtilisateur();
         String userName = (utilisateur != null) ? utilisateur.getNom() + " " + utilisateur.getPrenom()
                 : "Utilisateur inconnu";
 
@@ -432,7 +439,7 @@ public class DashboardResponsableUI extends JFrame {
         JLabel notificationIcon = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/notification.png", 25, 25));
         notificationIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         // Badge arrondi avec le nombre de notifications
-        BadgePanel badgeNotif = new BadgePanel("3");
+        BadgePanel badgeNotif = new BadgePanel(""+nonLus);
 
         // Ajouter l'icône et le badge dans le panneau
         notificationPanel.add(notificationIcon);

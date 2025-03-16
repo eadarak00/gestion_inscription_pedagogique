@@ -7,6 +7,7 @@ import java.awt.*;
 import java.awt.event.*;
 
 import sn.uasz.m1.inscription.service.AuthentificationService;
+import sn.uasz.m1.inscription.utils.SecurityUtil;
 import sn.uasz.m1.inscription.view.ResponsablePedagogique.DashboardResponsableUI;
 
 public class LoginUI extends JFrame {
@@ -132,70 +133,145 @@ public class LoginUI extends JFrame {
         return panel;
     }
 
+    // private void ouvrirModalConnexion() {
+    //     // Création de la boîte de dialogue modale
+    //     JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...", true);
+    //     loadingDialog.setSize(400, 250);
+    //     loadingDialog.setLayout(new GridBagLayout());
+    //     loadingDialog.setLocationRelativeTo(this);
+    //     loadingDialog.setUndecorated(true);
+    //     loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    
+    //     // Définir une couleur de fond
+    //     JPanel contentPanel = new JPanel(new GridBagLayout());
+    //     contentPanel.setBackground(BG_COLOR);
+    
+    //     GridBagConstraints gbc = new GridBagConstraints();
+    //     gbc.insets = new Insets(10, 10, 10, 10);
+    //     gbc.anchor = GridBagConstraints.CENTER;
+    //     gbc.gridx = 0;
+    //     gbc.gridy = 0;
+    
+    //     // Ajout d'un texte "Connexion en cours..."
+    //     JLabel loadingLabel = new JLabel("Connexion en cours...");
+    //     loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
+    //     loadingLabel.setForeground(Color.BLACK); // Changer la couleur du texte
+    //     contentPanel.add(loadingLabel, gbc);
+    
+    //     // Ajout d'un GIF de chargement
+    //     gbc.gridy++;
+    //     ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
+    //     JLabel gifLabel = new JLabel(gifIcon);
+    //     contentPanel.add(gifLabel, gbc);
+    
+    //     // Définir le contentPane avec notre panel personnalisé
+    //     loadingDialog.setContentPane(contentPanel);
+    
+    //     // Exécuter l'authentification en arrière-plan
+    //     new SwingWorker<Boolean, Void>() {
+    //         @Override
+    //         protected Boolean doInBackground() {
+    //             // Simulation d'un délai réseau (2 sec)
+    //             try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
+    //             return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
+    //         }
+    
+    //         @Override
+    //         protected void done() {
+    //             try {
+    //                 boolean success = get();
+    //                 loadingDialog.dispose(); // Fermer le modal après la connexion
+    
+    //                 if (success) {
+    //                     navigateToDashBoard();
+    //                 } else {
+    //                     JOptionPane.showMessageDialog(null, "Identifiants incorrects.", "Erreur", JOptionPane.ERROR_MESSAGE);
+    //                 }
+    //             } catch (Exception e) {
+    //                 JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur", JOptionPane.ERROR_MESSAGE);
+    //             }
+    //         }
+    //     }.execute();
+    
+    //     // Afficher le modal
+    //     loadingDialog.setVisible(true);
+    // }
+    
     private void ouvrirModalConnexion() {
-        // Création de la boîte de dialogue modale
-        JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...", true);
-        loadingDialog.setSize(400, 250);
-        loadingDialog.setLayout(new GridBagLayout());
-        loadingDialog.setLocationRelativeTo(this);
-        loadingDialog.setUndecorated(true);
-        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-    
-        // Définir une couleur de fond
-        JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(BG_COLOR);
-    
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.CENTER;
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-    
-        // Ajout d'un texte "Connexion en cours..."
-        JLabel loadingLabel = new JLabel("Connexion en cours...");
-        loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
-        loadingLabel.setForeground(Color.BLACK); // Changer la couleur du texte
-        contentPanel.add(loadingLabel, gbc);
-    
-        // Ajout d'un GIF de chargement
-        gbc.gridy++;
-        ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
-        JLabel gifLabel = new JLabel(gifIcon);
-        contentPanel.add(gifLabel, gbc);
-    
-        // Définir le contentPane avec notre panel personnalisé
-        loadingDialog.setContentPane(contentPanel);
-    
-        // Exécuter l'authentification en arrière-plan
-        new SwingWorker<Boolean, Void>() {
-            @Override
-            protected Boolean doInBackground() {
-                // Simulation d'un délai réseau (2 sec)
-                try { Thread.sleep(1000); } catch (InterruptedException e) { e.printStackTrace(); }
-                return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
+    // Création de la boîte de dialogue modale
+    JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...", true);
+    loadingDialog.setSize(400, 250);
+    loadingDialog.setLayout(new GridBagLayout());
+    loadingDialog.setLocationRelativeTo(this);
+    loadingDialog.setUndecorated(true);
+    loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+
+    // Définir une couleur de fond
+    JPanel contentPanel = new JPanel(new GridBagLayout());
+    contentPanel.setBackground(BG_COLOR);
+
+    GridBagConstraints gbc = new GridBagConstraints();
+    gbc.insets = new Insets(10, 10, 10, 10);
+    gbc.anchor = GridBagConstraints.CENTER;
+    gbc.gridx = 0;
+    gbc.gridy = 0;
+
+    // Ajout d'un texte "Connexion en cours..."
+    JLabel loadingLabel = new JLabel("Connexion en cours...");
+    loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
+    loadingLabel.setForeground(Color.BLACK);
+    contentPanel.add(loadingLabel, gbc);
+
+    // Ajout d'un GIF de chargement
+    gbc.gridy++;
+    ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
+    JLabel gifLabel = new JLabel(gifIcon);
+    contentPanel.add(gifLabel, gbc);
+
+    // Définir le contentPane avec notre panel personnalisé
+    loadingDialog.setContentPane(contentPanel);
+
+    // Exécuter l'authentification en arrière-plan
+    new SwingWorker<Boolean, Void>() {
+        @Override
+        protected Boolean doInBackground() {
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-    
-            @Override
-            protected void done() {
-                try {
-                    boolean success = get();
-                    loadingDialog.dispose(); // Fermer le modal après la connexion
-    
-                    if (success) {
-                        navigateToDashBoard();
-                    } else {
-                        JOptionPane.showMessageDialog(null, "Identifiants incorrects.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                    }
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur", JOptionPane.ERROR_MESSAGE);
+
+            // Vérification si l'utilisateur est un responsable
+            if (SecurityUtil.verifierEmailEtudiant(emailField.getText())) {
+                return false; // Retourner false pour bloquer la connexion
+            }
+
+            return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
+        }
+
+        @Override
+        protected void done() {
+            try {
+                boolean success = get();
+                loadingDialog.dispose();
+
+                if (!success) {
+                    JOptionPane.showMessageDialog(null, "Seuls les responsables peuvent se connecter ici.", "Accès refusé", JOptionPane.ERROR_MESSAGE);
+                    return;
                 }
+
+                navigateToDashBoard(); // Rediriger si la connexion est réussie
+
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur", JOptionPane.ERROR_MESSAGE);
             }
-        }.execute();
-    
-        // Afficher le modal
-        loadingDialog.setVisible(true);
-    }
-    
+        }
+    }.execute();
+
+    // Afficher le modal
+    loadingDialog.setVisible(true);
+}
+
     
     /** 🔥 Associez cette méthode au bouton "Se connecter" */
     private JPanel createInputPanel() {
