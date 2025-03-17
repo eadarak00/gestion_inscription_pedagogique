@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
+import sn.uasz.m1.inscription.dao.InscriptionDAO;
 import sn.uasz.m1.inscription.dao.UEDAO;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.UE;
@@ -15,11 +17,12 @@ import sn.uasz.m1.inscription.utils.SessionManager;
 public class UEService {
     private final UEDAO ueDAO;
     private final ResponsablePedagogiqueService rService;
+    private final InscriptionDAO inscriptionDAO;
 
     public UEService() {
         this.ueDAO = new UEDAO();
         this.rService = new ResponsablePedagogiqueService();
-
+        this.inscriptionDAO = new InscriptionDAO();
     }
 
     /**
@@ -65,16 +68,6 @@ public class UEService {
     public List<UE> getAllUEs() {
         return ueDAO.findAll();
     }
-
-    /**
-     * Récupère les UEs d'une formation donnée.
-     */
-    // public List<UE> getUEsByFormation(Formation formation) {
-    // if (formation == null || formation.getId() == null) {
-    // throw new IllegalArgumentException("La formation est invalide.");
-    // }
-    // return ueDAO.findByFormation(formation);
-    // }
 
     /**
      * Met à jour un UE.
@@ -212,17 +205,18 @@ public class UEService {
     public List<UE> listerUesDisponiblePourFormation(Long formationId) {
         // Liste de toutes les UEs disponibles
         List<UE> toutesLesUEs = getAllUEs();
-        
+
         // Liste des UEs déjà associées à la formation donnée
         List<UE> uesDeLaFormation = listerUEsParFormation(formationId);
-        
+
         // Créer une nouvelle liste pour les UEs disponibles
         List<UE> uesDisponibles = new ArrayList<>();
-        
-        // Itérer sur toutes les UEs et ajouter celles qui ne sont pas déjà dans la formation
+
+        // Itérer sur toutes les UEs et ajouter celles qui ne sont pas déjà dans la
+        // formation
         for (UE ue : toutesLesUEs) {
             boolean estDansLaFormation = false;
-            
+
             // Vérifier si l'UE est déjà dans la formation
             for (UE ueFormation : uesDeLaFormation) {
                 if (ue.getId().equals(ueFormation.getId())) {
@@ -230,16 +224,21 @@ public class UEService {
                     break;
                 }
             }
-            
-            // Si l'UE n'est pas dans la formation et n'a pas déjà une autre formation associée
+
+            // Si l'UE n'est pas dans la formation et n'a pas déjà une autre formation
+            // associée
             if (!estDansLaFormation && ue.getFormation() == null) {
                 uesDisponibles.add(ue);
             }
         }
-        
+
         // Retourner la liste des UEs disponibles
         return uesDisponibles;
     }
-    
+
+    public List<Etudiant> getEtudiantsByUE(Long ueId) {
+        UE ue = getUEById(ueId);
+        return inscriptionDAO.findEtudiantsByUE(ue.getId());
+    }
 
 }

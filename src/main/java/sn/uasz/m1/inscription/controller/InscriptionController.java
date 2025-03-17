@@ -24,8 +24,15 @@ public class InscriptionController {
         }
     }
 
-    public List<Inscription> listeInscriptionsResponsable(){
+    public List<Inscription> listerInscriptionsResponsable(){
         return inscriptionService.getInscriptionsByResponsable();
+    }
+
+    public List<Inscription> listerInscriptionsPendingResponsable(){
+        return inscriptionService.getInscriptionsPendingByResponsable();
+    }
+    public List<Inscription> listerInscriptionsTreateResponsable(){
+        return inscriptionService.getInscriptionsTreatedByResponsable();
     }
 
     public String refuserInscription(Long inscriptionId) {

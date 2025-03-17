@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.enumeration.TypeGroupe;
@@ -137,5 +138,9 @@ public class GroupeController {
 
     public List<Groupe> getGroupesByFormation(Formation formation){
         return groupeService.getGroupesByFormation(formation);
+    }
+
+    public List<Etudiant> listerEtudiantsParGroupe(Long groupeId){
+        return groupeService.listerEtudiantsParGroupe(groupeId);
     }
 }

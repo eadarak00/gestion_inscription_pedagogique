@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import sn.uasz.m1.inscription.dao.FormationDAO;
+import sn.uasz.m1.inscription.dao.InscriptionDAO;
 import sn.uasz.m1.inscription.dao.UEDAO;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.UE;
@@ -15,11 +17,13 @@ public class FormationService {
     private final FormationDAO formationDAO;
     private final ResponsablePedagogiqueService rService;
     private final UEDAO ueDAO;
+    private final InscriptionDAO inscriptionDAO;
 
     public FormationService() {
         this.formationDAO = new FormationDAO();
         this.rService = new ResponsablePedagogiqueService();
         this.ueDAO = new UEDAO();
+        this.inscriptionDAO = new InscriptionDAO();
 
     }
 
@@ -130,6 +134,11 @@ public class FormationService {
             throw new RuntimeException("Erreur lors de la récupération du nombre d'UEs obligatoires.", e);
         }
 
+    }
+
+    public List<Etudiant> getEtudiantsByFormation(Long formationId){
+        Formation formation = getFormationById(formationId);
+        return inscriptionDAO.findEtudiantsByFormation(formation.getId());
     }
 
 }

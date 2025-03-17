@@ -1,5 +1,6 @@
 package sn.uasz.m1.inscription.controller;
 
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.service.FormationService;
 
@@ -88,6 +89,10 @@ public class FormationController {
 
     public Formation trouverFormationParLibelle(String libelle){
         return formationService.getFormationByLibelle(libelle);
+    }
+
+    public List<Etudiant> listerEtudiantFormation(Long formationId){
+        return formationService.getEtudiantsByFormation(formationId);
     }
 
 }

@@ -105,6 +105,8 @@ public class DashboardResponsableUI extends JFrame {
                 createMainPanel(new UEUI()), navContainer);
         addNavItem("Inscriptions", "src/main/resources/static/img/png/proposal.png",
                 createMainPanel(new InscriptionsPanel()), navContainer);
+        addNavItem("Treated Subscribes", "src/main/resources/static/img/png/proposal.png",
+            createMainPanel(new InscriptionTreatedPanel()), navContainer);
 
         // Ajouter de l'espace entre les boutons de navigation et le profil utilisateur
         navContainer.add(Box.createVerticalGlue());
