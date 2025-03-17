@@ -3,8 +3,8 @@ package sn.uasz.m1.inscription.dao;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityTransaction;
 import lombok.extern.slf4j.Slf4j;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Inscription;
-import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.enumeration.StatutInscription;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
@@ -88,6 +88,42 @@ public class InscriptionDAO {
                     Inscription.class)
                 .setParameter("responsableId", responsableId)
                 .getResultList();
+        }
+    }
+
+    public List<Inscription> findPendingByResponsable(Long responsableId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.createQuery(
+                    "SELECT i FROM Inscription i " +
+                    "WHERE i.formation.responsable.id = :responsableId " +
+                    "AND i.statut = :statut", Inscription.class)
+                .setParameter("responsableId", responsableId)
+                .setParameter("statut", StatutInscription.EN_ATTENTE)
+                .getResultList();
+        }
+    }
+
+    public List<Etudiant> findEtudiantsByFormation(Long formationId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.createQuery(
+                    "SELECT i.etudiant FROM Inscription i " +
+                            "WHERE i.formation.id = :formationId " +
+                            "AND i.statut = :statut",
+                    Etudiant.class)
+                    .setParameter("formationId", formationId)
+                    .setParameter("statut", StatutInscription.ACCEPTEE) 
+                    .getResultList();
+        }
+    }
+
+    public List<Etudiant> findEtudiantsByUE(Long ueId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.createQuery(
+                    "SELECT DISTINCT i.etudiant FROM Inscription i " +
+                    "JOIN i.ues u WHERE u.id = :ueId AND i.statut = :statut", Etudiant.class)
+                    .setParameter("ueId", ueId)
+                    .setParameter("statut", StatutInscription.ACCEPTEE)
+                    .getResultList();
         }
     }
     

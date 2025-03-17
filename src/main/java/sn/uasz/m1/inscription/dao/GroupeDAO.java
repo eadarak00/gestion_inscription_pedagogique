@@ -1,12 +1,16 @@
 package sn.uasz.m1.inscription.dao;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
+import sn.uasz.m1.inscription.model.enumeration.TypeGroupe;
 import sn.uasz.m1.inscription.utils.DatabaseUtil;
 
 public class GroupeDAO implements IDAO<Groupe> {
@@ -63,28 +67,28 @@ public class GroupeDAO implements IDAO<Groupe> {
         if (formation == null || formation.getId() == null) {
             throw new IllegalArgumentException("La formation ne peut pas être null et doit avoir un ID valide.");
         }
-    
+
         List<Groupe> groupes = new ArrayList<>();
-        
+
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
             entityManager.getTransaction().begin();
-    
+
             // Requête JPQL avec jointure explicite
             String jpql = "SELECT g FROM Groupe g JOIN FETCH g.formation f WHERE f.id = :formationId";
             groupes = entityManager.createQuery(jpql, Groupe.class)
                     .setParameter("formationId", formation.getId())
                     .getResultList();
-    
-            entityManager.getTransaction().commit(); 
-    
+
+            entityManager.getTransaction().commit();
+
             groupes.size();
         } catch (Exception e) {
-            e.printStackTrace(); 
+            e.printStackTrace();
         }
-    
+
         return groupes;
     }
-    
+
     @Override
     public Groupe update(Long id, Groupe o) {
         try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
@@ -124,5 +128,84 @@ public class GroupeDAO implements IDAO<Groupe> {
             throw new RuntimeException("Erreur lors de la suppression", e);
         }
     }
+
+    public void merge(Groupe groupe) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.merge(groupe);
+            transaction.commit();
+        }
+    }
+
+    public List<Groupe> findGroupesByFormation(Long formationId, TypeGroupe type) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.createQuery(
+                    "SELECT g FROM Groupe g WHERE g.formation.id = :formationId AND g.type = :type", Groupe.class)
+                    .setParameter("formationId", formationId)
+                    .setParameter("type", type)
+                    .getResultList();
+        }
+    }
+
+    public void add(Groupe groupe) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            EntityTransaction transaction = entityManager.getTransaction();
+            transaction.begin();
+            entityManager.persist(groupe); // 🔹 Ajoute un nouveau groupe
+            transaction.commit();
+        }
+    }
+
+    public List<Etudiant> findEtudiantsRepartis(Long formationId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            return entityManager.createQuery(
+                    "SELECT DISTINCT e FROM Groupe g JOIN g.etudiants e WHERE g.formation.id = :formationId",
+                    Etudiant.class)
+                    .setParameter("formationId", formationId)
+                    .getResultList();
+        }
+    }
+
+    // public List<Etudiant> findEtudiantsByGroupeId(Long groupeId) {
+    //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+    //         // Charger le groupe par ID
+    //         Groupe groupe = entityManager.find(Groupe.class, groupeId);
+
+    //         if (groupe == null) {
+    //             return Collections.emptyList();
+    //         }
+
+    //         // Retourner la liste des étudiants du groupe
+    //         return groupe.getEtudiants();
+    //     } catch (Exception e) {
+    //         throw new RuntimeException("Erreur lors de la récupération des étudiants du groupe", e);
+    //     }
+    // }
+
+    // public List<Etudiant> findEtudiantsByGroupe(Long groupeId) {
+    //     try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+    //         String query = "SELECT e FROM Etudiant e JOIN e.groupes g WHERE g.id = :groupeId";
+    //         return entityManager.createQuery(query, Etudiant.class)
+    //                             .setParameter("groupeId", groupeId)
+    //                             .getResultList();
+    //     } catch (Exception e) {
+    //         throw new RuntimeException("Erreur lors de la récupération des étudiants pour le groupe ID: " + groupeId, e);
+    //     }
+    // }
+
+    public List<Etudiant> findEtudiantsByGroupe(Long groupeId) {
+        try (EntityManager entityManager = DatabaseUtil.getEntityManager()) {
+            String query = "SELECT DISTINCT e FROM Groupe g JOIN g.etudiants e WHERE g.id = :groupeId";
+            return entityManager.createQuery(query, Etudiant.class)
+                                .setParameter("groupeId", groupeId)
+                                .getResultList();
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lors de la récupération des étudiants pour le groupe ID: " + groupeId, e);
+        }
+    }
+    
+    
+
 
 }

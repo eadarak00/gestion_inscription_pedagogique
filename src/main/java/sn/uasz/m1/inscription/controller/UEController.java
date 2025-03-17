@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import sn.uasz.m1.inscription.model.Enseignant;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.service.UEService;
 
@@ -209,4 +210,7 @@ public class UEController {
         return ueService.listerUesDisponiblePourFormation(formationId);
     }
 
+    public List<Etudiant> listerEtudiantsParUE(Long ueId){
+        return ueService.getEtudiantsByUE(ueId);
+    }
 }

@@ -36,16 +36,13 @@ public class Inscription {
     @JoinColumn(name = "formation_id", nullable = false)
     private Formation formation;
 
-    // @ManyToMany
-    // @JoinTable(
-    // name = "inscription_ue_optionnelle",
-    // joinColumns = @JoinColumn(name = "inscription_id"),
-    // inverseJoinColumns = @JoinColumn(name = "ue_id")
-    // )
-    // private List<UE> uesOptionnelles = new ArrayList<>();
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "inscription_ue_optionnelle", joinColumns = @JoinColumn(name = "inscription_id"), inverseJoinColumns = @JoinColumn(name = "ue_id"))
     private List<UE> uesOptionnelles = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(name = "ue_inscrites", joinColumns = @JoinColumn(name = "inscription_id"), inverseJoinColumns = @JoinColumn(name = "ue_id"))
+    private List<UE> ues = new ArrayList<>();
 
     @Enumerated(EnumType.STRING)
     private StatutInscription statut = StatutInscription.EN_ATTENTE;

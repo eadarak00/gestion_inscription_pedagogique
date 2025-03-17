@@ -61,11 +61,14 @@ public class InscriptionService {
                 throw new RuntimeException("L'étudiant est déjà inscrit à une formation.");
             }
                 
+
             // Récupérer le responsable pédagogique de la formation
             ResponsablePedagogique responsable = formationService.getResponsablePedagogique(formationId);
     
             // Récupérer toutes les UEs optionnelles disponibles pour cette formation
             List<UE> uesOptionnellesDisponibles = formationService.getOptionalUEs(formationId);
+
+
     
             // Si la formation n'a pas d'UEs optionnelles
             if (uesOptionnellesDisponibles.isEmpty()) {
@@ -76,6 +79,7 @@ public class InscriptionService {
                 inscription.setEtudiant(etudiant);
                 inscription.setFormation(formation);
                 inscription.setUesOptionnelles(new ArrayList<>());
+                inscription.setUes(null);
                 inscriptionDAO.save(inscription);
     
                 // Notifier le responsable de l'inscription de l'étudiant
@@ -96,6 +100,7 @@ public class InscriptionService {
             Inscription inscription = new Inscription();
             inscription.setEtudiant(etudiant);
             inscription.setFormation(formation);
+            inscription.setUes(null);
             inscription.setUesOptionnelles(ues);
     
             // Enregistrement de l'inscription
@@ -122,6 +127,34 @@ public class InscriptionService {
         }
     }
 
+    public List<Inscription> getInscriptionsPendingByResponsable() {
+        Utilisateur utilisateur = SessionManager.getUtilisateur();
+    
+        if (utilisateur instanceof ResponsablePedagogique) {
+            ResponsablePedagogique responsable = (ResponsablePedagogique) utilisateur;
+            return inscriptionDAO.findPendingByResponsable(responsable.getId());
+        } else {
+            throw new IllegalStateException("L'utilisateur connecté n'est pas un responsable pédagogique.");
+        }
+    }
+
+    public List<Inscription> getInscriptionsTreatedByResponsable() {
+        Utilisateur utilisateur = SessionManager.getUtilisateur();
+        List<Inscription> inscriptions = new ArrayList<>();
+    
+        if (utilisateur instanceof ResponsablePedagogique) {
+            ResponsablePedagogique responsable = (ResponsablePedagogique) utilisateur;
+            for (Inscription inscription : inscriptionDAO.findByResponsable(responsable.getId())) {
+                if (inscription.getStatut() != StatutInscription.EN_ATTENTE) {
+                    inscriptions.add(inscription);
+                }
+            }
+            return inscriptions;
+        } else {
+            throw new IllegalStateException("L'utilisateur connecté n'est pas un responsable pédagogique.");
+        }
+    }
+
     public Inscription getInscriptionById(Long id) {
         Inscription inscription = inscriptionDAO.findById(id);
         if (inscription == null) {
@@ -129,7 +162,7 @@ public class InscriptionService {
         }
         return inscription;
     }
-
+    
 
     public void refuserInscription(Long id){
         Inscription inscription = getInscriptionById(id);
@@ -161,7 +194,12 @@ public class InscriptionService {
         Formation formation = inscription.getFormation();
         List<UE> uesObligatoires = formationService.getRequiredUEs(formation.getId());
         List<UE> uesOptionnelles = inscription.getUesOptionnelles();
-        inscription.getUesOptionnelles().addAll(uesObligatoires);
+       
+        List<UE> ues = new ArrayList<>();
+        ues.addAll(uesObligatoires);
+        ues.addAll(uesOptionnelles);
+        inscription.setUes(ues);
+
         // inscription.setStatut(StatutInscription.ACCEPTEE);
 
         inscriptionDAO.update(inscription);
@@ -210,6 +248,16 @@ public class InscriptionService {
         return ues.stream()
                   .map(ue -> ue.getCode() + " - " + ue.getLibelle())
                   .collect(Collectors.joining(", "));
+    }
+
+    public int countInscriptionsByFormation(Long formationId) {
+        int count = 0;
+        for (Inscription inscription : getInscriptionsByResponsable()) {
+            if (inscription.getFormation().getId() == formationId) {
+                count++;
+            }
+        }
+        return count;
     }
     
 }

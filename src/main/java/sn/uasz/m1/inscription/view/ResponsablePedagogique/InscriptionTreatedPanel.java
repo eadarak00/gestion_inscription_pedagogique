@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
  * Panel de gestion des inscriptions avec interface moderne
  * Permet d'afficher, de rechercher et de gérer les statuts des inscriptions
  */
-public class InscriptionsPanel extends JPanel {
+public class InscriptionTreatedPanel extends JPanel {
     // 🎨 Déclaration des couleurs (conservées de l'original)
     private static final Color VERT_COLOR_1 = new Color(0x113F36);
     private static final Color VERT_COLOR_2 = new Color(0x128E64);
@@ -47,7 +47,6 @@ public class InscriptionsPanel extends JPanel {
     // 🏗 Composants principaux
     private JTable table;
     private DefaultTableModel tableModel;
-    private final JPanel bottomPanel;
     private int selectedRow = -1;
     private JTextField searchField;
     private JLabel statusLabel;
@@ -55,7 +54,7 @@ public class InscriptionsPanel extends JPanel {
     // les controller et services
     private final InscriptionController inscriptionController;
 
-    public InscriptionsPanel() {
+    public InscriptionTreatedPanel() {
         // Initialisation des controllers et services
         this.inscriptionController = new InscriptionController();
 
@@ -66,9 +65,6 @@ public class InscriptionsPanel extends JPanel {
         // Ajouter les composants à l'interface
         add(createHeader(), BorderLayout.NORTH);
         add(createMainContent(), BorderLayout.CENTER); // 🔹 `tableModel` est initialisé ici
-        bottomPanel = createBottomPanel();
-        bottomPanel.setVisible(false);
-        add(bottomPanel, BorderLayout.SOUTH);
 
         // ✅ Maintenant, `tableModel` est initialisé avant d’être utilisé
         chargerInscriptions();
@@ -116,7 +112,6 @@ public class InscriptionsPanel extends JPanel {
 
         mainPanel.add(createTopPanel(), BorderLayout.NORTH);
         mainPanel.add(createTablePanel(), BorderLayout.CENTER);
-        mainPanel.add(createActionButtonsPanel(), BorderLayout.SOUTH);
 
         return mainPanel;
     }
@@ -220,33 +215,6 @@ public class InscriptionsPanel extends JPanel {
         statusLabel.setText("Inscriptions triées par ordre alphabétique.");
     }
 
-    // private JPanel createFiltersPanel() {
-    // JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
-    // panel.setOpaque(false);
-
-    // // Bouton de tri A-Z
-    // JButton sortAscButton = createIconTextButton("🔼 Trier (A-Z)", null,
-    // VERT_COLOR_2, Color.WHITE,
-    // e -> trierTable(true));
-
-    // // Bouton de tri Z-A
-    // JButton sortDescButton = createIconTextButton("🔽 Trier (Z-A)", null,
-    // GRAY_COLOR, TEXT_COLOR,
-    // e -> trierTable(false));
-
-    // // Bouton de filtre
-    // JButton filterButton = createIconTextButton("Filtrer",
-    // IconUI.createIcon("src/main/resources/static/img/png/filter.png", 20, 20),
-    // GRAY_COLOR, TEXT_COLOR,
-    // e -> JOptionPane.showMessageDialog(this, "Fonctionnalité de filtre à
-    // implémenter"));
-
-    // panel.add(sortAscButton);
-    // panel.add(sortDescButton);
-    // panel.add(filterButton);
-
-    // return panel;
-    // }
 
     // /** 🏗 Crée un tableau moderne avec les couleurs d'origine */
     private JPanel createTablePanel() {
@@ -316,7 +284,6 @@ public class InscriptionsPanel extends JPanel {
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 selectedRow = table.getSelectedRow();
-                bottomPanel.setVisible(selectedRow != -1);
                 if (selectedRow != -1) {
                     statusLabel.setText("Inscription sélectionnée: " +
                             table.getValueAt(selectedRow, 1));
@@ -364,55 +331,6 @@ public class InscriptionsPanel extends JPanel {
         return tableContainer;
     }
 
-    // /** 🏗 Crée le panneau des boutons d'action */
-    private JPanel createActionButtonsPanel() {
-        JPanel panel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        panel.setOpaque(false);
-
-        JButton refreshButton = createIconTextButton("Actualiser",
-                IconUI.createIcon("src/main/resources/static/img/png/refresh.png", 20, 20),
-                GRAY_COLOR, TEXT_COLOR, e -> chargerInscriptions());
-
-        panel.add(refreshButton);
-
-        return panel;
-    }
-
-    /** 🏗 Crée le panneau d'informations de la formation sélectionnée */
-    private JPanel createBottomPanel() {
-        JPanel panel = new JPanel(new BorderLayout());
-        panel.setBackground(CARD_COLOR);
-        panel.setBorder(BorderFactory.createCompoundBorder(
-                new LineBorder(BORDER_COLOR, 1, true),
-                new EmptyBorder(20, 20, 20, 20)));
-
-        JPanel infoPanel = new JPanel(new GridLayout(1, 3, 15, 0));
-        infoPanel.setOpaque(false);
-
-        JLabel titleLabel = new JLabel("Inscription sélectionnée");
-        titleLabel.setFont(HEADER_FONT);
-        titleLabel.setForeground(VERT_COLOR_1);
-
-        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 0));
-        buttonPanel.setOpaque(false);
-
-        JButton validerButton = createIconTextButton("Valider",
-                IconUI.createIcon("src/main/resources/static/img/png/check.png", 20, 20),
-                BLA_COLOR, Color.WHITE, e -> accepter());
-
-        JButton refuserButton = createIconTextButton("Refuser",
-                IconUI.createIcon("src/main/resources/static/img/png/remove.png", 20, 20),
-                RED_COLOR, Color.WHITE, e -> refuser());
-
-        buttonPanel.add(validerButton);
-        buttonPanel.add(refuserButton);
-
-        panel.add(titleLabel, BorderLayout.WEST);
-        panel.add(infoPanel, BorderLayout.CENTER);
-        panel.add(buttonPanel, BorderLayout.EAST);
-
-        return panel;
-    }
 
     /** 🏗 Crée un bouton moderne avec texte et icône */
     private JButton createIconTextButton(String text, Icon icon, Color bgColor, Color fgColor,
@@ -450,7 +368,6 @@ public class InscriptionsPanel extends JPanel {
         return button;
     }
 
-
     private void trierTable(boolean asc) {
         List<Object[]> data = new ArrayList<>();
         int rowCount = tableModel.getRowCount();
@@ -483,46 +400,7 @@ public class InscriptionsPanel extends JPanel {
         statusLabel.setText("Inscriptions triées par niveau en ordre " + (asc ? "croissant" : "décroissant"));
     }
 
-    /** Filtre les formations selon le texte recherché */
-    // private void filtrerInscriptions(String searchText) {
-    // if (searchText == null || searchText.isEmpty()) {
-    // chargerInscriptions();
-    // return;
-    // }
-
-    // searchText = searchText.toLowerCase();
-    // TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
-    // table.setRowSorter(sorter);
-
-    // sorter.setRowFilter(RowFilter.regexFilter("(?i)" + searchText));
-
-    // statusLabel.setText(sorter.getViewRowCount() + " Inscription(s) trouvée(s)");
-    // }
-
-    // private void filtrerInscriptions(String searchText) {
-    // if (searchText == null || searchText.trim().isEmpty()) {
-    // chargerInscriptions();
-    // return;
-    // }
-
-    // searchText = searchText.toLowerCase().trim();
-
-    // // Création du sorter pour gérer le filtrage des données
-    // TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
-    // table.setRowSorter(sorter);
-
-    // try {
-    // // 🔍 Utilisation de Pattern.quote pour éviter les erreurs avec les
-    // caractères
-    // // spéciaux
-    // sorter.setRowFilter(RowFilter.regexFilter("(?i)" +
-    // Pattern.quote(searchText)));
-    // statusLabel.setText(sorter.getViewRowCount() + " Inscription(s) trouvée(s)");
-    // } catch (PatternSyntaxException e) {
-    // statusLabel.setText("Erreur de filtre : expression invalide");
-    // }
-    // }
-
+    
     private void filtrerInscriptions(String searchText) {
         if (searchText == null || searchText.trim().isEmpty()) {
             chargerInscriptions();
@@ -547,7 +425,7 @@ public class InscriptionsPanel extends JPanel {
     /** Charge les formations depuis le contrôleur */
     private void chargerInscriptions() {
         tableModel.setRowCount(0);
-        List<Inscription> inscriptions = inscriptionController.listerInscriptionsPendingResponsable();
+        List<Inscription> inscriptions = inscriptionController.listerInscriptionsTreateResponsable();
         for (Inscription inscription : inscriptions) {
 
             String etudiant = inscription.getEtudiant().getPrenom() + " " +
@@ -559,11 +437,6 @@ public class InscriptionsPanel extends JPanel {
                     : uesOptionnelles.stream()
                             .map(ue -> ue.getCode() + " - " + ue.getLibelle())
                             .collect(Collectors.joining(", "));
-
-            // tableModel.addRow(new Object[] { inscription.getId(), etudiant,
-            // inscription.getFormation().getLibelle(),
-            // inscription.getStatut().name() });
-            // }
 
             tableModel.addRow(new Object[] {
                     inscription.getId(),
@@ -584,116 +457,4 @@ public class InscriptionsPanel extends JPanel {
         table.setRowSorter(null);
     }
 
-    // private void refuser() {
-    // if (selectedRow == -1)
-    // return;
-    // Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
-    // if (JOptionPane.showConfirmDialog(this, "Voulez vous confimer le refus ?",
-    // "Confirmation",
-    // JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-    // inscriptionController.refuserInscription(inscriptionId);
-    // chargerInscriptions();
-    // }
-    // }
-
-    // private void accepter() {
-    // if (selectedRow == -1)
-    // return;
-    // Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
-    // if (JOptionPane.showConfirmDialog(this, "Voulez-vous confimer l'acceptation
-    // de l'inscription?",
-    // "Confirmation",
-    // JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
-    // inscriptionController.accepterInscription(inscriptionId);
-    // chargerInscriptions();
-    // }
-    // }
-
-    private void refuser() {
-        if (selectedRow == -1)
-            return;
-
-        Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
-        int confirmation = JOptionPane.showConfirmDialog(this, "Voulez-vous confirmer le refus ?", "Confirmation",
-                JOptionPane.YES_NO_OPTION);
-
-        if (confirmation == JOptionPane.YES_OPTION) {
-            executerAvecLoader("Refus de l'inscription en cours...",
-                    () -> inscriptionController.refuserInscription(inscriptionId));
-        }
-    }
-
-    private void accepter() {
-        if (selectedRow == -1)
-            return;
-
-        Long inscriptionId = (Long) table.getValueAt(selectedRow, 0);
-        int confirmation = JOptionPane.showConfirmDialog(this, "Voulez-vous confirmer l'acceptation de l'inscription ?",
-                "Confirmation", JOptionPane.YES_NO_OPTION);
-
-        if (confirmation == JOptionPane.YES_OPTION) {
-            executerAvecLoader("Validation de l'inscription en cours...",
-                    () -> inscriptionController.accepterInscription(inscriptionId));
-        }
-    }
-
-    /**
-     * Exécute une action en affichant un loader.
-     *
-     * @param message Message affiché dans le loader.
-     * @param action  Action à exécuter en arrière-plan.
-     */
-    private void executerAvecLoader(String message, Runnable action) {
-        JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Traitement en cours...",
-                true);
-        loadingDialog.setSize(500,500);
-        loadingDialog.setLayout(new GridBagLayout());
-        loadingDialog.setUndecorated(true);
-        loadingDialog.setLocationRelativeTo(this);
-        loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-
-        // Définir un panneau de contenu
-        JPanel contentPanel = new JPanel(new GridBagLayout());
-        contentPanel.setBackground(Color.WHITE);
-
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.insets = new Insets(10, 10, 10, 10);
-        gbc.anchor = GridBagConstraints.CENTER;
-
-        // Texte du chargement
-        JLabel loadingLabel = new JLabel(message, JLabel.CENTER);
-        loadingLabel.setFont(new Font("Poppins", Font.BOLD, 14));
-        gbc.gridx = 0;
-        gbc.gridy = 0;
-        contentPanel.add(loadingLabel, gbc);
-
-        // Ajout du spinner GIF redimensionné
-        gbc.gridy++;
-       
-        JLabel gifLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/gif/infinite.gif", 100, 100));
-        contentPanel.add(gifLabel, gbc);
-
-        loadingDialog.setContentPane(contentPanel);
-        loadingDialog.pack();
-
-        // Exécuter l'action en arrière-plan
-        SwingWorker<Void, Void> worker = new SwingWorker<>() {
-            @Override
-            protected Void doInBackground() {
-                action.run(); // Exécute l'action (ex: accepter ou refuser une inscription)
-                return null;
-            }
-
-            @Override
-            protected void done() {
-                SwingUtilities.invokeLater(() -> {
-                    loadingDialog.dispose();
-                    chargerInscriptions(); // Rafraîchir après l'action
-                });
-            }
-        };
-
-        SwingUtilities.invokeLater(() -> loadingDialog.setVisible(true)); // Afficher le loader
-        worker.execute(); // Exécuter la tâche
-    }
 }

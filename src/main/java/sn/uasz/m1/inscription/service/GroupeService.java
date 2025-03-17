@@ -3,6 +3,7 @@ package sn.uasz.m1.inscription.service;
 import java.util.List;
 
 import sn.uasz.m1.inscription.dao.GroupeDAO;
+import sn.uasz.m1.inscription.model.Etudiant;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
@@ -25,6 +26,7 @@ public class GroupeService {
         if (groupe == null) {
             throw new IllegalArgumentException("Le groupe ne peut pas être null !");
         }
+        groupe.setEtudiants(null);
         return groupeDAO.save(groupe);
     }
 
@@ -99,6 +101,11 @@ public class GroupeService {
             throw new IllegalArgumentException("La formation ne peut pas être null et doit avoir un ID valide.");
         }
         return groupeDAO.findByFormationID(formation);
+    }
+
+    public List<Etudiant> listerEtudiantsParGroupe(Long groupeId) {
+        Groupe groupe = getGroupeById(groupeId);
+        return groupeDAO.findEtudiantsByGroupe(groupe.getId());
     }
     
 }
