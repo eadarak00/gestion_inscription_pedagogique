@@ -249,5 +249,15 @@ public class InscriptionService {
                   .map(ue -> ue.getCode() + " - " + ue.getLibelle())
                   .collect(Collectors.joining(", "));
     }
+
+    public int countInscriptionsByFormation(Long formationId) {
+        int count = 0;
+        for (Inscription inscription : getInscriptionsByResponsable()) {
+            if (inscription.getFormation().getId() == formationId) {
+                count++;
+            }
+        }
+        return count;
+    }
     
 }

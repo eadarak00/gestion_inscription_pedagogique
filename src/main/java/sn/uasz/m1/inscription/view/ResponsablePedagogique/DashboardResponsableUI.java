@@ -96,11 +96,9 @@ public class DashboardResponsableUI extends JFrame {
 
         // Ajout des sections avec le design moderne
         addNavItem("Accueil", "src/main/resources/static/img/png/home.png",
-                createMainPanel(null), navContainer);
+                createMainPanel(new HomeDashboardPanel()), navContainer);
         addNavItem("Formations", "src/main/resources/static/img/png/formation.png",
                 createMainPanel(new FormationUI()), navContainer);
-        addNavItem("Groupes", "src/main/resources/static/img/png/group.png",
-                createMainPanel(new GroupeUI()), navContainer);
         addNavItem("UEs", "src/main/resources/static/img/png/ue.png",
                 createMainPanel(new UEUI()), navContainer);
         addNavItem("Inscriptions", "src/main/resources/static/img/png/proposal.png",
@@ -301,92 +299,6 @@ public class DashboardResponsableUI extends JFrame {
         return panel;
     }
 
-    // private JPanel createPanelNorth() {
-    //     JPanel panel = new JPanel();
-    //     panel.setLayout(new BorderLayout());
-    //     panel.setBackground(VERT_COLOR_1);
-    //     panel.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-    //     panel.setPreferredSize(new Dimension(70, 70));
-
-    //     // === Label Menu Hamburger ===
-    //     JLabel menuLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/hamburger.png", 30, 30));
-    //     menuLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    //     menuLabel.setOpaque(false);
-    //     menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-
-    //     // === Menu déroulant ===
-    //     JPopupMenu menuPopup = new JPopupMenu();
-    //     menuPopup.setBackground(VERT_COLOR_1);
-
-    //     JMenuItem menuItem1 = new JMenuItem("Profil");
-    //     JMenuItem menuItem2 = new JMenuItem("Déconnexion");
-
-    //     // Appliquer le style au menu
-    //     customizeMenuItem(menuItem1);
-    //     customizeMenuItem(menuItem2);
-
-    //     menuLabel.addMouseListener(new java.awt.event.MouseAdapter() {
-    //         @Override
-    //         public void mouseClicked(java.awt.event.MouseEvent evt) {
-    //             menuPopup.show(menuLabel, 0, menuLabel.getHeight());
-    //         }
-    //     });
-
-    //     // === Titre de la vue ===
-    //     JLabel title = new JLabel("Vue Responsable - Gestion des Étudiants");
-    //     title.setFont(BOLD_FONT_18);
-    //     title.setForeground(TEXT_COLOR);
-    //     title.setBorder(BorderFactory.createEmptyBorder(0, 20, 0, 0)); // Marge à gauche
-
-    //     JPanel notificationPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
-    //     notificationPanel.setOpaque(false);
-
-    //     // Icône de notification
-    //     JLabel notificationIcon = new JLabel(
-    //             IconUI.createIcon("src/main/resources/static/img/png/notification.png", 25, 25));
-    //     notificationIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    //     // Badge arrondi avec le nombre de notifications
-    //     BadgePanel badgeNotif = new BadgePanel("3");
-
-    //     // Ajouter l'icône et le badge dans le panneau
-    //     notificationPanel.add(notificationIcon);
-    //     notificationPanel.add(badgeNotif);
-
-    //     // Ajouter l'icône et le badge
-    //     notificationPanel.add(notificationIcon);
-    //     notificationPanel.add(badgeNotif);
-
-    //     // Action pour afficher le panneau de notifications
-    //     notificationIcon.addMouseListener(new java.awt.event.MouseAdapter() {
-    //         @Override
-    //         public void mouseClicked(java.awt.event.MouseEvent evt) {
-    //             // afficherPanneauNotifications(); // Méthode pour afficher les notifications
-    //             navigateToNotif();
-    //         }
-    //     });
-
-    //     // === Conteneur à droite (Notifications + Menu) ===
-    //     JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 10, 15));
-    //     rightPanel.setOpaque(false);
-    //     rightPanel.add(notificationPanel);
-    //     rightPanel.add(menuLabel);
-
-    //     // === Ajout des composants à la Navbar ===
-    //     panel.add(title, BorderLayout.WEST);
-    //     panel.add(rightPanel, BorderLayout.EAST);
-
-    //     return panel;
-    // }
-
-    // private void customizeMenuItem(JMenuItem item) {
-    //     item.setFont(REGULAR_FONT);
-    //     item.setForeground(TEXT_COLOR);
-    //     item.setBackground(VERT_COLOR_1);
-    //     item.setOpaque(true);
-    //     item.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-    // }
-
-
     private JPanel createPanelNorth() {
         JPanel panel = new JPanel();
         panel.setLayout(new BorderLayout());
@@ -409,6 +321,13 @@ public class DashboardResponsableUI extends JFrame {
         // Appliquer le style au menu
         customizeMenuItem(menuItem1);
         customizeMenuItem(menuItem2);
+
+        menuItem1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                profile();
+            }
+        });
 
         menuItem2.addActionListener(new ActionListener() {
             @Override
@@ -522,6 +441,14 @@ public class DashboardResponsableUI extends JFrame {
             System.err.println(exp.getMessage());
             exp.printStackTrace();
         }
+    }
+
+    private void profile() {
+        ProfilResponsableUI homeUI = new ProfilResponsableUI();
+    
+        this.dispose();
+    
+        homeUI.setVisible(true);
     }
 
     public static void main(String[] args) {

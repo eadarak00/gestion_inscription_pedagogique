@@ -65,6 +65,21 @@ public class ResponsablePedagogiqueService {
         if (updatedResponsable == null) {
             throw new IllegalArgumentException("Les nouvelles données du responsable ne peuvent pas être null");
         }
+
+        if (!SecurityUtil.verifierEmailResponsable(updatedResponsable.getEmail())) {
+            throw new IllegalArgumentException("L'email doit être valide et se terminer par @univ-zig.sn");
+        }
+
+        if (updatedResponsable.getMotDePasse().isEmpty()) {
+            updatedResponsable.setMotDePasse(getResponsableById(id).getMotDePasse());
+        }
+
+        // Hashage du mot de passe
+        String motDePasseHache = SecurityUtil.hasherMotDePasse(updatedResponsable.getMotDePasse());
+        updatedResponsable.setMotDePasse(motDePasseHache);
+
+
+
         return responsablePedagogiqueDAO.update(id, updatedResponsable);
     }
 

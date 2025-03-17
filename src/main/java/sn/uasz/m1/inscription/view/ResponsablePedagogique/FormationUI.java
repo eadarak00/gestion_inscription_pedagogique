@@ -390,7 +390,7 @@ public class FormationUI extends JPanel {
                 IconUI.createIcon("src/main/resources/static/img/png/group.png", 20, 20),
                 BLA_COLOR, Color.WHITE, e -> voirEtudiants());
 
-        JButton repartirButton = createIconTextButton("Répartir les étudiants\"",
+        JButton repartirButton = createIconTextButton("Répartir les étudiants",
                 null,
                 BLA_COLOR, Color.WHITE, e -> repartir());
 

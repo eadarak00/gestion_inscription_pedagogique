@@ -6,6 +6,7 @@ import sn.uasz.m1.inscription.email.service.NotificationService;
 import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.utils.SessionManager;
 import sn.uasz.m1.inscription.view.HomeUI;
+import sn.uasz.m1.inscription.view.ResponsablePedagogique.ProfilResponsableUI;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -45,6 +46,13 @@ public class Navbar extends JPanel {
     
         JMenuItem menuItem1 = new JMenuItem("Profil");
         JMenuItem menuItem2 = new JMenuItem("Déconnexion");
+
+        menuItem1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                logout(parentFrame);
+            }
+        });
     
         // ActionListener pour le menu de déconnexion
         menuItem2.addActionListener(new ActionListener() {
@@ -133,5 +141,13 @@ public class Navbar extends JPanel {
     
         homeUI.afficher();
         SessionManager.logout();
+    }
+
+    private void profile(JFrame parentFrame) {
+        ProfilResponsableUI profile = new ProfilResponsableUI();
+    
+        parentFrame.dispose();
+    
+        profile.setVisible(true);
     }
 }
