@@ -19,6 +19,7 @@ import sn.uasz.m1.inscription.controller.UEController;
 import sn.uasz.m1.inscription.model.Enseignant;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.service.EnseignantService;
+import sn.uasz.m1.inscription.utils.PDFExporter;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.view.components.IconUI;
 
@@ -37,7 +38,8 @@ public class UEUI extends JPanel {
     private static final Color TEXT_COLOR = new Color(0x333333);
     private static final Color HOVER_COLOR = new Color(0xE6E6E1);
     private static final Color CARD_COLOR = Color.WHITE;
-    private static final Color BORDER_COLOR = new Color(0xDDDDD8);
+    private static final Color BORDER_COLOR = new Color(0xDDDDD8); //b30404
+    private static final Color RED_S_COLOR = new Color(0xb30404); 
 
     // 🖋 Déclaration des polices
     private static final Font HEADER_FONT = new Font("Poppins", Font.BOLD, 16);
@@ -349,7 +351,12 @@ public class UEUI extends JPanel {
         JButton refreshButton = createIconTextButton("Actualiser",
                 IconUI.createIcon("src/main/resources/static/img/png/refresh.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR, e -> chargerUEs());
+        
+        JButton pdfButton = new JButton(IconUI.createIcon("src/main/resources/static/img/png/pdf.png", 30, 30));
+        pdfButton.setBackground(RED_S_COLOR);
+        pdfButton.addActionListener(e -> exporterPDF());
 
+        panel.add(pdfButton);
         panel.add(refreshButton);
 
         return panel;
@@ -384,7 +391,7 @@ public class UEUI extends JPanel {
         JButton studentsButton = createIconTextButton("Voir Etudiants",
                 IconUI.createIcon("src/main/resources/static/img/png/group.png", 20, 20),
                 BLA_COLOR, Color.WHITE, e -> voirEtudiants());
-
+        
         buttonPanel.add(studentsButton);
         buttonPanel.add(editButton);
         buttonPanel.add(deleteButton);
@@ -867,5 +874,19 @@ public class UEUI extends JPanel {
 
         // Affichage du modal
         dialog.setVisible(true);
+    }
+
+
+    private void exporterPDF(){
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Veuillez sélectionner une UE.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+    
+        Long ueId = (Long) table.getValueAt(selectedRow, 0);
+        UE ue = ueController.trouverUEParId(ueId);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        pdfExporter.exporterListeEtudiantsUE(ue);
     }
 }

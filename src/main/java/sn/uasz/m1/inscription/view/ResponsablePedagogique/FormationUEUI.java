@@ -16,6 +16,7 @@ import javax.swing.table.TableRowSorter;
 import sn.uasz.m1.inscription.controller.UEController;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.UE;
+import sn.uasz.m1.inscription.utils.PDFExporter;
 import sn.uasz.m1.inscription.view.components.IconUI;
 import sn.uasz.m1.inscription.view.components.Navbar;
 
@@ -31,6 +32,7 @@ public class FormationUEUI extends JFrame {
     private static final Color BG_COLOR = new Color(0xF2F2F2);
     private static final Color RED_COLOR = new Color(0xcc1a1a);
     private static final Color GRAY_COLOR = new Color(0xC6BFBF);
+    private static final Color RED_S_COLOR = new Color(0xb30404);
 
     // Couleurs supplémentaires pour amélioration visuelle
     private static final Color TEXT_COLOR = new Color(0x333333);
@@ -261,6 +263,11 @@ public class FormationUEUI extends JFrame {
                 GRAY_COLOR, TEXT_COLOR, e -> chargerUEs());
         JButton returnButton = createIconTextButton("Return To Dashboard", null, BLA_COLOR, Color.WHITE,
                 e -> navigateToDashboard());
+        JButton pdfButton = new JButton(IconUI.createIcon("src/main/resources/static/img/png/pdf.png", 30, 30));
+        pdfButton.setBackground(RED_S_COLOR);
+        pdfButton.addActionListener(e -> exporterPDF());
+
+        panel.add(pdfButton);
 
         panel.add(refreshButton);
         panel.add(returnButton);
@@ -776,8 +783,6 @@ public class FormationUEUI extends JFrame {
         dialog.dispose();
     }
 
-   
-
     private void supprimerUE() {
         // Vérifie si une ligne est sélectionnée
         if (selectedRow != -1) {
@@ -832,6 +837,19 @@ public class FormationUEUI extends JFrame {
             System.err.println(exp.getMessage());
             exp.printStackTrace();
         }
+    }
+
+    private void exporterPDF() {
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Veuillez sélectionner une UE.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Long ueId = (Long) table.getValueAt(selectedRow, 0);
+        UE ue = ueController.trouverUEParId(ueId);
+
+        PDFExporter pdfExporter = new PDFExporter();
+        pdfExporter.exporterListeEtudiantsUE(ue);
     }
 
 }
