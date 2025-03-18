@@ -339,13 +339,13 @@
 //                 JOptionPane.showMessageDialog(this, "Groupe introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
 //                 return;
 //             }
-    
+
 //             // Créer le modal pour modifier le groupe
 //             JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Modifier un Groupe", true);
 //             dialog.setSize(600, 300);
 //             dialog.setLayout(new GridBagLayout());
 //             dialog.setLocationRelativeTo(this);
-    
+
 //             // Définir le style et les contraintes du layout
 //             Font font = new Font("Poppins", Font.PLAIN, 14);
 //             GridBagConstraints gbc = new GridBagConstraints();
@@ -353,7 +353,7 @@
 //             gbc.anchor = GridBagConstraints.WEST;
 //             gbc.gridx = 0;
 //             gbc.gridy = 0;
-    
+
 //             // Champs du formulaire
 //             JLabel capaciteLabel = new JLabel("Capacité :");
 //             capaciteLabel.setFont(font);
@@ -363,7 +363,7 @@
 //             capaciteField.setFont(font);
 //             capaciteField.setText(String.valueOf(groupe.getCapacite()));
 //             dialog.add(capaciteField, gbc);
-    
+
 //             gbc.gridx = 0;
 //             gbc.gridy++;
 //             JLabel typeLabel = new JLabel("Type :");
@@ -373,51 +373,51 @@
 //             JComboBox<TypeGroupe> typeComboBox = new JComboBox<>(TypeGroupe.values());
 //             typeComboBox.setSelectedItem(groupe.getType());
 //             dialog.add(typeComboBox, gbc);
-    
+
 //             // Boutons
 //             gbc.gridx = 0;
 //             gbc.gridy++;
 //             gbc.gridwidth = 2;
 //             gbc.anchor = GridBagConstraints.CENTER;
-    
+
 //             JButton enregistrerButton = new JButton("Enregistrer");
 //             enregistrerButton.setBackground(VERT_COLOR_1);
 //             enregistrerButton.setForeground(Color.WHITE);
 //             enregistrerButton.setFont(new Font("Poppins", Font.BOLD, 14));
-    
+
 //             JButton annulerButton = new JButton("Annuler");
 //             annulerButton.setBackground(RED_COLOR);
 //             annulerButton.setForeground(Color.WHITE);
 //             annulerButton.setFont(new Font("Poppins", Font.BOLD, 14));
-    
+
 //             JPanel buttonPanel = new JPanel();
 //             buttonPanel.add(enregistrerButton);
 //             buttonPanel.add(annulerButton);
-    
+
 //             dialog.add(buttonPanel, gbc);
-    
+
 //             // Action sur le bouton "Enregistrer"
 //             enregistrerButton.addActionListener(e -> {
 //                 try {
 //                     int capacite = Integer.parseInt(capaciteField.getText());
 //                     TypeGroupe type = (TypeGroupe) typeComboBox.getSelectedItem();
-    
+
 //                     // Vérification des valeurs
 //                     if (capacite <= 0) {
 //                         JOptionPane.showMessageDialog(dialog, "La capacité doit être un entier supérieur à 0.", "Erreur",
 //                                 JOptionPane.ERROR_MESSAGE);
 //                         return;
 //                     }
-    
+
 //                     // Mise à jour du groupe via `GroupeController`
 //                     groupe.setCapacite(capacite);
 //                     groupe.setType(type);
 //                     String message = groupeController.modifierGroupe(groupeId, groupe);
 //                     JOptionPane.showMessageDialog(dialog, message, "Modification Groupe", JOptionPane.INFORMATION_MESSAGE);
-    
+
 //                     // Rafraîchir la liste des groupes
 //                     loadGroups();
-    
+
 //                     // Fermer le modal
 //                     dialog.dispose();
 //                 } catch (NumberFormatException ex) {
@@ -425,10 +425,10 @@
 //                             JOptionPane.ERROR_MESSAGE);
 //                 }
 //             });
-    
+
 //             // Bouton "Annuler"
 //             annulerButton.addActionListener(e -> dialog.dispose());
-    
+
 //             // Affichage du modal
 //             dialog.setVisible(true);
 //         } else {
@@ -487,9 +487,7 @@
 //         }
 //     }
 
-
 // }
-
 
 package sn.uasz.m1.inscription.view.ResponsablePedagogique;
 
@@ -512,6 +510,8 @@ import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.Groupe;
 import sn.uasz.m1.inscription.model.UE;
 import sn.uasz.m1.inscription.model.enumeration.TypeGroupe;
+import sn.uasz.m1.inscription.utils.CSVExporter;
+import sn.uasz.m1.inscription.utils.PDFExporter;
 import sn.uasz.m1.inscription.view.components.IconUI;
 import sn.uasz.m1.inscription.view.components.Navbar;
 
@@ -758,6 +758,11 @@ public class FormationGroupeUI extends JFrame {
         JButton returnButton = createIconTextButton("Return To Dashboard", null, BLA_COLOR, Color.WHITE,
                 e -> navigateToDashboard());
 
+        JButton csvButton = new JButton(IconUI.createIcon("src/main/resources/static/img/png/pdf.png", 30, 30));
+        csvButton.setBackground(VERT_COLOR_2);
+        csvButton.addActionListener(e -> exporterCSV());
+
+        panel.add(csvButton);
         panel.add(refreshButton);
         panel.add(returnButton);
 
@@ -963,7 +968,7 @@ public class FormationGroupeUI extends JFrame {
         Groupe groupe = groupeController.trouverGroupeParId(groupeId);
         if (groupe != null) {
             new StudentGroupe(groupe).afficher();
-           this.fermer();
+            this.fermer();
         }
     }
 
@@ -1021,9 +1026,9 @@ public class FormationGroupeUI extends JFrame {
         List<Groupe> groupes = groupeController.getGroupesByFormation(formation);
         for (Groupe groupe : groupes) {
             tableModel.addRow(new Object[] {
-                   groupe.getId(),
-                   groupe.getCapacite(),
-                   groupe.getType()
+                    groupe.getId(),
+                    groupe.getCapacite(),
+                    groupe.getType()
 
             });
         }
@@ -1038,224 +1043,235 @@ public class FormationGroupeUI extends JFrame {
         table.setRowSorter(null);
     }
 
-    
-
-  
     private void ajouterGroupe() {
-                JDialog dialog = new JDialog(this, "Ajouter un Groupe", true);
-                dialog.setSize(600, 300);
-                dialog.setLayout(new GridBagLayout());
-                dialog.setLocationRelativeTo(this);
-        
-                GridBagConstraints gbc = new GridBagConstraints();
-                gbc.insets = new Insets(10, 10, 10, 10);
-                gbc.gridx = 0;
-                gbc.gridy = 0;
-        
-                // Capacite field
-                dialog.add(new JLabel("Capacité :"), gbc);
-                gbc.gridx = 1;
-                JTextField capaciteField = new JTextField(10);
-                dialog.add(capaciteField, gbc);
-        
-                // Type field
-                gbc.gridx = 0;
-                gbc.gridy++;
-                dialog.add(new JLabel("Type :"), gbc);
-                gbc.gridx = 1;
-                JComboBox<TypeGroupe> typeComboBox = new JComboBox<>(TypeGroupe.values());
-                dialog.add(typeComboBox, gbc);
-        
-                // Formation label
-                gbc.gridx = 0;
-                gbc.gridy++;
-                dialog.add(new JLabel("Formation :"), gbc);
-                gbc.gridx = 1;
-                dialog.add(new JLabel(formation.getLibelle()), gbc);
-        
-                // Buttons panel
-                JPanel buttonPanel = new JPanel();
-                JButton saveButton = new JButton("Enregistrer");
-                saveButton.setBackground(VERT_COLOR_1);
-                saveButton.setFont(BUTTON_FONT);
-                saveButton.addActionListener(e -> saveGroup(capaciteField, typeComboBox, dialog));
-        
-                JButton cancelButton = new JButton("Annuler");
-                cancelButton.setBackground(RED_COLOR);
-                cancelButton.setFont(BUTTON_FONT);
-                cancelButton.addActionListener(e -> dialog.dispose());
-        
-                buttonPanel.add(saveButton);
-                buttonPanel.add(cancelButton);
-                gbc.gridx = 0;
-                gbc.gridy++;
-                dialog.add(buttonPanel, gbc);
-        
-                dialog.setVisible(true);
+        JDialog dialog = new JDialog(this, "Ajouter un Groupe", true);
+        dialog.setSize(600, 300);
+        dialog.setLayout(new GridBagLayout());
+        dialog.setLocationRelativeTo(this);
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(10, 10, 10, 10);
+        gbc.gridx = 0;
+        gbc.gridy = 0;
+
+        // Capacite field
+        dialog.add(new JLabel("Capacité :"), gbc);
+        gbc.gridx = 1;
+        JTextField capaciteField = new JTextField(10);
+        dialog.add(capaciteField, gbc);
+
+        // Type field
+        gbc.gridx = 0;
+        gbc.gridy++;
+        dialog.add(new JLabel("Type :"), gbc);
+        gbc.gridx = 1;
+        JComboBox<TypeGroupe> typeComboBox = new JComboBox<>(TypeGroupe.values());
+        dialog.add(typeComboBox, gbc);
+
+        // Formation label
+        gbc.gridx = 0;
+        gbc.gridy++;
+        dialog.add(new JLabel("Formation :"), gbc);
+        gbc.gridx = 1;
+        dialog.add(new JLabel(formation.getLibelle()), gbc);
+
+        // Buttons panel
+        JPanel buttonPanel = new JPanel();
+        JButton saveButton = new JButton("Enregistrer");
+        saveButton.setBackground(VERT_COLOR_1);
+        saveButton.setFont(BUTTON_FONT);
+        saveButton.addActionListener(e -> saveGroup(capaciteField, typeComboBox, dialog));
+
+        JButton cancelButton = new JButton("Annuler");
+        cancelButton.setBackground(RED_COLOR);
+        cancelButton.setFont(BUTTON_FONT);
+        cancelButton.addActionListener(e -> dialog.dispose());
+
+        buttonPanel.add(saveButton);
+        buttonPanel.add(cancelButton);
+        gbc.gridx = 0;
+        gbc.gridy++;
+        dialog.add(buttonPanel, gbc);
+
+        dialog.setVisible(true);
+    }
+
+    private void saveGroup(JTextField capaciteField, JComboBox<TypeGroupe> typeComboBox, JDialog dialog) {
+        try {
+            int capacity = Integer.parseInt(capaciteField.getText());
+            TypeGroupe type = (TypeGroupe) typeComboBox.getSelectedItem();
+            String message = groupeController.ajouterGroupe(capacity, type, formation);
+            JOptionPane.showMessageDialog(dialog, message, "Ajout Groupe", JOptionPane.INFORMATION_MESSAGE);
+            chargerGroupes();
+            dialog.dispose();
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(dialog, "La capacité doit être un nombre valide.", "Erreur",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+
+    // Modify group method
+    private void modifierGroupe() {
+        if (selectedRow != -1) {
+            Long groupeId = (Long) table.getValueAt(selectedRow, 0);
+
+            // Récupérer le groupe à partir de son ID
+            Groupe groupe = groupeController.trouverGroupeParId(groupeId);
+            if (groupe == null) {
+                JOptionPane.showMessageDialog(this, "Groupe introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                return;
             }
-        
-            private void saveGroup(JTextField capaciteField, JComboBox<TypeGroupe> typeComboBox, JDialog dialog) {
+
+            // Créer le modal pour modifier le groupe
+            JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Modifier un Groupe", true);
+            dialog.setSize(600, 300);
+            dialog.setLayout(new GridBagLayout());
+            dialog.setLocationRelativeTo(this);
+
+            // Définir le style et les contraintes du layout
+            Font font = new Font("Poppins", Font.PLAIN, 14);
+            GridBagConstraints gbc = new GridBagConstraints();
+            gbc.insets = new Insets(10, 10, 10, 10);
+            gbc.anchor = GridBagConstraints.WEST;
+            gbc.gridx = 0;
+            gbc.gridy = 0;
+
+            // Champs du formulaire
+            JLabel capaciteLabel = new JLabel("Capacité :");
+            capaciteLabel.setFont(font);
+            dialog.add(capaciteLabel, gbc);
+            gbc.gridx = 1;
+            JTextField capaciteField = new JTextField(20);
+            capaciteField.setFont(font);
+            capaciteField.setText(String.valueOf(groupe.getCapacite()));
+            dialog.add(capaciteField, gbc);
+
+            gbc.gridx = 0;
+            gbc.gridy++;
+            JLabel typeLabel = new JLabel("Type :");
+            typeLabel.setFont(font);
+            dialog.add(typeLabel, gbc);
+            gbc.gridx = 1;
+            JComboBox<TypeGroupe> typeComboBox = new JComboBox<>(TypeGroupe.values());
+            typeComboBox.setSelectedItem(groupe.getType());
+            dialog.add(typeComboBox, gbc);
+
+            // Boutons
+            gbc.gridx = 0;
+            gbc.gridy++;
+            gbc.gridwidth = 2;
+            gbc.anchor = GridBagConstraints.CENTER;
+
+            JButton enregistrerButton = new JButton("Enregistrer");
+            enregistrerButton.setBackground(VERT_COLOR_1);
+            enregistrerButton.setForeground(Color.WHITE);
+            enregistrerButton.setFont(BUTTON_FONT);
+            enregistrerButton.setFont(new Font("Poppins", Font.BOLD, 14));
+
+            JButton annulerButton = new JButton("Annuler");
+            annulerButton.setBackground(RED_COLOR);
+            annulerButton.setFont(BUTTON_FONT);
+            annulerButton.setForeground(Color.WHITE);
+            annulerButton.setFont(new Font("Poppins", Font.BOLD, 14));
+
+            JPanel buttonPanel = new JPanel();
+            buttonPanel.add(enregistrerButton);
+            buttonPanel.add(annulerButton);
+
+            dialog.add(buttonPanel, gbc);
+
+            // Action sur le bouton "Enregistrer"
+            enregistrerButton.addActionListener(e -> {
                 try {
-                    int capacity = Integer.parseInt(capaciteField.getText());
+                    int capacite = Integer.parseInt(capaciteField.getText());
                     TypeGroupe type = (TypeGroupe) typeComboBox.getSelectedItem();
-                    String message = groupeController.ajouterGroupe(capacity, type, formation);
-                    JOptionPane.showMessageDialog(dialog, message, "Ajout Groupe", JOptionPane.INFORMATION_MESSAGE);
+
+                    // Vérification des valeurs
+                    if (capacite <= 0) {
+                        JOptionPane.showMessageDialog(dialog, "La capacité doit être un entier supérieur à 0.",
+                                "Erreur",
+                                JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
+                    // Mise à jour du groupe via `GroupeController`
+                    groupe.setCapacite(capacite);
+                    groupe.setType(type);
+                    String message = groupeController.modifierGroupe(groupeId, groupe);
+                    JOptionPane.showMessageDialog(dialog, message, "Modification Groupe",
+                            JOptionPane.INFORMATION_MESSAGE);
+
+                    // Rafraîchir la liste des groupes
                     chargerGroupes();
+
+                    // Fermer le modal
                     dialog.dispose();
                 } catch (NumberFormatException ex) {
                     JOptionPane.showMessageDialog(dialog, "La capacité doit être un nombre valide.", "Erreur",
                             JOptionPane.ERROR_MESSAGE);
                 }
-            }
-        
-            // Modify group method
-            private void modifierGroupe() {
-                if (selectedRow != -1) {
-                    Long groupeId = (Long) table.getValueAt(selectedRow, 0);
-        
-                    // Récupérer le groupe à partir de son ID
-                    Groupe groupe = groupeController.trouverGroupeParId(groupeId);
-                    if (groupe == null) {
-                        JOptionPane.showMessageDialog(this, "Groupe introuvable.", "Erreur", JOptionPane.ERROR_MESSAGE);
-                        return;
-                    }
-            
-                    // Créer le modal pour modifier le groupe
-                    JDialog dialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Modifier un Groupe", true);
-                    dialog.setSize(600, 300);
-                    dialog.setLayout(new GridBagLayout());
-                    dialog.setLocationRelativeTo(this);
-            
-                    // Définir le style et les contraintes du layout
-                    Font font = new Font("Poppins", Font.PLAIN, 14);
-                    GridBagConstraints gbc = new GridBagConstraints();
-                    gbc.insets = new Insets(10, 10, 10, 10);
-                    gbc.anchor = GridBagConstraints.WEST;
-                    gbc.gridx = 0;
-                    gbc.gridy = 0;
-            
-                    // Champs du formulaire
-                    JLabel capaciteLabel = new JLabel("Capacité :");
-                    capaciteLabel.setFont(font);
-                    dialog.add(capaciteLabel, gbc);
-                    gbc.gridx = 1;
-                    JTextField capaciteField = new JTextField(20);
-                    capaciteField.setFont(font);
-                    capaciteField.setText(String.valueOf(groupe.getCapacite()));
-                    dialog.add(capaciteField, gbc);
-            
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    JLabel typeLabel = new JLabel("Type :");
-                    typeLabel.setFont(font);
-                    dialog.add(typeLabel, gbc);
-                    gbc.gridx = 1;
-                    JComboBox<TypeGroupe> typeComboBox = new JComboBox<>(TypeGroupe.values());
-                    typeComboBox.setSelectedItem(groupe.getType());
-                    dialog.add(typeComboBox, gbc);
-            
-                    // Boutons
-                    gbc.gridx = 0;
-                    gbc.gridy++;
-                    gbc.gridwidth = 2;
-                    gbc.anchor = GridBagConstraints.CENTER;
-            
-                    JButton enregistrerButton = new JButton("Enregistrer");
-                    enregistrerButton.setBackground(VERT_COLOR_1);
-                    enregistrerButton.setForeground(Color.WHITE);
-                    enregistrerButton.setFont(BUTTON_FONT);
-                    enregistrerButton.setFont(new Font("Poppins", Font.BOLD, 14));
-            
-                    JButton annulerButton = new JButton("Annuler");
-                    annulerButton.setBackground(RED_COLOR);
-                    annulerButton.setFont(BUTTON_FONT);
-                    annulerButton.setForeground(Color.WHITE);
-                    annulerButton.setFont(new Font("Poppins", Font.BOLD, 14));
-            
-                    JPanel buttonPanel = new JPanel();
-                    buttonPanel.add(enregistrerButton);
-                    buttonPanel.add(annulerButton);
-            
-                    dialog.add(buttonPanel, gbc);
-            
-                    // Action sur le bouton "Enregistrer"
-                    enregistrerButton.addActionListener(e -> {
-                        try {
-                            int capacite = Integer.parseInt(capaciteField.getText());
-                            TypeGroupe type = (TypeGroupe) typeComboBox.getSelectedItem();
-            
-                            // Vérification des valeurs
-                            if (capacite <= 0) {
-                                JOptionPane.showMessageDialog(dialog, "La capacité doit être un entier supérieur à 0.", "Erreur",
-                                        JOptionPane.ERROR_MESSAGE);
-                                return;
-                            }
-            
-                            // Mise à jour du groupe via `GroupeController`
-                            groupe.setCapacite(capacite);
-                            groupe.setType(type);
-                            String message = groupeController.modifierGroupe(groupeId, groupe);
-                            JOptionPane.showMessageDialog(dialog, message, "Modification Groupe", JOptionPane.INFORMATION_MESSAGE);
-            
-                            // Rafraîchir la liste des groupes
-                            chargerGroupes();
-            
-                            // Fermer le modal
-                            dialog.dispose();
-                        } catch (NumberFormatException ex) {
-                            JOptionPane.showMessageDialog(dialog, "La capacité doit être un nombre valide.", "Erreur",
-                                    JOptionPane.ERROR_MESSAGE);
-                        }
-                    });
-            
-                    // Bouton "Annuler"
-                    annulerButton.addActionListener(e -> dialog.dispose());
-            
-                    // Affichage du modal
-                    dialog.setVisible(true);
-                } else {
-                    JOptionPane.showMessageDialog(this, "Veuillez sélectionner un groupe.", "Erreur",
-                            JOptionPane.WARNING_MESSAGE);
-                }
-            }
-        
-            // Delete group method
-            private void supprimerGroupe() {
-                if (selectedRow != -1) {
-                    Long groupId = (Long) table.getValueAt(selectedRow, 0); // Get group ID from selected row
-                    int confirm = JOptionPane.showConfirmDialog(this, "Confirmer la suppression ?", "Confirmation",
-                            JOptionPane.YES_NO_OPTION);
-        
-                    if (confirm == JOptionPane.YES_OPTION) {
-                        String message = groupeController.supprimerGroupe(groupId);
-                        JOptionPane.showMessageDialog(this, message, "Suppression", JOptionPane.INFORMATION_MESSAGE);
-                        chargerGroupes();
-                    }
-                } else {
-                    JOptionPane.showMessageDialog(this, "Veuillez sélectionner un groupe.", "Erreur",
-                            JOptionPane.WARNING_MESSAGE);
-                }
-            }
+            });
 
+            // Bouton "Annuler"
+            annulerButton.addActionListener(e -> dialog.dispose());
 
-            public void afficher() {
-                this.setVisible(true);
+            // Affichage du modal
+            dialog.setVisible(true);
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner un groupe.", "Erreur",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    // Delete group method
+    private void supprimerGroupe() {
+        if (selectedRow != -1) {
+            Long groupId = (Long) table.getValueAt(selectedRow, 0); // Get group ID from selected row
+            int confirm = JOptionPane.showConfirmDialog(this, "Confirmer la suppression ?", "Confirmation",
+                    JOptionPane.YES_NO_OPTION);
+
+            if (confirm == JOptionPane.YES_OPTION) {
+                String message = groupeController.supprimerGroupe(groupId);
+                JOptionPane.showMessageDialog(this, message, "Suppression", JOptionPane.INFORMATION_MESSAGE);
+                chargerGroupes();
             }
-        
-            public void fermer() {
-                this.dispose();
-            }
-        
-            private void navigateToDashboard() {
-                try {
-                    DashboardResponsableUI homePage = new DashboardResponsableUI();
-                    homePage.afficher();
-                    fermer();
-                } catch (Exception exp) {
-                    System.err.println(exp.getMessage());
-                    exp.printStackTrace();
-                }
-            }
-        
+        } else {
+            JOptionPane.showMessageDialog(this, "Veuillez sélectionner un groupe.", "Erreur",
+                    JOptionPane.WARNING_MESSAGE);
+        }
+    }
+
+    public void afficher() {
+        this.setVisible(true);
+    }
+
+    public void fermer() {
+        this.dispose();
+    }
+
+    private void navigateToDashboard() {
+        try {
+            DashboardResponsableUI homePage = new DashboardResponsableUI();
+            homePage.afficher();
+            fermer();
+        } catch (Exception exp) {
+            System.err.println(exp.getMessage());
+            exp.printStackTrace();
+        }
+    }
+
+    private void exporterCSV(){
+        if (selectedRow == -1) {
+            JOptionPane.showMessageDialog(null, "Veuillez sélectionner un Groupe.", "Erreur", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        Long idGroupe =  (Long) table.getValueAt(selectedRow, 0);
+        Groupe groupe = groupeController.trouverGroupeParId(idGroupe);
+
+        CSVExporter csvExporter = new CSVExporter();
+        csvExporter.exporterCSV(groupe);
+    
+    }
+
 }
-
