@@ -10,6 +10,7 @@ import java.awt.event.*;
 import sn.uasz.m1.inscription.service.AuthentificationService;
 import sn.uasz.m1.inscription.utils.SecurityUtil;
 import sn.uasz.m1.inscription.view.ResponsablePedagogique.DashboardResponsableUI;
+import sn.uasz.m1.inscription.view.components.IconUI;
 
 public class LoginUI extends JFrame {
 
@@ -58,7 +59,7 @@ public class LoginUI extends JFrame {
         // Panel pour aligner "Logout" à gauche
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         // ImageIcon retIcon = new
-        // ImageIcon("src/main/resources/static/icons/return-icon.png");
+        // ImageIcon("static/icons/return-icon.png");
         JButton returnButton = new JButton("return");
         rightPanel.add(returnButton);
         rightPanel.setOpaque(false);
@@ -78,11 +79,7 @@ public class LoginUI extends JFrame {
         panel.setBackground(BG_COLOR);
 
         // Charger et redimensionner l'icône
-        ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/login.png");
-        Image resizedImage = originalIcon.getImage().getScaledInstance(700, 700, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(resizedImage);
-
-        JLabel label = new JLabel(resizedIcon);
+        JLabel label = new JLabel(IconUI.createIcon("static/img/png/login.png", 700, 700));
         panel.add(label, BorderLayout.CENTER);
 
         return panel;
@@ -103,9 +100,7 @@ public class LoginUI extends JFrame {
 
         // Logo (si disponible)
         try {
-            ImageIcon originalIcon = new ImageIcon("resources/logo.png");
-            Image scaledImage = originalIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
-            JLabel logoLabel = new JLabel(new ImageIcon(scaledImage));
+            JLabel logoLabel = new JLabel(IconUI.createIcon("static/img/png/logo_uasz.png", 120, 120));
             logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
             headerPanel.add(logoLabel);
             headerPanel.add(Box.createVerticalStrut(15));
@@ -260,7 +255,7 @@ public class LoginUI extends JFrame {
 
         // Ajout d'un GIF de chargement
         gbc.gridy++;
-        ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
+        ImageIcon gifIcon = new ImageIcon(getClass().getClassLoader().getResource("static/img/gif/infinite.gif"));
         JLabel gifLabel = new JLabel(gifIcon);
         contentPanel.add(gifLabel, gbc);
 
@@ -337,7 +332,7 @@ public class LoginUI extends JFrame {
         JPanel emailWrapper = createFieldWrapper();
 
         // Icône Email
-        JLabel emailIconLabel = new JLabel(resizeIcon("src/main/resources/static/img/png/email-icon.png", 20, 20));
+        JLabel emailIconLabel = new JLabel(IconUI.createIcon("static/img/png/email-icon.png", 20, 20));
         emailIconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
         emailWrapper.add(emailIconLabel, BorderLayout.WEST);
 
@@ -362,7 +357,7 @@ public class LoginUI extends JFrame {
 
         // Icône Mot de passe
         JLabel passwordIconLabel = new JLabel(
-                resizeIcon("src/main/resources/static/img/png/password-icon.png", 20, 20));
+                IconUI.createIcon("static/img/png/password-icon.png", 20, 20));
         passwordIconLabel.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 10));
         passwordWrapper.add(passwordIconLabel, BorderLayout.WEST);
 
@@ -381,7 +376,7 @@ public class LoginUI extends JFrame {
 
         // Toggle pour afficher/masquer le mot de passe (avec icônes)
         JLabel togglePasswordVisibility = new JLabel(
-                resizeIcon("src/main/resources/static/img/png/close-eye.png", 22, 22));
+                IconUI.createIcon("static/img/png/close-eye.png", 22, 22));
         togglePasswordVisibility.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 5));
         togglePasswordVisibility.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
@@ -393,11 +388,11 @@ public class LoginUI extends JFrame {
                 if (passwordVisible[0]) {
                     passwordField.setEchoChar((char) 0);
                     togglePasswordVisibility
-                            .setIcon(resizeIcon("src/main/resources/static/img/png/open-eye.png", 22, 22));
+                            .setIcon(IconUI.createIcon("static/img/png/open-eye.png", 22, 22));
                 } else {
                     passwordField.setEchoChar('•');
                     togglePasswordVisibility
-                            .setIcon(resizeIcon("src/main/resources/static/img/png/close-eye.png", 22, 22));
+                            .setIcon(IconUI.createIcon("static/img/png/close-eye.png", 22, 22));
                 }
             }
         });
@@ -477,12 +472,6 @@ public class LoginUI extends JFrame {
         }
     }
 
-    /** 🔄 Méthode utilitaire pour redimensionner une icône */
-    private ImageIcon resizeIcon(String path, int width, int height) {
-        ImageIcon icon = new ImageIcon(path);
-        Image img = icon.getImage().getScaledInstance(width, height, Image.SCALE_SMOOTH);
-        return new ImageIcon(img);
-    }
 
     // Affichage de la fenêtre
     public void afficher() {

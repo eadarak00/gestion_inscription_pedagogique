@@ -35,7 +35,7 @@ public class NavbarStudent extends JPanel {
         setPreferredSize(new Dimension(parentFrame.getWidth(), 75));
 
         // === Label Menu Hamburger ===
-        JLabel menuLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/hamburger.png", 30, 30));
+        JLabel menuLabel = new JLabel(IconUI.createIcon("static/img/png/hamburger.png", 30, 30));
         menuLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         menuLabel.setOpaque(false);
         menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -75,7 +75,7 @@ public class NavbarStudent extends JPanel {
 
         // Icône de notification
         JLabel notificationIcon = new JLabel(
-                IconUI.createIcon("src/main/resources/static/img/png/notification.png", 25, 25));
+                IconUI.createIcon("static/img/png/notification.png", 25, 25));
         notificationIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Badge arrondi avec le nombre de notifications
@@ -118,7 +118,7 @@ public class NavbarStudent extends JPanel {
         logoPanel.setOpaque(false); // Fond transparent
 
         // Logo
-        JLabel logoLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logo_uasz.png", 70, 70));
+        JLabel logoLabel = new JLabel(IconUI.createIcon("static/img/png/logo_uasz.png", 70, 70));
 
         // Ajouter un MouseListener pour la redirection
         logoLabel.addMouseListener(new MouseAdapter() {

@@ -196,7 +196,7 @@ public class StudentFormation extends JFrame {
         searchContainer.add(searchField, BorderLayout.CENTER);
 
         // Icône de recherche
-        JLabel searchIcon = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/search.png", 25,
+        JLabel searchIcon = new JLabel(IconUI.createIcon("static/img/png/search.png", 25,
                 25));
         searchIcon.setBorder(new EmptyBorder(0, 0, 0, 10));
         searchContainer.add(searchIcon, BorderLayout.EAST);
@@ -221,7 +221,7 @@ public class StudentFormation extends JFrame {
 
         // Bouton de filtre
         JButton filterButton = createIconTextButton("Filtrer",
-                IconUI.createIcon("src/main/resources/static/img/png/filter.png", 20, 20),
+                IconUI.createIcon("static/img/png/filter.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR,
                 e -> filtrerParEmail());
 
@@ -477,7 +477,7 @@ public class StudentFormation extends JFrame {
         panel.setOpaque(false);
 
         JButton refreshButton = createIconTextButton("Actualiser",
-                IconUI.createIcon("src/main/resources/static/img/png/refresh.png", 20, 20),
+                IconUI.createIcon("static/img/png/refresh.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR, e -> chargerEtudiants());
         JButton returnButton = createIconTextButton("Return To Dashboard", null, BLA_COLOR, Color.WHITE, e -> navigateToDashboard());
 

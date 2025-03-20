@@ -67,7 +67,7 @@ public class HomeStudentUI extends JFrame {
         // Ajouter une marge à droite (par exemple, 20px)
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
 
-        JLabel imgLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/landing_5.png", 500, 500));
+        JLabel imgLabel = new JLabel(IconUI.createIcon("static/img/png/landing_5.png", 500, 500));
         imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imgLabel.setVerticalAlignment(SwingConstants.CENTER);
 
@@ -102,65 +102,6 @@ public class HomeStudentUI extends JFrame {
 
         return button;
     }
-
-    // private JPanel createContentPanel() {
-    //     // Créer un JPanel avec un GridLayout
-    //     JPanel panel = new JPanel();
-    //     panel.setLayout(new GridLayout(3, 1, 0, 10)); // 3 lignes, 1 colonne, espacement vertical de 10px entre les
-    //                                                   // composants
-    //     panel.setBackground(BG_COLOR); // Couleur de fond pour le panel principal
-    //     panel.setBorder(BorderFactory.createEmptyBorder(70, 40, 0, 40)); // Marges autour du contenu
-
-    //     // Récupérer le nom de l'utilisateur connecté à partir de la session
-    //     Utilisateur user = SessionManager.getUtilisateur(); 
-    //     String username = "INCONNU";
-        
-    //     if(user!=null){
-    //        username = user.getPrenom() + " " + user.getNom();
-    //     }
-
-    //     // Créer et configurer le label de bienvenue
-    //     JLabel welcomeLabel = new JLabel("Bienvenue cher(e) " + username + " ,");
-    //     welcomeLabel.setFont(REGULAR_FONT_18);
-    //     welcomeLabel.setForeground(new Color(0x37474F)); // Couleur du texte
-    //     welcomeLabel.setHorizontalAlignment(SwingConstants.CENTER); // Centrer horizontalement
-
-    //     // Créer un panel pour les boutons
-    //     JPanel buttons = createButtonsPanel();
-
-    //     // Ajouter le welcomeLabel et les boutons au panel dans un style "grille"
-    //     panel.add(welcomeLabel); // Ajouter le label de bienvenue
-    //     panel.add(buttons); // Ajouter le panel des boutons
-
-    //     return panel;
-    // }
-
-    // private JPanel createButtonsPanel() {
-    //     // Créer un JPanel avec un BoxLayout vertical
-    //     JPanel panel = new JPanel();
-    //     panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS)); // Empile les composants verticalement
-    //     panel.setBackground(BG_COLOR); // Fond du panneau
-    //     panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Ajouter des marges au panel
-
-    //     // Créer les boutons avec la méthode createButton
-    //     JButton inscriptionButton = createButton("Inscription Pédagogique");
-    //     JButton buttonTD = createButton("Mon Groupe TD");
-    //     JButton buttonTP = createButton("Mon Groupe TP");
-
-    //     inscriptionButton.addActionListener(e -> NavigateToInscription());
-
-    //     // Ajouter les boutons au panneau avec un espacement vertical
-    //     panel.add(inscriptionButton);
-    //     panel.add(Box.createVerticalStrut(10)); // Espacement entre les boutons
-    //     panel.add(buttonTD);
-    //     panel.add(Box.createVerticalStrut(10));
-    //     panel.add(buttonTP);
-
-    //     // Centrer les boutons horizontalement
-    //     panel.setAlignmentX(Component.CENTER_ALIGNMENT); // Centrer horizontalement
-
-    //     return panel;
-    // }
 
 
     private JPanel createContentPanel() {

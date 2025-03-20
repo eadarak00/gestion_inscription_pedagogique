@@ -64,7 +64,7 @@ public class SignInStudentUI extends JFrame {
         // Panel pour aligner "Logout" à gauche
         JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         // ImageIcon retIcon = new
-        // ImageIcon("src/main/resources/static/icons/return-icon.png");
+        // ImageIcon("static/icons/return-icon.png");
         JButton returnButton = new JButton("return");
         rightPanel.add(returnButton);
         rightPanel.setOpaque(false);
@@ -84,13 +84,7 @@ public class SignInStudentUI extends JFrame {
     panel.setBackground(BG_COLOR);
 
     // Charger et redimensionner l'icône
-    ImageIcon originalIcon = new
-    ImageIcon("src/main/resources/static/img/png/sign-in.png");
-    Image resizedImage = originalIcon.getImage().getScaledInstance(700, 700,
-    Image.SCALE_SMOOTH);
-    ImageIcon resizedIcon = new ImageIcon(resizedImage);
-
-    JLabel label = new JLabel(resizedIcon);
+    JLabel label = new JLabel(IconUI.createIcon("static/img/png/sign-in.png", 700, 700));
     panel.add(label, BorderLayout.CENTER);
 
     return panel;
@@ -268,7 +262,7 @@ public class SignInStudentUI extends JFrame {
 
         // Ajout d'un GIF de chargement
         gbc.gridy++;
-        ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
+        ImageIcon gifIcon = new ImageIcon(getClass().getClassLoader().getResource("static/img/gif/infinite.gif"));
         JLabel gifLabel = new JLabel(gifIcon);
         contentPanel.add(gifLabel, gbc);
 
@@ -317,117 +311,6 @@ public class SignInStudentUI extends JFrame {
         // Afficher le modal
         loadingDialog.setVisible(true);
     }
-
-    // // Panel des champs de saisie (Email et Mot de passe)
-    // private JPanel createInputPanel() {
-    // JPanel inputPanel = new JPanel();
-    // inputPanel.setLayout(new GridBagLayout());
-    // inputPanel.setBackground(BG_COLOR);
-
-    // GridBagConstraints constraints = new GridBagConstraints();
-    // constraints.insets = new Insets(10, 20, 10, 20); // Espacement entre les
-    // composants
-    // constraints.anchor = GridBagConstraints.WEST; // Alignement des composants à
-    // gauche
-    // constraints.gridx = 0;
-    // constraints.gridy = 0;
-
-    // // Email
-    // JLabel emailLabel = new JLabel("Email:");
-    // emailLabel.setFont(new Font("Poppins", Font.PLAIN, 14));
-    // emailLabel.setForeground(new Color(0x5e5e5e));
-    // inputPanel.add(emailLabel, constraints);
-
-    // constraints.gridx = 1;
-    // emailField = new JTextField(20);
-    // emailField.setFont(new Font("Poppins", Font.PLAIN, 14));
-    // inputPanel.add(emailField, constraints);
-
-    // // Mot de passe
-    // constraints.gridx = 0;
-    // constraints.gridy = 1;
-    // JLabel passwordLabel = new JLabel("Mot de Passe:");
-    // passwordLabel.setFont(new Font("Poppins", Font.PLAIN, 14));
-    // passwordLabel.setForeground(new Color(0x5e5e5e));
-    // inputPanel.add(passwordLabel, constraints);
-
-    // constraints.gridx = 1;
-    // passwordField = new JPasswordField(20);
-    // passwordField.setFont(new Font("Poppins", Font.PLAIN, 14));
-    // inputPanel.add(passwordField, constraints);
-
-    // // Checkbox pour voir le mot de passe en clair
-    // constraints.gridx = 2;
-    // constraints.gridy = 1;
-    // JCheckBox showPasswordCheckBox = new JCheckBox("Afficher le mot de passe");
-    // showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
-    // showPasswordCheckBox.setBackground(BG_COLOR);
-    // showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
-
-    // showPasswordCheckBox.addActionListener(e -> {
-    // if (showPasswordCheckBox.isSelected()) {
-    // passwordField.setEchoChar((char) 0); // Affiche le mot de passe en clair
-    // } else {
-    // passwordField.setEchoChar('*'); // Masque le mot de passe
-    // }
-    // });
-
-    // inputPanel.add(showPasswordCheckBox, constraints);
-
-    // // Bouton de connexion
-    // constraints.gridx = 1;
-    // constraints.gridy = 2;
-    // JButton loginButton = new JButton("Se connecter");
-    // loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
-    // loginButton.setBackground(VERT_COLOR_2);
-    // loginButton.setForeground(Color.WHITE);
-    // loginButton.setPreferredSize(new Dimension(250, 40));
-
-    // loginButton.addActionListener(e -> ouvrirModalConnexion());
-
-    // inputPanel.add(loginButton, constraints);
-
-    // // Paragraphe d'inscription avec un MouseListener pour la redirection
-    // constraints.gridx = 0;
-    // constraints.gridy = 3;
-    // constraints.gridwidth = 2;
-    // // Création du label d'inscription
-    // JLabel signupLabel = new JLabel("Vous n'avez pas de compte ? Inscrivez-vous
-    // ici.");
-    // signupLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
-    // signupLabel.setForeground(Color.BLACK); // Couleur du lien
-    // signupLabel.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Curseur main au
-    // survol
-
-    // // Gestion de l'événement click
-    // signupLabel.addMouseListener(new MouseAdapter() {
-    // @Override
-    // public void mouseClicked(MouseEvent e) {
-    // SignUpStudentUI signUpUI = new SignUpStudentUI();
-    // signUpUI.afficher(); // Ouvrir la page d'inscription
-    // fermer(); // Fermer la page actuelle
-    // }
-
-    // @Override
-    // public void mouseEntered(MouseEvent e) {
-    // signupLabel.setForeground(Color.BLACK);
-    // signupLabel.setFont(new Font("Poppins", Font.BOLD, 12));
-    // }
-
-    // @Override
-    // public void mouseExited(MouseEvent e) {
-    // signupLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
-    // // Revenir à la couleur de base
-    // }
-    // });
-
-    // // Ajout au panel
-    // inputPanel.add(signupLabel, constraints);
-
-    // inputPanel.add(signupLabel, constraints);
-
-    // return inputPanel;
-    // }
 
     // Panel des champs de saisie (Email et Mot de passe) - Version moderne
     private JPanel createInputPanel() {
@@ -487,8 +370,8 @@ public class SignInStudentUI extends JFrame {
 
         // Icône pour afficher/masquer le mot de passe
         JToggleButton showPasswordButton = new JToggleButton(
-                IconUI.createIcon("src/main/resources/static/img/png/close-eye.png", 20, 20));
-        showPasswordButton.setSelectedIcon(IconUI.createIcon("src/main/resources/static/img/png/open-eye.png", 20, 20));
+                IconUI.createIcon("static/img/png/close-eye.png", 20, 20));
+        showPasswordButton.setSelectedIcon(IconUI.createIcon("static/img/png/open-eye.png", 20, 20));
         showPasswordButton.setBorder(BorderFactory.createEmptyBorder());
         showPasswordButton.setBackground(Color.WHITE);
         showPasswordButton.setFocusPainted(false);

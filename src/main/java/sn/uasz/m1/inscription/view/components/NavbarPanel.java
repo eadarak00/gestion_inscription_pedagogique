@@ -18,7 +18,7 @@ public class NavbarPanel extends JPanel {
         setPreferredSize(new Dimension(parentFrame.getWidth(), 75));
 
         // === Label Menu Hamburger ===
-        JLabel menuLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/hamburger.png", 30, 30));
+        JLabel menuLabel = new JLabel(IconUI.createIcon("static/img/png/hamburger.png", 30, 30));
         menuLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         menuLabel.setOpaque(false);
         menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -65,7 +65,7 @@ public class NavbarPanel extends JPanel {
         logoPanel.setOpaque(false); // Fond transparent
 
         // Logo
-        JLabel logoLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logo_uasz.png", 70, 70));
+        JLabel logoLabel = new JLabel(IconUI.createIcon("static/img/png/logo_uasz.png", 70, 70));
 
         // Nom de l’université
         JLabel universityNameLabel = new JLabel("Université Assane Seck de Ziguinchor");
