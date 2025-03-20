@@ -199,7 +199,7 @@ public class InscriptionsPanel extends JPanel {
 
         // Bouton de filtre
         JButton filterButton = createIconTextButton("Filtrer",
-                IconUI.createIcon("src/main/resources/static/img/png/filter.png", 20, 20),
+                IconUI.createIcon("static/img/png/filter.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR,
                 e -> filtrerParStatut());
 
@@ -236,7 +236,7 @@ public class InscriptionsPanel extends JPanel {
 
     // // Bouton de filtre
     // JButton filterButton = createIconTextButton("Filtrer",
-    // IconUI.createIcon("src/main/resources/static/img/png/filter.png", 20, 20),
+    // IconUI.createIcon("static/img/png/filter.png", 20, 20),
     // GRAY_COLOR, TEXT_COLOR,
     // e -> JOptionPane.showMessageDialog(this, "Fonctionnalité de filtre à
     // implémenter"));
@@ -370,7 +370,7 @@ public class InscriptionsPanel extends JPanel {
         panel.setOpaque(false);
 
         JButton refreshButton = createIconTextButton("Actualiser",
-                IconUI.createIcon("src/main/resources/static/img/png/refresh.png", 20, 20),
+                IconUI.createIcon("static/img/png/refresh.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR, e -> chargerInscriptions());
 
         panel.add(refreshButton);
@@ -397,11 +397,11 @@ public class InscriptionsPanel extends JPanel {
         buttonPanel.setOpaque(false);
 
         JButton validerButton = createIconTextButton("Valider",
-                IconUI.createIcon("src/main/resources/static/img/png/check.png", 20, 20),
+                IconUI.createIcon("static/img/png/check.png", 20, 20),
                 BLA_COLOR, Color.WHITE, e -> accepter());
 
         JButton refuserButton = createIconTextButton("Refuser",
-                IconUI.createIcon("src/main/resources/static/img/png/remove.png", 20, 20),
+                IconUI.createIcon("static/img/png/remove.png", 20, 20),
                 RED_COLOR, Color.WHITE, e -> refuser());
 
         buttonPanel.add(validerButton);
@@ -669,8 +669,8 @@ public class InscriptionsPanel extends JPanel {
 
         // Ajout du spinner GIF redimensionné
         gbc.gridy++;
-       
-        JLabel gifLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/gif/infinite.gif", 100, 100));
+        ImageIcon gifIcon = new ImageIcon(getClass().getClassLoader().getResource("static/img/gif/spinner.gif"));
+        JLabel gifLabel = new JLabel(gifIcon);
         contentPanel.add(gifLabel, gbc);
 
         loadingDialog.setContentPane(contentPanel);

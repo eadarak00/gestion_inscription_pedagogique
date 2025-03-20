@@ -158,131 +158,6 @@ public class HomeDashboardPanel extends JPanel {
     }
 
 
-    // private JPanel createStatsCardsPanel() {
-    //     JPanel panel = new JPanel(new GridLayout(1, 4, 20, 0));
-    //     panel.setOpaque(false);
-    //     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-    //     panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
-    
-    //     // Récupération des statistiques
-    //     int nbFormations = formationService.getFormationsByResponsable().size();
-    //     int nbEtudiants = etudiantService.getAllEtudiants().size();
-    //     int nbUEs = ueService.getUEsByResponsable().size();
-    //     int nbInscriptions = inscriptionService.getInscriptionsByResponsable().size();
-    
-    //     // Création des cartes de statistiques avec dégradé
-    //     panel.add(createStatCard("Formations", nbFormations, VERT_COLOR_1, VERT_COLOR_2, "📚"));
-    //     panel.add(createStatCard("Étudiants", nbEtudiants, VERT_COLOR_1, VERT_COLOR_2, "👨‍🎓"));
-    //     panel.add(createStatCard("UEs", nbUEs, VERT_COLOR_1, VERT_COLOR_2, "src/main/resources/static/img/png/ue.png"));
-    //     panel.add(createStatCard("Inscriptions", nbInscriptions, VERT_COLOR_1, VERT_COLOR_2, "✅"));
-    
-    //     return panel;
-    // }
-    
-    // private JPanel createStatCard(String label, int value, Color color1, Color color2, String icon) {
-    //     JPanel card = new JPanel() {
-    //         @Override
-    //         protected void paintComponent(Graphics g) {
-    //             super.paintComponent(g);
-    //             Graphics2D g2d = (Graphics2D) g;
-    //             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-    //             // Effet d'ombre
-    //             int shadowSize = 5;
-    //             for (int i = 0; i < shadowSize; i++) {
-    //                 g2d.setColor(new Color(0, 0, 0, 10));
-    //                 g2d.fillRoundRect(shadowSize - i, shadowSize - i, 
-    //                                  getWidth() - (shadowSize - i) * 2, 
-    //                                  getHeight() - (shadowSize - i) * 2, 15, 15);
-    //             }
-                
-    //             // Fond avec dégradé
-    //             GradientPaint backgroundGradient = new GradientPaint(
-    //                 0, 0, new Color(245, 245, 245),
-    //                 0, getHeight(), BG_COLOR
-    //             );
-    //             g2d.setPaint(backgroundGradient);
-    //             g2d.fillRoundRect(0, 0, getWidth() - shadowSize, getHeight() - shadowSize, 15, 15);
-                
-    //             // Dégradé de couleur sur le côté gauche
-    //             GradientPaint leftBorderGradient = new GradientPaint(
-    //                 0, 0, color1,
-    //                 0, getHeight(), color2
-    //             );
-    //             g2d.setPaint(leftBorderGradient);
-    //             g2d.fillRoundRect(0, 0, 8, getHeight() - shadowSize, 8, 8);
-                
-    //             // Bordure fine
-    //             g2d.setColor(new Color(220, 220, 220));
-    //             g2d.setStroke(new BasicStroke(1f));
-    //             g2d.drawRoundRect(0, 0, getWidth() - shadowSize - 1, getHeight() - shadowSize - 1, 15, 15);
-    //         }
-            
-    //         @Override
-    //         public Dimension getPreferredSize() {
-    //             // Ajout d'espace pour l'ombre
-    //             Dimension size = super.getPreferredSize();
-    //             return new Dimension(size.width + 5, size.height + 5);
-    //         }
-    //     };
-    //     card.setLayout(new BorderLayout(10, 5));
-    //     card.setOpaque(false);
-    //     card.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
-        
-    //     // Panneau pour l'icône avec un effet de cercle coloré en arrière-plan
-    //     JPanel iconPanel = new JPanel() {
-    //         @Override
-    //         protected void paintComponent(Graphics g) {
-    //             super.paintComponent(g);
-    //             Graphics2D g2d = (Graphics2D) g;
-    //             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-                
-    //             // Cercle avec dégradé derrière l'icône
-    //             GradientPaint iconGradient = new GradientPaint(
-    //                 0, 0, new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 40),
-    //                 getWidth(), getHeight(), new Color(color2.getRed(), color2.getGreen(), color2.getBlue(), 20)
-    //             );
-    //             g2d.setPaint(iconGradient);
-    //             int size = Math.min(getWidth(), getHeight()) - 10;
-    //             g2d.fillOval((getWidth() - size) / 2, (getHeight() - size) / 2, size, size);
-    //         }
-    //     };
-    //     iconPanel.setOpaque(false);
-    //     iconPanel.setPreferredSize(new Dimension(60, 60));
-    //     iconPanel.setLayout(new BorderLayout());
-        
-    //     // Icône
-    //     JLabel iconLabel = new JLabel(icon);
-    //     iconLabel.setFont(new Font("Segoe UI", Font.PLAIN, 30));
-    //     iconLabel.setForeground(color1);
-    //     iconLabel.setHorizontalAlignment(JLabel.CENTER);
-    //     iconLabel.setVerticalAlignment(JLabel.CENTER);
-    //     iconPanel.add(iconLabel, BorderLayout.CENTER);
-        
-    //     // Panneau d'info
-    //     JPanel infoPanel = new JPanel(new BorderLayout(5, 0));
-    //     infoPanel.setOpaque(false);
-        
-    //     // Valeur
-    //     JLabel valueLabel = new JLabel(String.valueOf(value));
-    //     valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
-    //     valueLabel.setForeground(color1);
-        
-    //     // Titre
-    //     JLabel titleLabel = new JLabel(label);
-    //     titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 15));
-    //     titleLabel.setForeground(new Color(100, 100, 100));
-        
-    //     infoPanel.add(valueLabel, BorderLayout.NORTH);
-    //     infoPanel.add(titleLabel, BorderLayout.CENTER);
-        
-    //     // Assembler les composants
-    //     card.add(iconPanel, BorderLayout.WEST);
-    //     card.add(infoPanel, BorderLayout.CENTER);
-        
-    //     return card;
-    // }
-
     private JPanel createStatsCardsPanel() {
         JPanel panel = new JPanel(new GridLayout(1, 4, 10, 0)); // Reduced spacing between cards
         panel.setOpaque(false);
@@ -296,10 +171,10 @@ public class HomeDashboardPanel extends JPanel {
         int nbInscriptions = inscriptionService.getInscriptionsByResponsable().size();
     
         // Création des cartes de statistiques avec dégradé
-        panel.add(createStatCard("Formations", nbFormations, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-formation.png", 30, 30)));
-        panel.add(createStatCard("Étudiants", nbEtudiants, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-etudiant.png", 30, 30)));
-        panel.add(createStatCard("UEs", nbUEs, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-ue.png", 30, 30)));
-        panel.add(createStatCard("Inscriptions", nbInscriptions, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-check.png", 30, 30)));
+        panel.add(createStatCard("Formations", nbFormations, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("static/img/png/b-formation.png", 30, 30)));
+        panel.add(createStatCard("Étudiants", nbEtudiants, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("static/img/png/b-etudiant.png", 30, 30)));
+        panel.add(createStatCard("UEs", nbUEs, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("static/img/png/b-ue.png", 30, 30)));
+        panel.add(createStatCard("Inscriptions", nbInscriptions, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("static/img/png/b-check.png", 30, 30)));
     
         return panel;
     }

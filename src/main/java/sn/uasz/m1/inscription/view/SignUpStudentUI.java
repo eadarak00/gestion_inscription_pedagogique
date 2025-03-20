@@ -83,7 +83,7 @@ public class SignUpStudentUI extends JFrame {
         panel.setBackground(fondColor);
 
         // Charger et redimensionner l'icône
-        ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/sign-up.png");
+        ImageIcon originalIcon = new ImageIcon(getClass().getClassLoader().getResource("static/img/png/sign-up.png"));
         Image resizedImage = originalIcon.getImage().getScaledInstance(600, 600, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
 

@@ -13,6 +13,7 @@ import sn.uasz.m1.inscription.view.components.IconUI;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,7 +72,7 @@ public class DashboardResponsableUI extends JFrame {
         headerPanel.setBorder(BorderFactory.createEmptyBorder(15, 15, 15, 15));
 
         // Logo
-        JLabel logoLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logo_uasz.png", 80, 80));
+        JLabel logoLabel = new JLabel(IconUI.createIcon("static/img/png/logo_uasz.png", 80, 80));
         logoLabel.setHorizontalAlignment(SwingConstants.CENTER);
         headerPanel.add(logoLabel, BorderLayout.CENTER);
 
@@ -95,15 +96,15 @@ public class DashboardResponsableUI extends JFrame {
         contentPanel.setBackground(BG_COLOR);
 
         // Ajout des sections avec le design moderne
-        addNavItem("Accueil", "src/main/resources/static/img/png/home.png",
+        addNavItem("Accueil", "static/img/png/home.png",
                 createMainPanel(new HomeDashboardPanel()), navContainer);
-        addNavItem("Formations", "src/main/resources/static/img/png/formation.png",
+        addNavItem("Formations", "static/img/png/formation.png",
                 createMainPanel(new FormationUI()), navContainer);
-        addNavItem("UEs", "src/main/resources/static/img/png/ue.png",
+        addNavItem("UEs", "static/img/png/ue.png",
                 createMainPanel(new UEUI()), navContainer);
-        addNavItem("Inscriptions", "src/main/resources/static/img/png/proposal.png",
+        addNavItem("Inscriptions", "static/img/png/proposal.png",
                 createMainPanel(new InscriptionsPanel()), navContainer);
-        addNavItem("Treated Subscribes", "src/main/resources/static/img/png/proposal.png",
+        addNavItem("Treated Subscribes", "static/img/png/proposal.png",
             createMainPanel(new InscriptionTreatedPanel()), navContainer);
 
         // Ajouter de l'espace entre les boutons de navigation et le profil utilisateur
@@ -140,9 +141,9 @@ public class DashboardResponsableUI extends JFrame {
         userInfoPanel.setBackground(new Color(0x0C2E28));
 
         // Avatar
-        ImageIcon avatarIcon = new ImageIcon("src/main/resources/static/img/png/avatar.png");
-        Image resizedAvatar = avatarIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
-        JLabel avatarLabel = new JLabel(new ImageIcon(resizedAvatar));
+        // ImageIcon avatarIcon = new ImageIcon("static/img/png/avatar.png");
+        // Image resizedAvatar = avatarIcon.getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH);
+        JLabel avatarLabel = new JLabel(IconUI.createIcon("static/img/png/avatar.png", 40, 40));
         // avatarLabel.setBorder(BorderFactory.createLineBorder(Color.WHITE, 1));
 
         // Information utilisateur (nom et rôle)
@@ -166,7 +167,7 @@ public class DashboardResponsableUI extends JFrame {
         userInfoPanel.add(userTextPanel, BorderLayout.CENTER);
 
         // Button de déconnexion
-        JLabel logoutLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logout-white.png", 18, 18));
+        JLabel logoutLabel = new JLabel(IconUI.createIcon("static/img/png/logout-whit.png", 18, 18));
         logoutLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         logoutLabel.addMouseListener(new MouseAdapter() {
             @Override
@@ -215,9 +216,19 @@ public class DashboardResponsableUI extends JFrame {
         contentPanel.setBackground(VERT_COLOR_1);
 
         // Icône
-        ImageIcon icon = new ImageIcon(iconPath);
-        Image scaledIcon = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
-        JLabel iconLabel = new JLabel(new ImageIcon(scaledIcon));
+        // ImageIcon icon = new ImageIcon(iconPath);
+        // Image scaledIcon = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        // JLabel iconLabel = new JLabel(new ImageIcon(scaledIcon));
+
+        URL resourceUrl = IconUI.class.getClassLoader().getResource(iconPath);
+        if (resourceUrl == null) {
+            System.err.println("Image non trouvée : " + iconPath);
+            // return null;
+        }
+        ImageIcon icon = new ImageIcon(resourceUrl);
+        Image img = icon.getImage().getScaledInstance(30, 30, Image.SCALE_SMOOTH);
+        // return new ImageIcon(img);
+        JLabel iconLabel = new JLabel(new ImageIcon(img));
 
         // Texte
         JLabel textLabel = new JLabel(label);
@@ -306,7 +317,7 @@ public class DashboardResponsableUI extends JFrame {
         panel.setPreferredSize(new Dimension(70, 70));
 
         // === Label Menu Hamburger ===
-        JLabel menuLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/hamburger.png", 30, 30));
+        JLabel menuLabel = new JLabel(IconUI.createIcon("static/img/png/hamburger.png", 30, 30));
         menuLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         menuLabel.setOpaque(false);
         menuLabel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
@@ -357,7 +368,7 @@ public class DashboardResponsableUI extends JFrame {
         notificationPanel.setOpaque(false);
 
         // Icône de notification
-        JLabel notificationIcon = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/notification.png", 25, 25));
+        JLabel notificationIcon = new JLabel(IconUI.createIcon("static/img/png/notification.png", 25, 25));
         notificationIcon.setCursor(new Cursor(Cursor.HAND_CURSOR));
         // Badge arrondi avec le nombre de notifications
         BadgePanel badgeNotif = new BadgePanel(""+nonLus);

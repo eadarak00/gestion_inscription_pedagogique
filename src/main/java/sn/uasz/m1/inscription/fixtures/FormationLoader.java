@@ -2,6 +2,7 @@ package sn.uasz.m1.inscription.fixtures;
 
 import java.util.*;
 
+import sn.uasz.m1.inscription.dao.FormationDAO;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.UE;
@@ -11,7 +12,7 @@ import sn.uasz.m1.inscription.service.ResponsablePedagogiqueService;
 public class FormationLoader {
     private List<Formation> formations = new ArrayList<>();
     private ResponsablePedagogiqueService rService = new ResponsablePedagogiqueService();
-    private FormationService formationService = new FormationService();
+    private FormationDAO formationService = new FormationDAO();
 
     public void loadFormation() {
         Long responsableId = Long.parseLong("1");
@@ -37,7 +38,7 @@ public class FormationLoader {
         }
 
         for (Formation formation : formations) {
-            formationService.createFormation(formation);
+            formationService.save(formation);
         }
         System.out.println("Formations loaded into the database.");
     }

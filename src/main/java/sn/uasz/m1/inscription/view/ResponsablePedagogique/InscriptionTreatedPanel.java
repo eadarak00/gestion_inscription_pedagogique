@@ -170,7 +170,7 @@ public class InscriptionTreatedPanel extends JPanel {
         searchContainer.add(searchField, BorderLayout.CENTER);
 
         // Icône de recherche
-        JLabel searchIcon = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/search.png", 25,
+        JLabel searchIcon = new JLabel(IconUI.createIcon("static/img/png/search.png", 25,
                 25));
         searchIcon.setBorder(new EmptyBorder(0, 0, 0, 10));
         searchContainer.add(searchIcon, BorderLayout.EAST);
@@ -194,7 +194,7 @@ public class InscriptionTreatedPanel extends JPanel {
 
         // Bouton de filtre
         JButton filterButton = createIconTextButton("Filtrer",
-                IconUI.createIcon("src/main/resources/static/img/png/filter.png", 20, 20),
+                IconUI.createIcon("static/img/png/filter.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR,
                 e -> filtrerParStatut());
 

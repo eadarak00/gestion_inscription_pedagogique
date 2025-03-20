@@ -2,6 +2,7 @@ package sn.uasz.m1.inscription.fixtures;
 
 import java.util.*;
 
+import sn.uasz.m1.inscription.dao.UEDAO;
 import sn.uasz.m1.inscription.model.Formation;
 import sn.uasz.m1.inscription.model.ResponsablePedagogique;
 import sn.uasz.m1.inscription.model.UE;
@@ -12,9 +13,11 @@ import sn.uasz.m1.inscription.service.UEService;
 
 public class UELoader {
     private final UEService ueService = new UEService();
+    private final UEDAO uedao = new UEDAO();
     private final EnseignantService enseignantService = new EnseignantService();
     private final ResponsablePedagogiqueService rService = new ResponsablePedagogiqueService();
     private FormationService formationService = new FormationService();
+
     Random random = new Random();
 
     public void loadUEs() {
@@ -79,7 +82,7 @@ public class UELoader {
     }
 
     for (UE ue : ues) {
-        ueService.createUE(ue);
+        uedao.save(ue);
         System.out.println("UE ajoutée : " + ue.getCode() + " - " + ue.getLibelle());
     }
 }

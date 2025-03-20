@@ -209,7 +209,7 @@ public class FormationUEUI extends JFrame {
         searchContainer.add(searchField, BorderLayout.CENTER);
 
         // Icône de recherche
-        JLabel searchIcon = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/search.png", 25,
+        JLabel searchIcon = new JLabel(IconUI.createIcon("static/img/png/search.png", 25,
                 25));
         searchIcon.setBorder(new EmptyBorder(0, 0, 0, 10));
         searchContainer.add(searchIcon, BorderLayout.EAST);
@@ -259,11 +259,11 @@ public class FormationUEUI extends JFrame {
         panel.setOpaque(false);
 
         JButton refreshButton = createIconTextButton("Actualiser",
-                IconUI.createIcon("src/main/resources/static/img/png/refresh.png", 20, 20),
+                IconUI.createIcon("static/img/png/refresh.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR, e -> chargerUEs());
         JButton returnButton = createIconTextButton("Return To Dashboard", null, BLA_COLOR, Color.WHITE,
                 e -> navigateToDashboard());
-        JButton pdfButton = new JButton(IconUI.createIcon("src/main/resources/static/img/png/pdf.png", 30, 30));
+        JButton pdfButton = new JButton(IconUI.createIcon("static/img/png/pdf.png", 30, 30));
         pdfButton.setBackground(RED_S_COLOR);
         pdfButton.addActionListener(e -> exporterPDF());
 
@@ -292,7 +292,7 @@ public class FormationUEUI extends JFrame {
 
         // Bouton de filtre
         JButton filterButton = createIconTextButton("Filtrer",
-                IconUI.createIcon("src/main/resources/static/img/png/filter.png", 20, 20),
+                IconUI.createIcon("static/img/png/filter.png", 20, 20),
                 GRAY_COLOR, TEXT_COLOR,
                 e -> filtrerParLibelle());
 
@@ -447,15 +447,15 @@ public class FormationUEUI extends JFrame {
         buttonPanel.setOpaque(false);
 
         JButton editButton = createIconTextButton("Modifier",
-                IconUI.createIcon("src/main/resources/static/img/png/edit.png", 20, 20),
+                IconUI.createIcon("static/img/png/edit.png", 20, 20),
                 VERT_COLOR_2, Color.WHITE, e -> modifierUE());
 
         JButton deleteButton = createIconTextButton("Supprimer",
-                IconUI.createIcon("src/main/resources/static/img/png/delete.png", 20, 20),
+                IconUI.createIcon("static/img/png/delete.png", 20, 20),
                 RED_COLOR, Color.WHITE, e -> supprimerUE());
 
         JButton studentsButton = createIconTextButton("Voir Etudiants",
-                IconUI.createIcon("src/main/resources/static/img/png/group.png", 20, 20),
+                IconUI.createIcon("static/img/png/group.png", 20, 20),
                 BLA_COLOR, Color.WHITE, e -> voirEtudiants());
 
         buttonPanel.add(studentsButton);

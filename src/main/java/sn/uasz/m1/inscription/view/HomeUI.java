@@ -39,7 +39,8 @@ public class HomeUI  extends JFrame{
         panel.setBackground(fondColor);
         
         //ajout de l'icone 
-        ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/test.png");
+        // ImageIcon originalIcon = new ImageIcon("static/img/png/test.png");
+        ImageIcon originalIcon = new ImageIcon(getClass().getClassLoader().getResource("static/img/png/test.png"));
         Image resizedImage = originalIcon.getImage().getScaledInstance(500, 500, Image.SCALE_SMOOTH);
         ImageIcon resizedIcon = new ImageIcon(resizedImage);
 

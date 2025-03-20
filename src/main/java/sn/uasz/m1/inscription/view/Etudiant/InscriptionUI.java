@@ -255,7 +255,7 @@ public class InscriptionUI extends JFrame {
         gbc.gridx = 0;
         gbc.gridy = 0;
         gbc.gridwidth = 2;
-        JLabel infoIcon = new JLabel(createIcon("src/main/resources/static/img/png/info-icon.png", 50, 50));
+        JLabel infoIcon = new JLabel(createIcon("static/img/png/info-icon.png", 50, 50));
         step3Panel.add(infoIcon, gbc);
 
         // 🔹 Titre central
@@ -363,7 +363,7 @@ public class InscriptionUI extends JFrame {
 
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
 
-        JLabel imgLabel = new JLabel(createIcon("src/main/resources/static/img/png/landing_5.png", 500, 500));
+        JLabel imgLabel = new JLabel(createIcon("static/img/png/landing_5.png", 500, 500));
         imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imgLabel.setVerticalAlignment(SwingConstants.CENTER);
 
