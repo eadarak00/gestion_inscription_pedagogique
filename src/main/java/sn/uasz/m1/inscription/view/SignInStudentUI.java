@@ -1,23 +1,28 @@
 package sn.uasz.m1.inscription.view;
 
 import javax.swing.*;
+import javax.swing.border.AbstractBorder;
 import javax.swing.plaf.nimbus.NimbusLookAndFeel;
 
 import java.awt.*;
 import java.awt.event.*;
 
-import sn.uasz.m1.inscription.model.Etudiant;
-import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.service.AuthentificationService;
 import sn.uasz.m1.inscription.utils.SecurityUtil;
-import sn.uasz.m1.inscription.utils.SessionManager;
 import sn.uasz.m1.inscription.view.Etudiant.HomeStudentUI;
+import sn.uasz.m1.inscription.view.components.IconUI;
 
 public class SignInStudentUI extends JFrame {
     // Declaration des couleurs
     private final Color VERT_COLOR_1 = new Color(0x113F36);
     private final Color VERT_COLOR_2 = new Color(0x128E64);
     private final Color BG_COLOR = new Color(0xF5F5F5);
+
+    // Déclaration des polices
+    private static final Font HEADER_FONT = new Font("Poppins", Font.BOLD, 16);
+    private static final Font REGULAR_FONT = new Font("Poppins", Font.PLAIN, 14);
+    private static final Font BUTTON_FONT = new Font("Poppins", Font.BOLD, 13);
+    private static final Font TABLE_HEADER_FONT = new Font("Poppins", Font.BOLD, 14);
 
     //
     private JTextField emailField;
@@ -73,173 +78,203 @@ public class SignInStudentUI extends JFrame {
 
     // Panel gauche (pour l'icône)
     private JPanel createLeftPanel() {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BorderLayout());
-        panel.setPreferredSize(new Dimension(600, 0));
-        panel.setBackground(BG_COLOR);
+    JPanel panel = new JPanel();
+    panel.setLayout(new BorderLayout());
+    panel.setPreferredSize(new Dimension(600, 0));
+    panel.setBackground(BG_COLOR);
 
-        // Charger et redimensionner l'icône
-        ImageIcon originalIcon = new ImageIcon("src/main/resources/static/img/png/sign-in.png");
-        Image resizedImage = originalIcon.getImage().getScaledInstance(700, 700, Image.SCALE_SMOOTH);
-        ImageIcon resizedIcon = new ImageIcon(resizedImage);
+    // Charger et redimensionner l'icône
+    ImageIcon originalIcon = new
+    ImageIcon("src/main/resources/static/img/png/sign-in.png");
+    Image resizedImage = originalIcon.getImage().getScaledInstance(700, 700,
+    Image.SCALE_SMOOTH);
+    ImageIcon resizedIcon = new ImageIcon(resizedImage);
 
-        JLabel label = new JLabel(resizedIcon);
-        panel.add(label, BorderLayout.CENTER);
+    JLabel label = new JLabel(resizedIcon);
+    panel.add(label, BorderLayout.CENTER);
 
-        return panel;
+    return panel;
     }
-
+    
     private JPanel createCenterPanel() {
         JPanel panel = new JPanel();
-        panel.setLayout(new GridBagLayout());
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
         panel.setBackground(BG_COLOR);
+        panel.setBorder(BorderFactory.createEmptyBorder(40, 50, 40, 50));
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(15, 20, 15, 20);
-        constraints.anchor = GridBagConstraints.CENTER;
-        constraints.gridwidth = 1;
+        // Création du panel pour le header avec logo et titre
+        JPanel headerPanel = new JPanel();
+        headerPanel.setLayout(new BoxLayout(headerPanel, BoxLayout.Y_AXIS));
+        headerPanel.setBackground(BG_COLOR);
+        headerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        headerPanel.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0));
 
-        // Création du panel pour le titre et le paragraphe
-        JPanel textPanel = new JPanel();
-        textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS)); // Arrange les composants verticalement
-        textPanel.setBackground(BG_COLOR);
+        // Logo (si disponible)
+        try {
+            ImageIcon originalIcon = new ImageIcon("resources/logo.png");
+            Image scaledImage = originalIcon.getImage().getScaledInstance(80, 80, Image.SCALE_SMOOTH);
+            JLabel logoLabel = new JLabel(new ImageIcon(scaledImage));
+            logoLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+            headerPanel.add(logoLabel);
+            headerPanel.add(Box.createVerticalStrut(15));
+        } catch (Exception e) {
+            // Gérer l'absence de logo
+        }
 
-        // Titre
-        JLabel sectionTitle = new JLabel(
-                "<html><span style='font-size:20px; font-weight:bold;'>Bienvenue dans votre espace étudiant</span></html>");
-        sectionTitle.setFont(new Font("Poppins", Font.BOLD, 20));
-        sectionTitle.setForeground(Color.BLACK);
-        textPanel.add(sectionTitle);
+        // Titre principal
+        JLabel mainTitle = new JLabel("Espace Étudiant");
+        mainTitle.setFont(new Font("Poppins", Font.BOLD, 28));
+        mainTitle.setForeground(new Color(0x333333));
+        mainTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        headerPanel.add(mainTitle);
 
-        // Paragraphe avec des côtes
-        JLabel paragraph = new JLabel("<html><div style='text-align:center; margin-top:20px;'>"
-                + "<hr style='border: 1px solid #6b6b6b;'/>"
-                + "<span style='font-size: 14px;'>Informations</span>"
-                + "<hr style='border: 1px solid #6b6b6b;'/>"
-                + "</div></html>");
-        paragraph.setFont(new Font("Poppins", Font.PLAIN, 14));
-        paragraph.setForeground(new Color(0x5e5e5e));
-        paragraph.setHorizontalAlignment(JLabel.CENTER);
-        textPanel.add(paragraph);
+        // Sous-titre
+        JLabel subTitle = new JLabel("Connectez-vous pour accéder à vos ressources");
+        subTitle.setFont(new Font("Poppins", Font.PLAIN, 16));
+        subTitle.setForeground(new Color(0x666666));
+        subTitle.setAlignmentX(Component.CENTER_ALIGNMENT);
+        headerPanel.add(subTitle);
 
-        // Ajouter le textPanel au panel principal
-        constraints.gridx = 0;
-        constraints.gridy = 0;
-        panel.add(textPanel, constraints);
+        panel.add(headerPanel);
 
-        constraints.gridx = 0;
-        constraints.gridy = 1;
+        // Séparateur élégant
+        JSeparator separator = new JSeparator();
+        separator.setMaximumSize(new Dimension(500, 1));
+        separator.setForeground(new Color(0xEEEEEE));
+        panel.add(separator);
+        panel.add(Box.createVerticalStrut(30));
 
-        panel.add(createInputPanel(), constraints);
+        // Carte de connexion avec effet d'élévation
+        JPanel cardPanel = new JPanel();
+        cardPanel.setLayout(new BoxLayout(cardPanel, BoxLayout.Y_AXIS));
+        cardPanel.setBackground(Color.WHITE);
+        cardPanel.setBorder(BorderFactory.createCompoundBorder(
+                new ShadowBorder(5, 3, 10),
+                BorderFactory.createEmptyBorder(5, 5, 5, 5)));
+        cardPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        cardPanel.setMaximumSize(new Dimension(450, 600));
+
+        // Ajouter le panel de saisie à la carte
+        cardPanel.add(createInputPanel());
+
+        panel.add(cardPanel);
+        panel.add(Box.createVerticalStrut(30));
+
+        // Pied de page
+        JPanel footerPanel = new JPanel();
+        footerPanel.setLayout(new FlowLayout(FlowLayout.CENTER));
+        footerPanel.setBackground(BG_COLOR);
+        footerPanel.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+        // Liens dans le pied de page
+        String[] links = { "Confidentialité", "Conditions d'utilisation", "Aide" };
+        for (int i = 0; i < links.length; i++) {
+            JLabel linkLabel = new JLabel(links[i]);
+            linkLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
+            linkLabel.setForeground(new Color(0x666666));
+            linkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+            final int index = i;
+            linkLabel.addMouseListener(new MouseAdapter() {
+                @Override
+                public void mouseEntered(MouseEvent e) {
+                    linkLabel.setText("<html><u>" + links[index] + "</u></html>");
+                }
+
+                @Override
+                public void mouseExited(MouseEvent e) {
+                    linkLabel.setText(links[index]);
+                }
+            });
+
+            footerPanel.add(linkLabel);
+
+            // Ajouter un séparateur entre les liens (sauf pour le dernier)
+            if (i < links.length - 1) {
+                JLabel separ = new JLabel(" • ");
+                separ.setFont(new Font("Poppins", Font.PLAIN, 12));
+                separ.setForeground(new Color(0x666666));
+                footerPanel.add(separ);
+            }
+        }
+
+        panel.add(footerPanel);
 
         return panel;
     }
 
-    // private void ouvrirModalConnexion() {
-    //     // Création de la boîte de dialogue modale
-    //     JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...",
-    //             true);
-    //     loadingDialog.setSize(400, 250);
-    //     loadingDialog.setLayout(new GridBagLayout());
-    //     loadingDialog.setLocationRelativeTo(this);
-    //     loadingDialog.setUndecorated(true);
-    //     loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
+    // Classe pour créer une bordure avec ombre
+    class ShadowBorder extends AbstractBorder {
+        private int shadowSize;
+        private int cornerRadius;
+        private int shadowOpacity;
 
-    //     // Définir une couleur de fond
-    //     JPanel contentPanel = new JPanel(new GridBagLayout());
-    //     contentPanel.setBackground(BG_COLOR);
+        public ShadowBorder(int shadowSize, int cornerRadius, int shadowOpacity) {
+            this.shadowSize = shadowSize;
+            this.cornerRadius = cornerRadius;
+            this.shadowOpacity = shadowOpacity;
+        }
 
-    //     GridBagConstraints gbc = new GridBagConstraints();
-    //     gbc.insets = new Insets(10, 10, 10, 10);
-    //     gbc.anchor = GridBagConstraints.CENTER;
-    //     gbc.gridx = 0;
-    //     gbc.gridy = 0;
+        @Override
+        public void paintBorder(Component c, Graphics g, int x, int y, int width, int height) {
+            Graphics2D g2 = (Graphics2D) g.create();
+            g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
-    //     // Ajout d'un texte "Connexion en cours..."
-    //     JLabel loadingLabel = new JLabel("Connexion en cours...");
-    //     loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
-    //     loadingLabel.setForeground(Color.BLACK); // Changer la couleur du texte
-    //     contentPanel.add(loadingLabel, gbc);
+            // Dessiner l'ombre
+            for (int i = 0; i < shadowSize; i++) {
+                int alpha = shadowOpacity * (shadowSize - i) / shadowSize;
+                g2.setColor(new Color(0, 0, 0, alpha));
+                g2.drawRoundRect(x + i, y + i, width - i * 2 - 1, height - i * 2 - 1, cornerRadius, cornerRadius);
+            }
 
-    //     // Ajout d'un GIF de chargement
-    //     gbc.gridy++;
-    //     ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
-    //     JLabel gifLabel = new JLabel(gifIcon);
-    //     contentPanel.add(gifLabel, gbc);
+            // Dessiner le contour principal
+            g2.setColor(new Color(0xEEEEEE));
+            g2.drawRoundRect(x, y, width - 1, height - 1, cornerRadius, cornerRadius);
 
-    //     // Définir le contentPane avec notre panel personnalisé
-    //     loadingDialog.setContentPane(contentPanel);
+            g2.dispose();
+        }
 
-    //     // Exécuter l'authentification en arrière-plan
-    //     new SwingWorker<Boolean, Void>() {
-    //         @Override
-    //         protected Boolean doInBackground() {
-    //             // Simulation d'un délai réseau (2 sec)
-    //             try {
-    //                 Thread.sleep(1000);
-    //             } catch (InterruptedException e) {
-    //                 e.printStackTrace();
-    //             }
-    //             return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
-    //         }
-
-    //         @Override
-    //         protected void done() {
-    //             try {
-    //                 boolean success = get();
-    //                 loadingDialog.dispose(); // Fermer le modal après la connexion
-
-    //                 if (success) {
-    //                     navigateToHomeStudent();
-    //                 } else {
-    //                     JOptionPane.showMessageDialog(null, "Identifiants incorrects.", "Erreur",
-    //                             JOptionPane.ERROR_MESSAGE);
-    //                 }
-    //             } catch (Exception e) {
-    //                 JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur",
-    //                         JOptionPane.ERROR_MESSAGE);
-    //             }
-    //         }
-    //     }.execute();
-
-    //     // Afficher le modal
-    //     loadingDialog.setVisible(true);
-    // }
+        @Override
+        public Insets getBorderInsets(Component c) {
+            return new Insets(shadowSize, shadowSize, shadowSize * 2, shadowSize * 2);
+        }
+    }
 
     private void ouvrirModalConnexion() {
         // Création de la boîte de dialogue modale
-        JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...", true);
+        JDialog loadingDialog = new JDialog((Frame) SwingUtilities.getWindowAncestor(this), "Connexion en cours...",
+                true);
         loadingDialog.setSize(400, 250);
         loadingDialog.setLayout(new GridBagLayout());
         loadingDialog.setLocationRelativeTo(this);
         loadingDialog.setUndecorated(true);
         loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-    
+
         // Définir une couleur de fond
         JPanel contentPanel = new JPanel(new GridBagLayout());
         contentPanel.setBackground(BG_COLOR);
-    
+
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.insets = new Insets(10, 10, 10, 10);
         gbc.anchor = GridBagConstraints.CENTER;
         gbc.gridx = 0;
         gbc.gridy = 0;
-    
+
         // Ajout d'un texte "Connexion en cours..."
         JLabel loadingLabel = new JLabel("Connexion en cours...");
         loadingLabel.setFont(new Font("Poppins", Font.PLAIN, 16));
         loadingLabel.setForeground(Color.BLACK);
         contentPanel.add(loadingLabel, gbc);
-    
+
         // Ajout d'un GIF de chargement
         gbc.gridy++;
         ImageIcon gifIcon = new ImageIcon("src/main/resources/static/img/gif/infinite.gif");
         JLabel gifLabel = new JLabel(gifIcon);
         contentPanel.add(gifLabel, gbc);
-    
+
         // Définir le contentPane avec notre panel personnalisé
         loadingDialog.setContentPane(contentPanel);
-    
+
         // Exécuter l'authentification en arrière-plan
         new SwingWorker<Boolean, Void>() {
             @Override
@@ -249,119 +284,312 @@ public class SignInStudentUI extends JFrame {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-    
+
                 // Vérification si l'utilisateur est un responsable
                 if (SecurityUtil.verifierEmailResponsable(emailField.getText())) {
                     return false; // Retourner false pour bloquer la connexion
                 }
-    
+
                 return authService.authentifier(emailField.getText(), new String(passwordField.getPassword()));
             }
-    
+
             @Override
             protected void done() {
                 try {
                     boolean success = get();
                     loadingDialog.dispose();
-    
+
                     if (!success) {
-                        JOptionPane.showMessageDialog(null, "Seuls les étudiants peuvent se connecter ici.", "Accès refusé", JOptionPane.ERROR_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Seuls les étudiants peuvent se connecter ici.",
+                                "Accès refusé", JOptionPane.ERROR_MESSAGE);
                         return;
                     }
-    
+
                     navigateToHomeStudent(); // Rediriger si la connexion est réussie
-    
+
                 } catch (Exception e) {
-                    JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(null, "Erreur lors de la connexion.", "Erreur",
+                            JOptionPane.ERROR_MESSAGE);
                 }
             }
         }.execute();
-    
+
         // Afficher le modal
         loadingDialog.setVisible(true);
     }
-    
 
-    // Panel des champs de saisie (Email et Mot de passe)
+    // // Panel des champs de saisie (Email et Mot de passe)
+    // private JPanel createInputPanel() {
+    // JPanel inputPanel = new JPanel();
+    // inputPanel.setLayout(new GridBagLayout());
+    // inputPanel.setBackground(BG_COLOR);
+
+    // GridBagConstraints constraints = new GridBagConstraints();
+    // constraints.insets = new Insets(10, 20, 10, 20); // Espacement entre les
+    // composants
+    // constraints.anchor = GridBagConstraints.WEST; // Alignement des composants à
+    // gauche
+    // constraints.gridx = 0;
+    // constraints.gridy = 0;
+
+    // // Email
+    // JLabel emailLabel = new JLabel("Email:");
+    // emailLabel.setFont(new Font("Poppins", Font.PLAIN, 14));
+    // emailLabel.setForeground(new Color(0x5e5e5e));
+    // inputPanel.add(emailLabel, constraints);
+
+    // constraints.gridx = 1;
+    // emailField = new JTextField(20);
+    // emailField.setFont(new Font("Poppins", Font.PLAIN, 14));
+    // inputPanel.add(emailField, constraints);
+
+    // // Mot de passe
+    // constraints.gridx = 0;
+    // constraints.gridy = 1;
+    // JLabel passwordLabel = new JLabel("Mot de Passe:");
+    // passwordLabel.setFont(new Font("Poppins", Font.PLAIN, 14));
+    // passwordLabel.setForeground(new Color(0x5e5e5e));
+    // inputPanel.add(passwordLabel, constraints);
+
+    // constraints.gridx = 1;
+    // passwordField = new JPasswordField(20);
+    // passwordField.setFont(new Font("Poppins", Font.PLAIN, 14));
+    // inputPanel.add(passwordField, constraints);
+
+    // // Checkbox pour voir le mot de passe en clair
+    // constraints.gridx = 2;
+    // constraints.gridy = 1;
+    // JCheckBox showPasswordCheckBox = new JCheckBox("Afficher le mot de passe");
+    // showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
+    // showPasswordCheckBox.setBackground(BG_COLOR);
+    // showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
+
+    // showPasswordCheckBox.addActionListener(e -> {
+    // if (showPasswordCheckBox.isSelected()) {
+    // passwordField.setEchoChar((char) 0); // Affiche le mot de passe en clair
+    // } else {
+    // passwordField.setEchoChar('*'); // Masque le mot de passe
+    // }
+    // });
+
+    // inputPanel.add(showPasswordCheckBox, constraints);
+
+    // // Bouton de connexion
+    // constraints.gridx = 1;
+    // constraints.gridy = 2;
+    // JButton loginButton = new JButton("Se connecter");
+    // loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
+    // loginButton.setBackground(VERT_COLOR_2);
+    // loginButton.setForeground(Color.WHITE);
+    // loginButton.setPreferredSize(new Dimension(250, 40));
+
+    // loginButton.addActionListener(e -> ouvrirModalConnexion());
+
+    // inputPanel.add(loginButton, constraints);
+
+    // // Paragraphe d'inscription avec un MouseListener pour la redirection
+    // constraints.gridx = 0;
+    // constraints.gridy = 3;
+    // constraints.gridwidth = 2;
+    // // Création du label d'inscription
+    // JLabel signupLabel = new JLabel("Vous n'avez pas de compte ? Inscrivez-vous
+    // ici.");
+    // signupLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
+    // signupLabel.setForeground(Color.BLACK); // Couleur du lien
+    // signupLabel.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Curseur main au
+    // survol
+
+    // // Gestion de l'événement click
+    // signupLabel.addMouseListener(new MouseAdapter() {
+    // @Override
+    // public void mouseClicked(MouseEvent e) {
+    // SignUpStudentUI signUpUI = new SignUpStudentUI();
+    // signUpUI.afficher(); // Ouvrir la page d'inscription
+    // fermer(); // Fermer la page actuelle
+    // }
+
+    // @Override
+    // public void mouseEntered(MouseEvent e) {
+    // signupLabel.setForeground(Color.BLACK);
+    // signupLabel.setFont(new Font("Poppins", Font.BOLD, 12));
+    // }
+
+    // @Override
+    // public void mouseExited(MouseEvent e) {
+    // signupLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
+    // // Revenir à la couleur de base
+    // }
+    // });
+
+    // // Ajout au panel
+    // inputPanel.add(signupLabel, constraints);
+
+    // inputPanel.add(signupLabel, constraints);
+
+    // return inputPanel;
+    // }
+
+    // Panel des champs de saisie (Email et Mot de passe) - Version moderne
     private JPanel createInputPanel() {
         JPanel inputPanel = new JPanel();
-        inputPanel.setLayout(new GridBagLayout());
+        inputPanel.setLayout(new BoxLayout(inputPanel, BoxLayout.Y_AXIS));
         inputPanel.setBackground(BG_COLOR);
+        inputPanel.setBorder(BorderFactory.createEmptyBorder(30, 40, 30, 40));
 
-        GridBagConstraints constraints = new GridBagConstraints();
-        constraints.insets = new Insets(10, 20, 10, 20); // Espacement entre les composants
-        constraints.anchor = GridBagConstraints.WEST; // Alignement des composants à gauche
-        constraints.gridx = 0;
-        constraints.gridy = 0;
+        // Titre de connexion
+        JLabel titleLabel = new JLabel("Connexion");
+        titleLabel.setFont(new Font("Poppins", Font.BOLD, 24));
+        titleLabel.setForeground(new Color(0x333333));
+        titleLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        inputPanel.add(titleLabel);
+
+        inputPanel.add(Box.createVerticalStrut(25));
 
         // Email
-        JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(new Font("Poppins", Font.PLAIN, 14));
-        emailLabel.setForeground(new Color(0x5e5e5e));
-        inputPanel.add(emailLabel, constraints);
+        JPanel emailPanel = new JPanel(new BorderLayout());
+        emailPanel.setBackground(BG_COLOR);
+        emailPanel.setMaximumSize(new Dimension(350, 70));
 
-        constraints.gridx = 1;
-        emailField = new JTextField(20);
+        JLabel emailLabel = new JLabel("Email");
+        emailLabel.setFont(REGULAR_FONT);
+        emailLabel.setForeground(new Color(0x5e5e5e));
+        emailPanel.add(emailLabel, BorderLayout.NORTH);
+
+        emailField = new JTextField();
         emailField.setFont(new Font("Poppins", Font.PLAIN, 14));
-        inputPanel.add(emailField, constraints);
+        emailField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xDDDDDD), 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
+        emailPanel.add(emailField, BorderLayout.CENTER);
+
+        inputPanel.add(emailPanel);
+        inputPanel.add(Box.createVerticalStrut(15));
 
         // Mot de passe
-        constraints.gridx = 0;
-        constraints.gridy = 1;
-        JLabel passwordLabel = new JLabel("Mot de Passe:");
-        passwordLabel.setFont(new Font("Poppins", Font.PLAIN, 14));
+        JPanel passwordPanel = new JPanel(new BorderLayout());
+        passwordPanel.setBackground(BG_COLOR);
+        passwordPanel.setMaximumSize(new Dimension(350, 70));
+
+        JLabel passwordLabel = new JLabel("Mot de Passe");
+        passwordLabel.setFont(REGULAR_FONT);
         passwordLabel.setForeground(new Color(0x5e5e5e));
-        inputPanel.add(passwordLabel, constraints);
+        passwordPanel.add(passwordLabel, BorderLayout.NORTH);
 
-        constraints.gridx = 1;
-        passwordField = new JPasswordField(20);
+        JPanel passwordFieldPanel = new JPanel(new BorderLayout());
+        passwordFieldPanel.setBackground(BG_COLOR);
+
+        passwordField = new JPasswordField();
         passwordField.setFont(new Font("Poppins", Font.PLAIN, 14));
-        inputPanel.add(passwordField, constraints);
+        passwordField.setBorder(BorderFactory.createCompoundBorder(
+                BorderFactory.createLineBorder(new Color(0xDDDDDD), 1, true),
+                BorderFactory.createEmptyBorder(8, 10, 8, 10)));
+        passwordFieldPanel.add(passwordField, BorderLayout.CENTER);
 
-        // Checkbox pour voir le mot de passe en clair
-        constraints.gridx = 2;
-        constraints.gridy = 1;
-        JCheckBox showPasswordCheckBox = new JCheckBox("Afficher le mot de passe");
-        showPasswordCheckBox.setFont(new Font("Poppins", Font.PLAIN, 12));
-        showPasswordCheckBox.setBackground(BG_COLOR);
-        showPasswordCheckBox.setForeground(new Color(0x5e5e5e));
-
-        showPasswordCheckBox.addActionListener(e -> {
-            if (showPasswordCheckBox.isSelected()) {
-                passwordField.setEchoChar((char) 0); // Affiche le mot de passe en clair
+        // Icône pour afficher/masquer le mot de passe
+        JToggleButton showPasswordButton = new JToggleButton(
+                IconUI.createIcon("src/main/resources/static/img/png/close-eye.png", 20, 20));
+        showPasswordButton.setSelectedIcon(IconUI.createIcon("src/main/resources/static/img/png/open-eye.png", 20, 20));
+        showPasswordButton.setBorder(BorderFactory.createEmptyBorder());
+        showPasswordButton.setBackground(Color.WHITE);
+        showPasswordButton.setFocusPainted(false);
+        showPasswordButton.addActionListener(e -> {
+            if (showPasswordButton.isSelected()) {
+                passwordField.setEchoChar((char) 0); // Affiche le mot de passe
             } else {
-                passwordField.setEchoChar('*'); // Masque le mot de passe
+                passwordField.setEchoChar('•'); // Masque le mot de passe
             }
         });
+        passwordFieldPanel.add(showPasswordButton, BorderLayout.EAST);
 
-        inputPanel.add(showPasswordCheckBox, constraints);
+        passwordPanel.add(passwordFieldPanel, BorderLayout.CENTER);
+        inputPanel.add(passwordPanel);
+
+        // Option "Se souvenir de moi"
+        JPanel rememberPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 5));
+        rememberPanel.setBackground(BG_COLOR);
+        rememberPanel.setMaximumSize(new Dimension(350, 30));
+
+        JCheckBox rememberCheckBox = new JCheckBox("Se souvenir de moi");
+        rememberCheckBox.setFont(new Font("Poppins", Font.PLAIN, 13));
+        rememberCheckBox.setBackground(BG_COLOR);
+        rememberCheckBox.setForeground(new Color(0x5e5e5e));
+        rememberPanel.add(rememberCheckBox);
+
+        inputPanel.add(rememberPanel);
+        inputPanel.add(Box.createVerticalStrut(20));
 
         // Bouton de connexion
-        constraints.gridx = 1;
-        constraints.gridy = 2;
-        JButton loginButton = new JButton("Se connecter");
+        JButton loginButton = new JButton("SE CONNECTER");
         loginButton.setFont(new Font("Poppins", Font.BOLD, 14));
         loginButton.setBackground(VERT_COLOR_2);
         loginButton.setForeground(Color.WHITE);
-        loginButton.setPreferredSize(new Dimension(250, 40));
+        loginButton.setBorder(BorderFactory.createEmptyBorder(12, 10, 12, 10));
+        loginButton.setMaximumSize(new Dimension(350, 45));
+        loginButton.setAlignmentX(Component.CENTER_ALIGNMENT);
+        loginButton.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        loginButton.setFocusPainted(false);
 
+        // Effet hover
+        loginButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                loginButton.setBackground(new Color(
+                        Math.max(0, VERT_COLOR_2.getRed() - 20),
+                        Math.max(0, VERT_COLOR_2.getGreen() - 20),
+                        Math.max(0, VERT_COLOR_2.getBlue() - 20)));
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                loginButton.setBackground(VERT_COLOR_2);
+            }
+        });
 
         loginButton.addActionListener(e -> ouvrirModalConnexion());
 
-        inputPanel.add(loginButton, constraints);
+        inputPanel.add(loginButton);
+        inputPanel.add(Box.createVerticalStrut(25));
 
-        // Paragraphe d'inscription avec un MouseListener pour la redirection
-        constraints.gridx = 0;
-        constraints.gridy = 3;
-        constraints.gridwidth = 2;
-        // Création du label d'inscription
-        JLabel signupLabel = new JLabel("Vous n'avez pas de compte ? Inscrivez-vous ici.");
-        signupLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
-        signupLabel.setForeground(Color.BLACK); // Couleur du lien
-        signupLabel.setCursor(new Cursor(Cursor.HAND_CURSOR)); // Curseur main au survol
+        // Séparateur ou texte ou
+        JPanel orPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        orPanel.setBackground(BG_COLOR);
+        orPanel.setMaximumSize(new Dimension(350, 20));
+
+        JSeparator leftSep = new JSeparator();
+        leftSep.setPreferredSize(new Dimension(100, 1));
+        leftSep.setForeground(new Color(0xDDDDDD));
+
+        JLabel orLabel = new JLabel(" ou ");
+        orLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
+        orLabel.setForeground(new Color(0x888888));
+
+        JSeparator rightSep = new JSeparator();
+        rightSep.setPreferredSize(new Dimension(100, 1));
+        rightSep.setForeground(new Color(0xDDDDDD));
+
+        orPanel.add(leftSep);
+        orPanel.add(orLabel);
+        orPanel.add(rightSep);
+
+        inputPanel.add(orPanel);
+        inputPanel.add(Box.createVerticalStrut(15));
+
+        // Lien d'inscription
+        JPanel signupPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        signupPanel.setBackground(BG_COLOR);
+        signupPanel.setMaximumSize(new Dimension(350, 30));
+
+        JLabel signupTextLabel = new JLabel("Vous n'avez pas de compte ? ");
+        signupTextLabel.setFont(new Font("Poppins", Font.PLAIN, 13));
+        signupTextLabel.setForeground(new Color(0x555555));
+
+        JLabel signupLinkLabel = new JLabel("Inscrivez-vous");
+        signupLinkLabel.setFont(new Font("Poppins", Font.BOLD, 13));
+        signupLinkLabel.setForeground(VERT_COLOR_2);
+        signupLinkLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
 
         // Gestion de l'événement click
-        signupLabel.addMouseListener(new MouseAdapter() {
+        signupLinkLabel.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 SignUpStudentUI signUpUI = new SignUpStudentUI();
@@ -371,21 +599,19 @@ public class SignInStudentUI extends JFrame {
 
             @Override
             public void mouseEntered(MouseEvent e) {
-                signupLabel.setForeground(Color.BLACK);
-                signupLabel.setFont(new Font("Poppins", Font.BOLD, 12));
+                signupLinkLabel.setText("<html><u>Inscrivez-vous</u></html>");
             }
 
             @Override
             public void mouseExited(MouseEvent e) {
-                signupLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
-                // Revenir à la couleur de base
+                signupLinkLabel.setText("Inscrivez-vous");
             }
         });
 
-        // Ajout au panel
-        inputPanel.add(signupLabel, constraints);
+        signupPanel.add(signupTextLabel);
+        signupPanel.add(signupLinkLabel);
 
-        inputPanel.add(signupLabel, constraints);
+        inputPanel.add(signupPanel);
 
         return inputPanel;
     }

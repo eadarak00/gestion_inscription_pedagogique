@@ -31,7 +31,4 @@ public class Enseignant {
         this.email = email;
         this.specialite = specialite;
     }
-
-    // @OneToMany(mappedBy = "enseignant")
-    // private List<UE> ueList= new ArrayList<>();
 }
