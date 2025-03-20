@@ -142,6 +142,45 @@
 
     </dependencies>
 
+    <!-- <build>
+        <plugins>
+             Plugin Maven Compiler (Java 17) 
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.8.1</version>
+                <configuration>
+                    <source>17</source>
+                    <target>17</target>
+                </configuration>
+            </plugin>
+
+            <- Plugin Maven Surefire (Tests JUnit) -
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+            </plugin>
+
+         Plugin Maven Exec (Exécuter le projet) -
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <version>3.5.0</version>
+                <configuration>
+                    <mainClass>sn.uasz.m1.inscription.Main</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+            </resource>
+        </resources>
+    </build> -->
+
+
     <build>
         <plugins>
             <!-- Plugin Maven Compiler (Java 17) -->
@@ -162,7 +201,7 @@
                 <version>3.0.0-M7</version>
             </plugin>
 
-            <!-- Plugin Maven Exec (Exécuter le projet) -->
+            <!-- Plugin Maven Exec (Exécuter le projet depuis Maven) -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>exec-maven-plugin</artifactId>
@@ -171,16 +210,46 @@
                     <mainClass>sn.uasz.m1.inscription.Main</mainClass>
                 </configuration>
             </plugin>
+
+            <!-- Plugin Maven JAR (Génération du fichier JAR) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <mainClass>sn.uasz.m1.inscription.Main</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <!-- Plugin Maven Shade (Créer un JAR autonome avec dépendances) -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.4</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
 
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
             </resource>
         </resources>
     </build>
-
-
 
 
     <!-- 👥 Informations sur les développeurs -->
