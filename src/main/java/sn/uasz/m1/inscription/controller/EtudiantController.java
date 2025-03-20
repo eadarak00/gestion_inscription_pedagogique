@@ -33,12 +33,13 @@ public class EtudiantController {
         // Création de l'objet étudiant
         Etudiant etudiant = new Etudiant();
         etudiant.setIne(ine);
-        etudiant.setNom(nom);
+        etudiant.setNom(nom); 
         etudiant.setPrenom(prenom);
         etudiant.setEmail(email);
         etudiant.setMotDePasse(motDePasse);
         etudiant.setAdresse(adresse);
         etudiant.setSexe(sexe);
+        etudiant.setDateNaissance(dateNaissance);
 
         // Sauvegarde en base de données
         etudiantService.createEtudiant(etudiant);

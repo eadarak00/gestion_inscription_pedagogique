@@ -190,17 +190,52 @@ public class SignUpStudentUI extends JFrame {
         gbc.gridx = 1;
         gbc.gridy++;
         gbc.gridwidth = 2;
-        JLabel loginLabel = new JLabel("Déjà un compte ? Connectez-vous ici.");
-        loginLabel.setForeground(vertColor1);
-        loginLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-        loginLabel.setFont(new Font("Poppins", Font.BOLD, 12));
-        loginLabel.addMouseListener(new MouseAdapter() {
+        // JLabel loginLabel = new JLabel("Déjà un compte ? Connectez-vous ici.");
+        // loginLabel.setForeground(vertColor1);
+        // loginLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+        // loginLabel.setFont(new Font("Poppins", Font.BOLD, 12));
+        // loginLabel.addMouseListener(new MouseAdapter() {
+        //     @Override
+        //     public void mouseClicked(MouseEvent e) {
+        //         navigateToSignIn();
+        //     }
+
+
+        // });
+
+        JPanel loginPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        loginPanel.setBackground(fondColor);
+        JLabel loginLabel = new JLabel("Déjà un compte ? ");
+        loginLabel.setFont(new Font("Poppins", Font.PLAIN, 12));
+        JLabel loginLink = new JLabel("Connectez-vous ici");
+        loginLink.setFont(new Font("Poppins", Font.BOLD, 12));
+        loginLink.setForeground(vertColor2);
+        loginLink.setCursor(new Cursor(Cursor.HAND_CURSOR));
+
+        loginLink.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                loginLink.setForeground(vertColor1);
+                loginLink.setText("<html><u>Connectez-vous ici</u></html>");
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                loginLink.setForeground(vertColor2);
+                loginLink.setText("Connectez-vous ici");
+            }
+
             @Override
             public void mouseClicked(MouseEvent e) {
                 navigateToSignIn();
             }
         });
-        formPanel.add(loginLabel, gbc);
+
+        loginPanel.add(loginLabel);
+        loginPanel.add(loginLink);
+        // formPanel.add(loginLabel, gbc);
+        formPanel.add(loginPanel, gbc);
+
 
         return formPanel;
     }
@@ -220,7 +255,7 @@ public class SignUpStudentUI extends JFrame {
         try {
             dateNaissance = LocalDate.parse(dateNaissanceStr, DateTimeFormatter.ofPattern("yyyy-MM-dd"));
         } catch (DateTimeParseException e) {
-            JOptionPane.showMessageDialog(this, "⚠️ Format de date invalide. Utilisez yyyy-MM-dd.", "Erreur de format", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Format de date invalide. Utilisez yyyy-MM-dd.", "Erreur de format", JOptionPane.ERROR_MESSAGE);
             return;
         }
     

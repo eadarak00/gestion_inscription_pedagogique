@@ -166,7 +166,7 @@ public class DashboardResponsableUI extends JFrame {
         userInfoPanel.add(userTextPanel, BorderLayout.CENTER);
 
         // Button de déconnexion
-        JLabel logoutLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logout.png", 18, 18));
+        JLabel logoutLabel = new JLabel(IconUI.createIcon("src/main/resources/static/img/png/logout-white.png", 18, 18));
         logoutLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
         logoutLabel.addMouseListener(new MouseAdapter() {
             @Override

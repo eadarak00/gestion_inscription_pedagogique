@@ -20,6 +20,7 @@ import sn.uasz.m1.inscription.service.EtudiantService;
 import sn.uasz.m1.inscription.service.FormationService;
 import sn.uasz.m1.inscription.service.InscriptionService;
 import sn.uasz.m1.inscription.service.UEService;
+import sn.uasz.m1.inscription.view.components.IconUI;
 
 import javax.swing.*;
 import java.awt.*;
@@ -39,6 +40,15 @@ public class HomeDashboardPanel extends JPanel {
     private final Color WARNING_COLOR = new Color(241, 196, 15);
     private final Color DANGER_COLOR = new Color(231, 76, 60);
     private final Color LIGHT_BG = new Color(250, 250, 255);
+
+    // 🎨 Déclaration des couleurs (conservées de l'original)
+    private static final Color VERT_COLOR_1 = new Color(0x113F36);
+    private static final Color VERT_COLOR_2 = new Color(0x128E64);
+    private static final Color VERT_3 = new Color(0x0B7968);
+    private static final Color BLA_COLOR = new Color(0x151d21);
+    private static final Color BG_COLOR = new Color(0xF2F2F2);
+    private static final Color RED_COLOR = new Color(0xcc1a1a);
+    private static final Color GRAY_COLOR = new Color(0xC6BFBF);
 
     public HomeDashboardPanel() {
         this.formationService = new FormationService();
@@ -147,79 +157,261 @@ public class HomeDashboardPanel extends JPanel {
         return panel;
     }
 
+
+    // private JPanel createStatsCardsPanel() {
+    //     JPanel panel = new JPanel(new GridLayout(1, 4, 20, 0));
+    //     panel.setOpaque(false);
+    //     panel.setAlignmentX(Component.LEFT_ALIGNMENT);
+    //     panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+    
+    //     // Récupération des statistiques
+    //     int nbFormations = formationService.getFormationsByResponsable().size();
+    //     int nbEtudiants = etudiantService.getAllEtudiants().size();
+    //     int nbUEs = ueService.getUEsByResponsable().size();
+    //     int nbInscriptions = inscriptionService.getInscriptionsByResponsable().size();
+    
+    //     // Création des cartes de statistiques avec dégradé
+    //     panel.add(createStatCard("Formations", nbFormations, VERT_COLOR_1, VERT_COLOR_2, "📚"));
+    //     panel.add(createStatCard("Étudiants", nbEtudiants, VERT_COLOR_1, VERT_COLOR_2, "👨‍🎓"));
+    //     panel.add(createStatCard("UEs", nbUEs, VERT_COLOR_1, VERT_COLOR_2, "src/main/resources/static/img/png/ue.png"));
+    //     panel.add(createStatCard("Inscriptions", nbInscriptions, VERT_COLOR_1, VERT_COLOR_2, "✅"));
+    
+    //     return panel;
+    // }
+    
+    // private JPanel createStatCard(String label, int value, Color color1, Color color2, String icon) {
+    //     JPanel card = new JPanel() {
+    //         @Override
+    //         protected void paintComponent(Graphics g) {
+    //             super.paintComponent(g);
+    //             Graphics2D g2d = (Graphics2D) g;
+    //             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+    //             // Effet d'ombre
+    //             int shadowSize = 5;
+    //             for (int i = 0; i < shadowSize; i++) {
+    //                 g2d.setColor(new Color(0, 0, 0, 10));
+    //                 g2d.fillRoundRect(shadowSize - i, shadowSize - i, 
+    //                                  getWidth() - (shadowSize - i) * 2, 
+    //                                  getHeight() - (shadowSize - i) * 2, 15, 15);
+    //             }
+                
+    //             // Fond avec dégradé
+    //             GradientPaint backgroundGradient = new GradientPaint(
+    //                 0, 0, new Color(245, 245, 245),
+    //                 0, getHeight(), BG_COLOR
+    //             );
+    //             g2d.setPaint(backgroundGradient);
+    //             g2d.fillRoundRect(0, 0, getWidth() - shadowSize, getHeight() - shadowSize, 15, 15);
+                
+    //             // Dégradé de couleur sur le côté gauche
+    //             GradientPaint leftBorderGradient = new GradientPaint(
+    //                 0, 0, color1,
+    //                 0, getHeight(), color2
+    //             );
+    //             g2d.setPaint(leftBorderGradient);
+    //             g2d.fillRoundRect(0, 0, 8, getHeight() - shadowSize, 8, 8);
+                
+    //             // Bordure fine
+    //             g2d.setColor(new Color(220, 220, 220));
+    //             g2d.setStroke(new BasicStroke(1f));
+    //             g2d.drawRoundRect(0, 0, getWidth() - shadowSize - 1, getHeight() - shadowSize - 1, 15, 15);
+    //         }
+            
+    //         @Override
+    //         public Dimension getPreferredSize() {
+    //             // Ajout d'espace pour l'ombre
+    //             Dimension size = super.getPreferredSize();
+    //             return new Dimension(size.width + 5, size.height + 5);
+    //         }
+    //     };
+    //     card.setLayout(new BorderLayout(10, 5));
+    //     card.setOpaque(false);
+    //     card.setBorder(BorderFactory.createEmptyBorder(10, 15, 10, 15));
+        
+    //     // Panneau pour l'icône avec un effet de cercle coloré en arrière-plan
+    //     JPanel iconPanel = new JPanel() {
+    //         @Override
+    //         protected void paintComponent(Graphics g) {
+    //             super.paintComponent(g);
+    //             Graphics2D g2d = (Graphics2D) g;
+    //             g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+    //             // Cercle avec dégradé derrière l'icône
+    //             GradientPaint iconGradient = new GradientPaint(
+    //                 0, 0, new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 40),
+    //                 getWidth(), getHeight(), new Color(color2.getRed(), color2.getGreen(), color2.getBlue(), 20)
+    //             );
+    //             g2d.setPaint(iconGradient);
+    //             int size = Math.min(getWidth(), getHeight()) - 10;
+    //             g2d.fillOval((getWidth() - size) / 2, (getHeight() - size) / 2, size, size);
+    //         }
+    //     };
+    //     iconPanel.setOpaque(false);
+    //     iconPanel.setPreferredSize(new Dimension(60, 60));
+    //     iconPanel.setLayout(new BorderLayout());
+        
+    //     // Icône
+    //     JLabel iconLabel = new JLabel(icon);
+    //     iconLabel.setFont(new Font("Segoe UI", Font.PLAIN, 30));
+    //     iconLabel.setForeground(color1);
+    //     iconLabel.setHorizontalAlignment(JLabel.CENTER);
+    //     iconLabel.setVerticalAlignment(JLabel.CENTER);
+    //     iconPanel.add(iconLabel, BorderLayout.CENTER);
+        
+    //     // Panneau d'info
+    //     JPanel infoPanel = new JPanel(new BorderLayout(5, 0));
+    //     infoPanel.setOpaque(false);
+        
+    //     // Valeur
+    //     JLabel valueLabel = new JLabel(String.valueOf(value));
+    //     valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 28));
+    //     valueLabel.setForeground(color1);
+        
+    //     // Titre
+    //     JLabel titleLabel = new JLabel(label);
+    //     titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 15));
+    //     titleLabel.setForeground(new Color(100, 100, 100));
+        
+    //     infoPanel.add(valueLabel, BorderLayout.NORTH);
+    //     infoPanel.add(titleLabel, BorderLayout.CENTER);
+        
+    //     // Assembler les composants
+    //     card.add(iconPanel, BorderLayout.WEST);
+    //     card.add(infoPanel, BorderLayout.CENTER);
+        
+    //     return card;
+    // }
+
     private JPanel createStatsCardsPanel() {
-        JPanel panel = new JPanel(new GridLayout(1, 4, 20, 0));
+        JPanel panel = new JPanel(new GridLayout(1, 4, 10, 0)); // Reduced spacing between cards
         panel.setOpaque(false);
         panel.setAlignmentX(Component.LEFT_ALIGNMENT);
-        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 150));
-
+        panel.setMaximumSize(new Dimension(Integer.MAX_VALUE, 120));
+    
         // Récupération des statistiques
         int nbFormations = formationService.getFormationsByResponsable().size();
         int nbEtudiants = etudiantService.getAllEtudiants().size();
         int nbUEs = ueService.getUEsByResponsable().size();
         int nbInscriptions = inscriptionService.getInscriptionsByResponsable().size();
-
-        // Création des cartes de statistiques
-        panel.add(createStatCard("Formations", nbFormations, PRIMARY_COLOR, "📚"));
-        panel.add(createStatCard("Étudiants", nbEtudiants, SUCCESS_COLOR, "👨‍🎓"));
-        panel.add(createStatCard("UEs", nbUEs, WARNING_COLOR, "📝"));
-        panel.add(createStatCard("Inscriptions", nbInscriptions, DANGER_COLOR, "✅"));
-
+    
+        // Création des cartes de statistiques avec dégradé
+        panel.add(createStatCard("Formations", nbFormations, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-formation.png", 30, 30)));
+        panel.add(createStatCard("Étudiants", nbEtudiants, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-etudiant.png", 30, 30)));
+        panel.add(createStatCard("UEs", nbUEs, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-ue.png", 30, 30)));
+        panel.add(createStatCard("Inscriptions", nbInscriptions, VERT_COLOR_1, VERT_COLOR_2, IconUI.createIcon("src/main/resources/static/img/png/b-check.png", 30, 30)));
+    
         return panel;
     }
-
-    private JPanel createStatCard(String label, int value, Color color, String icon) {
+    
+    private JPanel createStatCard(String label, int value, Color color1, Color color2, ImageIcon icon) {
         JPanel card = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 Graphics2D g2d = (Graphics2D) g;
                 g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                // Fond blanc légèrement transparent
-                g2d.setColor(new Color(255, 255, 255, 240));
-                g2d.fillRoundRect(0, 0, getWidth(), getHeight(), 15, 15);
-
-                // Bordure avec couleur thématique
-                g2d.setColor(new Color(color.getRed(), color.getGreen(), color.getBlue(), 80));
-                g2d.setStroke(new BasicStroke(2));
-                g2d.drawRoundRect(1, 1, getWidth() - 3, getHeight() - 3, 15, 15);
-
-                // Barre de couleur sur le dessus
-                g2d.setColor(color);
-                g2d.fillRoundRect(0, 0, getWidth(), 5, 5, 5);
+                
+                // Effet d'ombre
+                int shadowSize = 5;
+                for (int i = 0; i < shadowSize; i++) {
+                    g2d.setColor(new Color(0, 0, 0, 10));
+                    g2d.fillRoundRect(shadowSize - i, shadowSize - i, 
+                                     getWidth() - (shadowSize - i) * 2, 
+                                     getHeight() - (shadowSize - i) * 2, 15, 15);
+                }
+                
+                // Fond avec dégradé
+                GradientPaint backgroundGradient = new GradientPaint(
+                    0, 0, new Color(245, 245, 245),
+                    0, getHeight(), BG_COLOR
+                );
+                g2d.setPaint(backgroundGradient);
+                g2d.fillRoundRect(0, 0, getWidth() - shadowSize, getHeight() - shadowSize, 15, 15);
+                
+                // Dégradé de couleur sur le côté gauche
+                GradientPaint leftBorderGradient = new GradientPaint(
+                    0, 0, color1,
+                    0, getHeight(), color2
+                );
+                g2d.setPaint(leftBorderGradient);
+                g2d.fillRoundRect(0, 0, 8, getHeight() - shadowSize, 8, 8);
+                
+                // Bordure fine
+                g2d.setColor(new Color(220, 220, 220));
+                g2d.setStroke(new BasicStroke(1f));
+                g2d.drawRoundRect(0, 0, getWidth() - shadowSize - 1, getHeight() - shadowSize - 1, 15, 15);
+            }
+            
+            @Override
+            public Dimension getPreferredSize() {
+                // Ajout d'espace pour l'ombre et réduction de la largeur
+                Dimension size = super.getPreferredSize();
+                return new Dimension(Math.min(size.width, 180) + 5, size.height + 5); // Limit width to 180px
+            }
+            
+            @Override
+            public Dimension getMaximumSize() {
+                // Limitation de la taille maximale
+                return new Dimension(190, super.getMaximumSize().height);
             }
         };
-        card.setLayout(new BorderLayout());
+        card.setLayout(new BorderLayout(5, 5)); // Reduced internal spacing
         card.setOpaque(false);
-
+        card.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); // Reduced padding
+        card.setPreferredSize(new Dimension(100, 120));
+        
+        // Panneau pour l'icône avec un effet de cercle coloré en arrière-plan
+        JPanel iconPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                Graphics2D g2d = (Graphics2D) g;
+                g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+                
+                // Cercle avec dégradé derrière l'icône
+                GradientPaint iconGradient = new GradientPaint(
+                    0, 0, new Color(color1.getRed(), color1.getGreen(), color1.getBlue(), 40),
+                    getWidth(), getHeight(), new Color(color2.getRed(), color2.getGreen(), color2.getBlue(), 20)
+                );
+                g2d.setPaint(iconGradient);
+                int size = Math.min(getWidth(), getHeight()) - 10;
+                g2d.fillOval((getWidth() - size) / 2, (getHeight() - size) / 2, size, size);
+            }
+        };
+        iconPanel.setOpaque(false);
+        iconPanel.setPreferredSize(new Dimension(50, 60)); // Reduced icon panel width
+        iconPanel.setLayout(new BorderLayout());
+        
         // Icône
         JLabel iconLabel = new JLabel(icon);
-        iconLabel.setFont(new Font("Segoe UI", Font.PLAIN, 36));
-        iconLabel.setForeground(new Color(color.getRed(), color.getGreen(), color.getBlue(), 200));
-        iconLabel.setBorder(BorderFactory.createEmptyBorder(10, 15, 0, 0));
-
+        iconLabel.setFont(new Font("Segoe UI", Font.PLAIN, 24)); // Smaller icon font
+        iconLabel.setForeground(color1);
+        iconLabel.setHorizontalAlignment(JLabel.CENTER);
+        iconLabel.setVerticalAlignment(JLabel.CENTER);
+        iconPanel.add(iconLabel, BorderLayout.CENTER);
+        
+        // Panneau d'info
+        JPanel infoPanel = new JPanel(new BorderLayout(5, 0));
+        infoPanel.setOpaque(false);
+        
         // Valeur
         JLabel valueLabel = new JLabel(String.valueOf(value));
-        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 32));
-        valueLabel.setForeground(new Color(44, 62, 80));
-        valueLabel.setHorizontalAlignment(SwingConstants.RIGHT);
-        valueLabel.setBorder(BorderFactory.createEmptyBorder(10, 0, 0, 15));
-
+        valueLabel.setFont(new Font("Segoe UI", Font.BOLD, 24)); // Smaller value font
+        valueLabel.setForeground(color1);
+        
         // Titre
         JLabel titleLabel = new JLabel(label);
-        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14));
-        titleLabel.setForeground(new Color(127, 140, 141));
-        titleLabel.setBorder(BorderFactory.createEmptyBorder(0, 15, 10, 0));
-
-        JPanel topPanel = new JPanel(new BorderLayout());
-        topPanel.setOpaque(false);
-        topPanel.add(iconLabel, BorderLayout.WEST);
-        topPanel.add(valueLabel, BorderLayout.EAST);
-
-        card.add(topPanel, BorderLayout.CENTER);
-        card.add(titleLabel, BorderLayout.SOUTH);
-
+        titleLabel.setFont(new Font("Segoe UI", Font.PLAIN, 14)); // Smaller title font
+        titleLabel.setForeground(new Color(100, 100, 100));
+        
+        infoPanel.add(valueLabel, BorderLayout.NORTH);
+        infoPanel.add(titleLabel, BorderLayout.CENTER);
+        
+        // Assembler les composants
+        card.add(iconPanel, BorderLayout.WEST);
+        card.add(infoPanel, BorderLayout.CENTER);
+        
         return card;
     }
 
