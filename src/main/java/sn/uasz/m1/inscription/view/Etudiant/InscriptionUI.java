@@ -12,6 +12,7 @@ import sn.uasz.m1.inscription.model.Utilisateur;
 import sn.uasz.m1.inscription.service.EtudiantService;
 import sn.uasz.m1.inscription.service.FormationService;
 import sn.uasz.m1.inscription.utils.SessionManager;
+import sn.uasz.m1.inscription.view.components.IconUI;
 import sn.uasz.m1.inscription.view.components.NavbarPanel;
 import sn.uasz.m1.inscription.view.components.NavbarStudent;
 import sn.uasz.m1.inscription.view.components.StepIndicator;
@@ -363,7 +364,7 @@ public class InscriptionUI extends JFrame {
 
         panel.setBorder(BorderFactory.createEmptyBorder(0, 0, 0, 40));
 
-        JLabel imgLabel = new JLabel(createIcon("static/img/png/landing_5.png", 500, 500));
+        JLabel imgLabel = new JLabel(IconUI.createIcon("static/img/png/landing_5.png", 500, 500));
         imgLabel.setHorizontalAlignment(SwingConstants.CENTER);
         imgLabel.setVerticalAlignment(SwingConstants.CENTER);
 

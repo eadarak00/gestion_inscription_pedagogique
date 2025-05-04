@@ -42,7 +42,7 @@ public class SignInStudentUI extends JFrame {
         setTitle("Espace Etudiant ~ Gestion des Inscriptions Pédagogiques");
         setSize(1500, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        setUndecorated(true);
+        // setUndecorated(true);
         setLocationRelativeTo(null);
 
         // Panel principal
@@ -241,7 +241,7 @@ public class SignInStudentUI extends JFrame {
         loadingDialog.setSize(400, 250);
         loadingDialog.setLayout(new GridBagLayout());
         loadingDialog.setLocationRelativeTo(this);
-        loadingDialog.setUndecorated(true);
+        // loadingDialog.setUndecorated(true);
         loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         // Définir une couleur de fond
