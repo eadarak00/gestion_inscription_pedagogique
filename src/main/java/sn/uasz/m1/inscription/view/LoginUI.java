@@ -234,7 +234,7 @@ public class LoginUI extends JFrame {
         loadingDialog.setSize(400, 250);
         loadingDialog.setLayout(new GridBagLayout());
         loadingDialog.setLocationRelativeTo(this);
-        loadingDialog.setUndecorated(true);
+        // loadingDialog.setUndecorated(true);
         loadingDialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
 
         // Définir une couleur de fond
